@@ -1,1 +1,10 @@
-This is the README for the Cal Poly Forest Friends Sign Maker.
+The Cal Poly Forest Friends Sign Maker is a product of the Cal Poly Course
+ENGR 459, 460, 461 under Multi-Disciplinary Senior Design Project.
+
+The Sign Maker is a CNC router used to route symbols onto a board to produce
+signs.
+
+This project is composed of the members Victor Espinosa, Kevin Ly, and Lisa Yip.
+The software portion of this project lives here in this Github and is divided
+into 3 parts: Front end UI, Backend text to path translation, then motor driver
+controls.
