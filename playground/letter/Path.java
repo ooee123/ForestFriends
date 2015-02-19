@@ -1,3 +1,5 @@
+package letter;
+
 public class Path {
    public enum MovementType {
       START,
@@ -5,9 +7,9 @@ public class Path {
       MOVE
    }
 
-   int x;
-   int y;
-   MovementType type;
+   public int x;
+   public int y;
+   public MovementType type;
 
    public Path(int x, int y, MovementType type)
    {

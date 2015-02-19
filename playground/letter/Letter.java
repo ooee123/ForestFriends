@@ -1,3 +1,5 @@
+package letter;
+
 import java.util.*;
 
 public interface Letter

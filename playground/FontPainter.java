@@ -11,11 +11,15 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.*;
+import java.util.*;
+
+import letter.*;
 
 public class FontPainter extends Component {
 
    public void paint(Graphics g)
    {
+   /*
       Graphics2D g2 = (Graphics2D)g;
       String fontName = "Highway Gothic";
       //String example = "abcdefghijklmnopqrstuvwxyz0123456789".toUpperCase();
@@ -31,6 +35,9 @@ public class FontPainter extends Component {
 
       double[] coords = new double[6];
       double[] lastCoord = {0.0, 0.0};
+
+      Letter a = A();
+      a.getPath();
       while (!pi.isDone()) {
          if (pi.currentSegment(coords) != PathIterator.SEG_LINETO) {
             System.out.println("Not a line to");
@@ -70,5 +77,25 @@ public class FontPainter extends Component {
       g.setStroke(new BasicStroke(12));
       g.drawLine(x1, y1, x2, y2);
       repaint();
+   }
+
+   public void drawLetter(Letter l)
+   {
+      Graphics2D g = (Graphics2D)getGraphics();
+      java.util.List<Path> paths = l.getPaths();
+      int prevX = paths.get(0).x;
+      int prevY = paths.get(0).y;
+      g.drawLine(100, 100, 500, 500);
+      for (Path p : paths)
+      {
+         if (p.type == Path.MovementType.LINE)
+         {
+            g.drawLine(prevX, -prevY, p.x, -p.y);
+         }
+         prevX = p.x;
+         prevY = p.y;
+      }
+      repaint();
+      System.out.println("Hello");
    }
 }

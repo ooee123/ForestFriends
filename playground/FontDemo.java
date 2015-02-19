@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.*;
 
+import letter.*;
 public class FontDemo extends JApplet {
 
    public static void main(String args[]) {
@@ -24,7 +25,7 @@ public class FontDemo extends JApplet {
       FontPainter fp = new FontPainter();
       frame.add(fp);
       frame.pack();
-      fp.drawLine(5, 0, 5, 10);
+      fp.drawLetter(new A());
       frame.setVisible(true);
    }
 }
