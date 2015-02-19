@@ -21,7 +21,7 @@ public class FontPainter extends Component {
    {
       Graphics2D g = (Graphics2D) g2;
       g.setStroke(new BasicStroke(12, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-      java.util.List<Path> paths = new A().getPaths().moveOffset(100, -100);
+      java.util.List<Path> paths = new E().getPaths().moveOffset(300, -500);
       int prevX = paths.get(0).x;
       int prevY = paths.get(0).y;
       for (Path p : paths)
