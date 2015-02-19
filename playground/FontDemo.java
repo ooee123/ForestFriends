@@ -25,7 +25,7 @@ public class FontDemo extends JApplet {
       FontPainter fp = new FontPainter();
       frame.add(fp);
       frame.pack();
-      fp.drawLetter(new A());
+      fp.drawLetter(new A().getPaths().moveOffset(400, 400));
       frame.setVisible(true);
    }
 }
