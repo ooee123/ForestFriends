@@ -4,6 +4,14 @@ import java.util.*;
 
 public class Paths extends ArrayList<Path>
 {
+   private int width;
+
+   public Paths(int width)
+   {
+      super();
+      this.width = width;
+   }
+
    public Paths scale(double scalar)
    {
       for (Path p: this)
@@ -11,6 +19,7 @@ public class Paths extends ArrayList<Path>
          p.x *= scalar;
          p.y *= scalar;
       }
+      width *= scalar;
       return this;
    }
 
@@ -22,5 +31,10 @@ public class Paths extends ArrayList<Path>
          p.y += deltaY;
       }
       return this;
+   }
+
+   public int getWidth()
+   {
+      return width;
    }
 }
