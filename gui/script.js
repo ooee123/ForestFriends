@@ -1,18 +1,19 @@
+  var dimension = {width: 24, length: 12}
+   var fontSize = 1;
+   var canvas = document.getElementById('main');
+   var context = canvas.getContext('2d');
+   var textBox = []
+   var scale = 20;
 
-var dimension = {width: 24, length: 12}
-var fontSize = 1;
-var canvas = document.getElementById('main');
-var context = canvas.getContext('2d');
-var textBox = []
 
-var getDimension = function (varName) {
-   return function () {
-      dimension[varName] = document.getElementById(this.id).value
+   var getDimension = function (varName) {
+      return function () {
+         dimension[varName] = document.getElementById(this.id).value
          updateRect();
    }
 }
 
-var changeFont = function() {
+var changeWHF = function() {
    //alert(fontSize + " " + textBox.length);
    for (var i = 0 ; i < textBox.length; i++) {
       //alert("that")
@@ -34,12 +35,23 @@ var updateEverything = function (canvasNumber) {
       canvas.y = y
       canvas.text = text
       var context = canvas.getContext("2d")
-      context.clearRect(0, 0, canvas.width*20, canvas.height*20)
-      context.rect(0, 0, width*20, length*20);
-      context.width = canvas.width*20;
-      context.height = canvas.height*20;
+      
+      context.clearRect(0, 0, canvas.width*scale, canvas.height*scale)
+      context.rect(0, 0, width*scale, length*scale);
+      canvas.width = width*scale;
+      canvas.height = length*scale;
       context.font = 'normal ' + document.getElementById("fontSize").value* 28 + 'pt Calibri'; // ** take a look at this
-      context.fillText(text, x*20, y*20);
+      //context.textBaseline = "hanging";
+      //alert( width + " " +  length + " " + canvas.width/scale + " " + canvas.height/scale);
+      context.fillText(text, x*scale, y*scale);
+      
+      // debug
+      /*
+      context.strokeStyle = "red";
+      context.moveTo(1, scale);
+      context.lineTo(395, scale);
+      context.stroke();
+      */
    }
 }
 
@@ -47,24 +59,25 @@ var updateRect = function () {
    var width = dimension["width"]
    var length = dimension["length"]
    //alert(width + " " + length);
-   context.clearRect(0, 0, canvas.width*20, canvas.height*20)
+   context.clearRect(0, 0, canvas.width*scale, canvas.height*scale)
    context.beginPath();
-   context.rect(0, 0, width*20, length*20);
+   context.rect(0, 0, width*scale, length*scale);
    context.fillStyle = 'BurlyWood';
    context.fill();
    context.lineWidth = 1;
    context.strokeStyle = 'black';
    context.stroke();
+   changeWHF();
 };
 
 
 var updateRectSample = function () {
    dimension.width = 36; // 36
    dimension.length = 16; // 16
-   context.clearRect(0, 0, dimension.width*20, dimension.height*20)
+   context.clearRect(0, 0, dimension.width*scale, dimension.height*scale)
    context.beginPath();
-   context.rect(0, 0, dimension.width*20, dimension.height*20);
-   context.fillStyle = 'sienna ';
+   context.rect(0, 0, dimension.width*scale, dimension.height*scale);
+   context.fillStyle = 'BurlyWood';
    context.fill();
    context.lineWidth = 1;
    context.strokeStyle = 'black';
@@ -72,7 +85,8 @@ var updateRectSample = function () {
 
    document.getElementById("xCoord").value = 36
    document.getElementById("yCoord").value = 16
-
+   document.getElementById("fontSize").value = 1
+   changeWHF();
    updateRect();
 };
 
@@ -164,8 +178,8 @@ var createCanvas = function () {
    textBox[textBox.length] = newCanvas;
 
    newCanvas.id = "txt" + textBox.length;
-   newCanvas.width = dimension.width * 20;
-   newCanvas.height = dimension.length * 20; // can be changed
+   newCanvas.width = dimension.width * scale;
+   newCanvas.height = dimension.length * scale; // can be changed
    //newCanvas.width = 960;
    //newCanvas.height = 480; // can be changed
    newCanvas.style.zIndex = 2;
@@ -211,8 +225,8 @@ var createCanvasSample = function () {
    textBox[textBox.length] = newCanvas;
 
    newCanvas.id = "txt" + textBox.length;
-   newCanvas.width = dimension.width * 20;
-   newCanvas.height = dimension.length * 20; // can be changed
+   newCanvas.width = dimension.width * scale;
+   newCanvas.height = dimension.length * scale; // can be changed
    newCanvas.style.zIndex = 2;
    newCanvas.style.position = "absolute";
 
@@ -290,7 +304,7 @@ downloadLink.click();
 /* Assigning listeners to the length and width number fields */
 document.getElementById("yCoord").addEventListener("keyup", getDimension("length"))
 document.getElementById("xCoord").addEventListener("keyup", getDimension("width"))
-document.getElementById("fontSize").addEventListener("keyup", changeFont)
+document.getElementById("fontSize").addEventListener("keyup", changeWHF)
 document.getElementById("newTextBox").addEventListener("click", createCanvas)
 //document.getElementById("newTextBoxSampleText").addEventListener("click", createCanvasSample)
 document.getElementById("newTextBoxSampleBoard").addEventListener("click", updateRectSample)

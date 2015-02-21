@@ -1,0 +1,209 @@
+/*
+ .pure-button {
+   display: inline-block;
+   *display: inline;
+   zoom: 1;
+   line-height: normal;
+   white-space: nowrap;
+   vertical-align: baseline;
+   text-align: center;
+   cursor: pointer;
+   -webkit-user-drag: none;
+   -webkit-user-select: none;
+   -moz-user-select: none;
+   -ms-user-select: none;
+   user-select: none;
+}
+
+.pure-button::-moz-focus-inner {
+   padding: 0;
+   border: 0;
+}
+
+.pure-button {
+   font-family: inherit;
+   font-size: 100%;
+   *font-size: 90%;
+   *overflow: visible;
+   padding: .5em 1em;
+   color: #444;
+   color: rgba(0,0,0,.8);
+   *color: #444;
+   border: 1px solid #999;
+   border: 0 rgba(0,0,0,0);
+   background-color: #E6E6E6;
+   text-decoration: none;
+   border-radius: 2px;
+}
+
+.pure-button-hover,.pure-button:hover,.pure-button:focus {
+   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000', endColorstr='#1a000000', GradientType=0);
+   background-image: -webkit-gradient(linear,0 0,0 100%,from(transparent),color-stop(40%,rgba(0,0,0,.05)),to(rgba(0,0,0,.1)));
+   background-image: -webkit-linear-gradient(transparent,rgba(0,0,0,.05) 40%,rgba(0,0,0,.1));
+   background-image: -moz-linear-gradient(top,rgba(0,0,0,.05) 0,rgba(0,0,0,.1));
+   background-image: -o-linear-gradient(transparent,rgba(0,0,0,.05) 40%,rgba(0,0,0,.1));
+   background-image: linear-gradient(transparent,rgba(0,0,0,.05) 40%,rgba(0,0,0,.1));
+}
+
+.pure-button:focus {
+   outline: 0;
+}
+
+.pure-button-active,.pure-button:active {
+   box-shadow: 0 0 0 1px rgba(0,0,0,.15) inset,0 0 6px rgba(0,0,0,.2) inset;
+}
+
+
+
+.pure-button-hidden {
+   display: none;
+}
+
+.pure-button::-moz-focus-inner {
+   padding: 0;
+   border: 0;
+}
+
+.pure-button-primary,.pure-button-selected,a.pure-button-primary,a.pure-button-selected {
+   background-color: #0078e7;
+   color: #fff;
+}
+*/
+
+/* ----------------CANVAS---------------- */
+
+body {
+   position: relative;
+   margin: 0 auto;
+   width: 960px;
+   height: 480px;
+}
+
+/* ----------------FONT FAMILY---------------- */
+h1 {
+   font-family: "Helvetica Neue Light", "Helvetica Neue", "Helvetica", "Arial", "Lucida Grande", sans-serif;
+   font-size: 23px;
+   font-style: normal;
+   font-variant: normal;
+   font-weight: 500;
+   line-height: 23px;
+}
+h3 {
+   font-family: "Helvetica Neue Light", "Helvetica Neue", "Helvetica", "Arial", "Lucida Grande", sans-serif;
+   font-size: 17px;
+   font-style: normal;
+   font-variant: normal;
+   font-weight: 500;
+   line-height: 23px;
+}
+p {
+   font-family: "Helvetica Neue Light", "Helvetica Neue", "Helvetica", "Arial", "Lucida Grande", sans-serif;
+   font-size: 13px;
+   font-style: normal;
+   font-variant: normal;
+   font-weight: 400;
+   line-height: 23px;
+}
+blockquote {
+   font-family: "Helvetica Neue Light", "Helvetica Neue", "Helvetica", "Arial", "Lucida Grande", sans-serif;
+   font-size: 17px;
+   font-style: normal;
+   font-variant: normal;
+   font-weight: 400;
+   line-height: 23px;
+}
+pre {
+   font-family: "Helvetica Neue Light", "Helvetica Neue", "Helvetica", "Arial", "Lucida Grande", sans-serif;
+   font-size: 11px;
+   font-style: normal;
+   font-variant: normal;
+   font-weight: 400;
+   line-height: 23px;
+}
+
+
+/* ----------------BUTTONS---------------- */
+/* http://getbootstrap.com/2.3.2/base-css.html#buttons */
+
+button {
+   -moz-box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.5), 0px 1px 2px rgba(0, 0, 0, 0.15);
+   -moz-border-radius: 50px;
+   -webkit-border-radius: 50px;
+   border-radius: 50px;
+   -webkit-box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.5), 0px 1px 2px rgba(0, 0, 0, 0.15);
+   box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.5), 0px 1px 2px rgba(0, 0, 0, 0.15);
+   background-color: #EEE;
+   background: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4gPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiBncmFkaWVudFVuaXRzPSJvYmplY3RCb3VuZGluZ0JveCIgeDE9IjAuNSIgeTE9IjAuMCIgeDI9IjAuNSIgeTI9IjEuMCI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZiZmJmYiIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2UxZTFlMSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiIC8+PC9zdmc+IA==');
+   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fbfbfb), color-stop(100%, #e1e1e1));
+   background: -moz-linear-gradient(top, #fbfbfb, #e1e1e1);
+   background: -webkit-linear-gradient(top, #fbfbfb, #e1e1e1);
+   background: linear-gradient(to bottom, #fbfbfb, #e1e1e1);
+   display: inline-block;
+   vertical-align: middle;
+   *vertical-align: auto;
+   *zoom: 1;
+   *display: inline;
+   border: 1px solid #d4d4d4;
+   height: 25px;
+   line-height: 24px;
+   padding: 0px 20px;
+   font-weight: 300;
+   font-size: 13px;
+   font-family: "Helvetica Neue Light", "Helvetica Neue", "Helvetica", "Arial", "Lucida Grande", sans-serif;
+   color: #666;
+   text-shadow: 0 1px 1px white;
+   margin: 0;
+   text-decoration: none;
+   text-align: center;
+}
+button:hover, button:focus, button:active, button.is-active, button.active {
+   text-decoration: none; }
+button:hover, button:focus {
+   color: #666;
+   background-color: #EEE;
+   background: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4gPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiBncmFkaWVudFVuaXRzPSJvYmplY3RCb3VuZGluZ0JveCIgeDE9IjAuNSIgeTE9IjAuMCIgeDI9IjAuNSIgeTI9IjEuMCI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2RjZGNkYyIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiIC8+PC9zdmc+IA==');
+   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #dcdcdc));
+   background: -moz-linear-gradient(top, #ffffff, #dcdcdc);
+   background: -webkit-linear-gradient(top, #ffffff, #dcdcdc);
+   background: linear-gradient(to bottom, #ffffff, #dcdcdc); }
+button:active, button.is-active, button.active {
+   -moz-box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.3), 0px 1px 0px white;
+   -webkit-box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.3), 0px 1px 0px white;
+   box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.3), 0px 1px 0px white;
+   text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.4);
+   background: #eeeeee;
+   color: #bbbbbb; }
+button.disabled {
+   -moz-box-shadow: none;
+   -webkit-box-shadow: none;
+   box-shadow: none;
+   -webkit-appearance: none; }
+button:focus {
+   outline: none; }
+
+/* ----------------INPUT TEXT---------------- */
+
+input {
+   background: white;
+   border: 1px solid #DDD;
+   border-radius: 5px;
+   box-shadow: 0 0 2px #DDD inset;
+   padding: 0 5px;
+   margin: 2px 0;
+   color: #111;
+   outline: none;
+   height:20px;
+   width: 100px;
+}
+
+
+/* ----------------DIV---------------- */
+div#upload{
+   margin-right: 50px;
+   float:left;
+   overflow:hidden;
+}
+div#sample {
+   float:left;
+   overflow:hidden;
+}
