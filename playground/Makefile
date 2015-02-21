@@ -1,5 +1,5 @@
 all:
-	javac *.java
+	javac *.java letter/*.java
 
 clean:
-	rm *.class
+	rm *.class letter/*.class
