@@ -29,7 +29,7 @@ public class FontPainter extends Component {
    public void paint(Graphics g2)
    {
       Graphics2D g = (Graphics2D) g2;
-      g.setStroke(new BasicStroke(12, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+      g.setStroke(new BasicStroke(Letter.MAX_HEIGHT / 8, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
       drawLetters(g);
    /*
       Graphics2D g2 = (Graphics2D)g;
@@ -83,13 +83,13 @@ public class FontPainter extends Component {
       return new Dimension(1200, 600);
    }
 
-   public moveOffset(int deltaX, int deltaY)
+   public void moveOffset(int deltaX, int deltaY)
    {
       currentX += deltaX;
       currentY += deltaY;
    }
    
-   public setOffset(int x, int y)
+   public void setOffset(int x, int y)
    {
       currentX = x;
       currentY = y;

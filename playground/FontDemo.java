@@ -45,6 +45,9 @@ public class FontDemo extends JApplet {
       currentX += paths.getWidth();
       fp.addLetter(paths.moveOffset(currentX, currentY));
 
+      paths = new H().getPaths();
+      currentX += 200;
+      fp.addLetter(paths.moveOffset(currentX, currentY));
       frame.setVisible(true);
    }
 }
