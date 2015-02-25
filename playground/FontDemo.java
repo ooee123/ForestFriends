@@ -29,6 +29,7 @@ public class FontDemo extends JApplet {
       frame.pack();
       Paths paths = null;
 
+/*
       paths = new A().getPaths();
       currentX += paths.getWidth();
       fp.addLetter(paths.moveOffset(currentX, currentY));
@@ -48,6 +49,18 @@ public class FontDemo extends JApplet {
       paths = new H().getPaths();
       currentX += 200;
       fp.addLetter(paths.moveOffset(currentX, currentY));
+      paths = new O().getPaths();
+      currentX += paths.getWidth();
+      fp.addLetter(paths.moveOffset(currentX, currentY));
+
+      paths = new Q().getPaths();
+      currentX += paths.getWidth();
+      fp.addLetter(paths.moveOffset(currentX, currentY));
+*/
+      paths = new U().getPaths();
+      currentX += paths.getWidth();
+      fp.addLetter(paths.moveOffset(currentX, currentY));
+
       frame.setVisible(true);
    }
 }

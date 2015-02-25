@@ -4,7 +4,7 @@ import java.util.*;
 
 public class H implements Letter
 {
-   public static final int WIDTH = (int)(0.6 * Letter.MAX_HEIGHT);
+   public static final int WIDTH = Letter.MAX_HEIGHT * 6 / 10;
 
    public Paths getPaths()
    {
