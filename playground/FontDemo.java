@@ -9,13 +9,15 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.*;
-
+import java.util.*;
 import letter.*;
+
 public class FontDemo extends JApplet {
 
    public static void main(String args[]) {
       GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
       String[] fontFamilies = ge.getAvailableFontFamilyNames();
+      Scanner scanner = new Scanner(System.in);
 
       for (String s : fontFamilies) {
          System.out.println(s);
@@ -27,40 +29,103 @@ public class FontDemo extends JApplet {
       FontPainter fp = new FontPainter();
       frame.add(fp);
       frame.pack();
+      frame.setVisible(true);
       Paths paths = null;
 
-/*
-      paths = new A().getPaths();
-      currentX += paths.getWidth();
-      fp.addLetter(paths.moveOffset(currentX, currentY));
+      while (scanner.hasNextLine())
+      {
+         String s = scanner.nextLine();
+         for (int i = 0; i < s.length(); i++)
+         {
+            char c = s.charAt(i);
+            paths = null;
+            switch (Character.toUpperCase(c)) {
+               case 'A':
+                  paths = new A().getPaths();
+                  break;
+               case 'B':
+                  //paths = new B().getPaths();
+                  break;
+               case 'C':
+                  paths = new C().getPaths();
+                  break;
+               case 'D':
+                  paths = new D().getPaths();
+                  break;
+               case 'E':
+                  paths = new E().getPaths();
+                  break;
+               case 'F':
+                  //paths = new F().getPaths();
+                  break;
+               case 'G':
+                  paths = new G().getPaths();
+                  break;
+               case 'H':
+                  paths = new H().getPaths();
+                  break;
+               case 'I':
+                  paths = new I().getPaths();
+                  break;
+               case 'J':
+                  //paths = new J().getPaths();
+                  break;
+               case 'K':
+                  //paths = new K().getPaths();
+                  break;
+               case 'L':
+                  //paths = new L().getPaths();
+                  break;
+               case 'M':
+                  //paths = new M().getPaths();
+                  break;
+               case 'N':
+                  //paths = new N().getPaths();
+                  break;
+               case 'O':
+                  paths = new O().getPaths();
+                  break;
+               case 'P':
+                  //paths = new P().getPaths();
+                  break;
+               case 'Q':
+                  paths = new Q().getPaths();
+                  break;
+               case 'R':
+                  //paths = new R().getPaths();
+                  break;
+               case 'S':
+                  //paths = new S().getPaths();
+                  break;
+               case 'T':
+                  //paths = new T().getPaths();
+                  break;
+               case 'U':
+                  paths = new U().getPaths();
+                  break;
+               case 'V':
+                  //paths = new V().getPaths();
+                  break;
+               case 'W':
+                  //paths = new W().getPaths();
+                  break;
+               case 'X':
+                  //paths = new X().getPaths();
+                  break;
+               case 'Y':
+                  //paths = new Y().getPaths();
+                  break;
+               case 'Z':
+                  //paths = new Z().getPaths();
+                  break;
+            }
+            if (paths != null)
+            {
+               currentX += paths.getWidth();
+               fp.addLetter(paths.moveOffset(currentX, currentY));
+            }
+         }
+      }
 
-      paths = new E().getPaths();
-      currentX += paths.getWidth();
-      fp.addLetter(paths.moveOffset(currentX, currentY));
-      
-      paths = new I().getPaths();
-      currentX += paths.getWidth();
-      fp.addLetter(paths.moveOffset(currentX, currentY));
-
-      paths = new T().getPaths();
-      currentX += paths.getWidth();
-      fp.addLetter(paths.moveOffset(currentX, currentY));
-
-      paths = new H().getPaths();
-      currentX += 200;
-      fp.addLetter(paths.moveOffset(currentX, currentY));
-      paths = new O().getPaths();
-      currentX += paths.getWidth();
-      fp.addLetter(paths.moveOffset(currentX, currentY));
-
-      paths = new Q().getPaths();
-      currentX += paths.getWidth();
-      fp.addLetter(paths.moveOffset(currentX, currentY));
-*/
-      paths = new U().getPaths();
-      currentX += paths.getWidth();
-      fp.addLetter(paths.moveOffset(currentX, currentY));
-
-      frame.setVisible(true);
    }
 }

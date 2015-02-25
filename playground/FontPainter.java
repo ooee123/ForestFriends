@@ -31,52 +31,17 @@ public class FontPainter extends Component {
       Graphics2D g = (Graphics2D) g2;
       g.setStroke(new BasicStroke(Letter.MAX_HEIGHT / 8, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
       drawLetters(g);
-   /*
-      Graphics2D g2 = (Graphics2D)g;
-      String fontName = "Highway Gothic";
-      //String example = "abcdefghijklmnopqrstuvwxyz0123456789".toUpperCase();
-      String example = "a".toUpperCase();
-      //String fontName = "Arial";
-      Font f = new Font(fontName, 0, 144);
-
-      GlyphVector gv = f.createGlyphVector(g2.getFontRenderContext(), example);
-
-      Shape s = gv.getOutline();
-
-      PathIterator pi = s.getPathIterator(null);
-
-      double[] coords = new double[6];
-      double[] lastCoord = {0.0, 0.0};
-
-      Letter a = A();
-      a.getPath();
-      while (!pi.isDone()) {
-         if (pi.currentSegment(coords) != PathIterator.SEG_LINETO) {
-            System.out.println("Not a line to");
-         }
-         int i = 0;
-         //for (int i = 0; i < coords.length; i+=2)
-         //{
-            System.out.printf("(%f, %f\n)", coords[i], coords[i+1]);
-            //g2.drawOval((int)coords[i] + 100, (int)coords[i+1]+ 100, 5, 5);
-            g2.drawLine((int)lastCoord[0] + 100, (int)lastCoord[1] + 100, (int)coords[i] + 100, (int)coords[i + 1] + 100);
-         //}
-         lastCoord[0] = coords[0];
-         lastCoord[1] = coords[1];
-         pi.next();
-      }
-
 
 /*
+      String fontName = "Highway Gothic";
+      String example = "abcdefghijklmnopq".toUpperCase();
+      String example2 = "rstuvwxyz0123456789".toUpperCase();
 
+      Font f = new Font(fontName, 0, 100);
       g.setFont(f);
-      FontMetrics fm = g.getFontMetrics();
-      g.drawString(example, 0, fm.getAscent() - 29);
-      System.out.printf("Height: %d\nAscent: %d\nDescent: %d\nLeading: %d\nMax Ascent: %d\n", fm.getHeight(), fm.getAscent(), fm.getDescent(), fm.getLeading(), fm.getMaxAscent());
-      g2.setStroke(new BasicStroke(12));
-      g2.drawLine(20, 6, 20, 12);
-      //repaint();
-      */
+      g.drawString(example, 0, 200);
+      g.drawString(example2, 0, 500);
+*/
    }
 
    public Dimension getPreferredSize() {
@@ -95,6 +60,10 @@ public class FontPainter extends Component {
       currentY = y;
    }
 
+   public void drawString(int x, int y, String s)
+   {
+   }
+      
    public void drawLine(int x1, int y1, int x2, int y2)
    {
       Graphics2D g = (Graphics2D)getGraphics();
