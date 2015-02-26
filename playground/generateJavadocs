@@ -1,0 +1,32 @@
+# Kevin Ly
+# 2014-02-10
+# Generates javadocs from package directory names in pwd
+#
+# javadoc [packageName] [packageName] [...] -d javadoc
+
+# Set the String variable's first command
+command="javadoc -private"
+
+# If the directory javadoc does not exist, exit
+if [ ! -d "javadoc" ]
+then
+   echo "javadoc directory not found in pwd"
+   exit
+fi
+
+# For every file in the pwd
+for D in *;
+do
+   # If that file is a directory and not named "javadoc"
+   if [ -d "$D" ] && [ "$D" != "javadoc" ];
+   then
+      # concat that filename onto command
+      command=$command" $D"
+   fi
+done
+
+# Append "-d javadoc"
+command=$command" -d javadoc"
+
+# Execute command
+$command

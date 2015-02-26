@@ -74,11 +74,11 @@ public class FontPainter extends Component {
    public void addLetter(Paths paths)
    {
       letters.add(paths);
-      repaint();
    }
 
    private void drawLetters(Graphics2D g)
    {
+      final boolean showGreen = false;
       for (Paths paths : letters)
       {
          int prevX = paths.get(0).x;
@@ -90,7 +90,7 @@ public class FontPainter extends Component {
                g.setColor(Color.BLACK);
                g.drawLine(prevX, -prevY, p.x, -p.y);
             }
-            else if (p.type == Path.MovementType.MOVE)
+            else if (showGreen && p.type == Path.MovementType.MOVE)
             {
                g.setColor(Color.GREEN);
                g.drawLine(prevX, -prevY, p.x, -p.y);

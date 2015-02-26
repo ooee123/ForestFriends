@@ -24,7 +24,7 @@ public class FontDemo extends JApplet {
       }
 
       int currentX = 0;
-      int currentY = -400;
+      int currentY = 0;
       JFrame frame = new JFrame("Font");
       FontPainter fp = new FontPainter();
       frame.add(fp);
@@ -34,6 +34,8 @@ public class FontDemo extends JApplet {
 
       while (scanner.hasNextLine())
       {
+         currentX = 0;
+         currentY -= 300;
          String s = scanner.nextLine();
          for (int i = 0; i < s.length(); i++)
          {
@@ -44,7 +46,7 @@ public class FontDemo extends JApplet {
                   paths = new A().getPaths();
                   break;
                case 'B':
-                  //paths = new B().getPaths();
+                  paths = new B().getPaths();
                   break;
                case 'C':
                   paths = new C().getPaths();
@@ -121,10 +123,12 @@ public class FontDemo extends JApplet {
             }
             if (paths != null)
             {
-               currentX += paths.getWidth();
                fp.addLetter(paths.moveOffset(currentX, currentY));
+               currentX += paths.getWidth();
+               currentX += 20;
             }
          }
+         fp.repaint();
       }
 
    }
