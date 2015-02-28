@@ -11,7 +11,7 @@ public class G implements Letter
    {
       Paths paths = new Paths(Letter.WIDTH);
       int centerX = Letter.WIDTH / 2;
-      int centerY = Letter.MAX_HEIGHT / 2;
+      int centerY = Letter.HEIGHT / 2;
       double actualWidth = centerX + Math.cos(ENDING_ANGLE * 2 * Math.PI / Letter.DISCRETE_POINTS) * centerX;
       double scalar = Letter.WIDTH / actualWidth;
       int point = STARTING_ANGLE;

@@ -33,8 +33,34 @@ public class Paths extends ArrayList<Path>
       return this;
    }
 
+   /**
+    * Flips between the cartesian coordinate system and raster coordinate
+    * system. The cartesian coordinate system is where the origin is on the
+    * bottom left, and the raster coordinate system is where the origin is
+    * on the top left.
+    */
+   public Paths flipCoordinates()
+   {
+      int maxHeight = getHeight();
+      for (Path p : this)
+      {
+         p.y = -p.y + maxHeight;
+      }
+      return this;
+   }
+
    public int getWidth()
    {
       return width;
+   }
+
+   public int getHeight()
+   {
+      int maxHeight = -1;
+      for (Path p : this)
+      {
+         maxHeight = p.y > maxHeight ? p.y : maxHeight;
+      }
+      return maxHeight;
    }
 }

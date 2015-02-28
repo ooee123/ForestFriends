@@ -8,7 +8,7 @@ public class I implements Letter
    {
       Paths paths = new Paths(Letter.WIDTH);
       paths.add(new Path(Letter.WIDTH / 2, 0, Path.MovementType.START));
-      paths.add(new Path(Letter.WIDTH / 2, Letter.MAX_HEIGHT, Path.MovementType.LINE));
+      paths.add(new Path(Letter.WIDTH / 2, Letter.HEIGHT, Path.MovementType.LINE));
       return paths;
    }
 }

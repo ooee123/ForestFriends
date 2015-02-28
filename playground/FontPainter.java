@@ -13,6 +13,8 @@ import javax.swing.*;
 import javax.swing.event.*;
 import java.util.*;
 
+import java.nio.*;
+
 import letter.*;
 
 public class FontPainter extends Component {
@@ -29,7 +31,6 @@ public class FontPainter extends Component {
    public void paint(Graphics g2)
    {
       Graphics2D g = (Graphics2D) g2;
-      g.setStroke(new BasicStroke(Letter.MAX_HEIGHT / 8, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
       drawLetters(g);
 
 /*
@@ -78,9 +79,13 @@ public class FontPainter extends Component {
 
    private void drawLetters(Graphics2D g)
    {
+      SerialComs coms = new SerialComs();
+      OutputStream s = coms.getOutputStream();
       final boolean showGreen = false;
       for (Paths paths : letters)
       {
+         System.out.println(paths.getHeight());
+         g.setStroke(new BasicStroke(paths.getHeight() / 8, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
          int prevX = paths.get(0).x;
          int prevY = paths.get(0).y;
          for (Path p : paths)
@@ -97,6 +102,15 @@ public class FontPainter extends Component {
             }
             prevX = p.x;
             prevY = p.y;
+            try {
+               System.out.println(s);
+               s.write(ByteBuffer.allocate(4).putInt(prevX).array());
+               s.write(ByteBuffer.allocate(4).putInt(prevY).array());
+            }
+            catch (IOException e)
+            {
+               System.err.println("IOException caught");
+            }
          }
       }
    }

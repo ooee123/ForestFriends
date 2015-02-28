@@ -15,10 +15,15 @@ public interface Letter
    public static final int REVOLUTION_PER_INCH = 8;
 
    /**
+    * The number of discrete encoder units per physical inch.
+    */
+   public static final int UNITS_PER_INCH = TICKS_PER_REVOLUTION * REVOLUTION_PER_INCH;
+
+   /**
     * The maximum height each letter will occupy.
     * All letters will reach this height. Symbols may or may not reach.
     */
-   public static final int MAX_HEIGHT = TICKS_PER_REVOLUTION * REVOLUTION_PER_INCH;
+   public static final int HEIGHT = UNITS_PER_INCH;
 
    /**
     * The resolution of points it takes to draw a complete circle.
@@ -29,7 +34,7 @@ public interface Letter
    /**
     * The width that all alphabetic characters will have.
     */
-   public static final int WIDTH = MAX_HEIGHT * 3 / 5;
+   public static final int WIDTH = HEIGHT * 3 / 5;
 
    /**
     * A collection of Path that when followed will produce the Letter.

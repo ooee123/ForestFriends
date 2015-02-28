@@ -25,6 +25,7 @@ public class FontDemo extends JApplet {
 
       int currentX = 0;
       int currentY = 0;
+      double scalar = 1;
       JFrame frame = new JFrame("Font");
       FontPainter fp = new FontPainter();
       frame.add(fp);
@@ -42,6 +43,12 @@ public class FontDemo extends JApplet {
             char c = s.charAt(i);
             paths = null;
             switch (Character.toUpperCase(c)) {
+               case ']':
+                  scalar += 0.1;
+                  break;
+               case '[':
+                  scalar -= 0.1;
+                  break;
                case 'A':
                   paths = new A().getPaths();
                   break;
@@ -106,7 +113,7 @@ public class FontDemo extends JApplet {
                   paths = new U().getPaths();
                   break;
                case 'V':
-                  //paths = new V().getPaths();
+                  paths = new V().getPaths();
                   break;
                case 'W':
                   //paths = new W().getPaths();
@@ -123,7 +130,7 @@ public class FontDemo extends JApplet {
             }
             if (paths != null)
             {
-               fp.addLetter(paths.moveOffset(currentX, currentY));
+               fp.addLetter(paths.scale(scalar).moveOffset(currentX, currentY));
                currentX += paths.getWidth();
                currentX += 20;
             }
