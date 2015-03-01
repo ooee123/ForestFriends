@@ -6,7 +6,7 @@ public class Q implements Letter
 {
    public Paths getPaths()
    {
-      Paths paths = new Paths(Letter.WIDTH);
+      Paths paths = new Paths(Letter.WIDTH, Letter.HEIGHT);
       paths.add(new Path(Letter.WIDTH, Letter.HEIGHT / 2, Path.MovementType.START));
       int centerX = Letter.WIDTH / 2;
       int centerY = Letter.HEIGHT / 2;

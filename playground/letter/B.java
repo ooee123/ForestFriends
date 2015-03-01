@@ -8,7 +8,7 @@ public class B implements Letter
 
    public Paths getPaths()
    {
-      Paths paths = new Paths(Letter.WIDTH);
+      Paths paths = new Paths(Letter.WIDTH, Letter.HEIGHT);
       paths.add(new Path(0, Letter.HEIGHT / 2, Path.MovementType.START));
       paths.add(new Path(B_CURVE_WIDTH, Letter.HEIGHT / 2, Path.MovementType.LINE));
 

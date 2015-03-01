@@ -24,7 +24,7 @@ public class FontDemo extends JApplet {
       }
 
       int currentX = 0;
-      int currentY = 0;
+      int currentY = -300;
       double scalar = 1;
       JFrame frame = new JFrame("Font");
       FontPainter fp = new FontPainter();
@@ -36,13 +36,17 @@ public class FontDemo extends JApplet {
       while (scanner.hasNextLine())
       {
          currentX = 0;
-         currentY -= 300;
+         currentY += 300;
          String s = scanner.nextLine();
          for (int i = 0; i < s.length(); i++)
          {
             char c = s.charAt(i);
             paths = null;
             switch (Character.toUpperCase(c)) {
+               case '!':
+                  fp.close();
+                  System.exit(0);
+                  break;
                case ']':
                   scalar += 0.1;
                   break;

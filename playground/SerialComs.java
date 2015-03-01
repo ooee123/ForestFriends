@@ -8,6 +8,8 @@ import gnu.io.SerialPortEventListener;
 import java.util.Enumeration;
 import java.io.*;
 
+import java.nio.*;
+import java.nio.charset.*;
 
 public class SerialComs implements SerialPortEventListener {
    SerialPort serialPort;
@@ -103,13 +105,52 @@ public class SerialComs implements SerialPortEventListener {
       // Ignore all the other eventTypes, but you should consider the other ones.
    }
 
-   public OutputStream getOutputStream()
+   public boolean write(int i)
    {
-      return output;
+      try {
+         output.write(ByteBuffer.allocate(4).putInt(i).array());
+      }
+      catch (IOException e)
+      {
+         System.err.println(e.getMessage());
+         return false;
+      }
+      return true;
    }
 
-   public Reader getReader()
+   public void flush()
    {
-      return input;
+      try {
+
+         output.flush();
+      }
+      catch (IOException e)
+      {
+         System.err.println(e.getMessage());
+      }
+   }
+
+   public boolean write(String s)
+   {
+      try {
+         output.write(s.getBytes(Charset.forName("UTF-8")));;
+      }
+      catch (IOException e)
+      {
+         System.err.println(e.getMessage());
+         return false;
+      }
+      return true;
+   }
+
+   public String read()
+   {
+         try {
+            String inputLine=input.readLine();
+            return inputLine;
+         } catch (Exception e) {
+            System.err.println(e.toString());
+         }
+      return "";
    }
 }

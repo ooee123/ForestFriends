@@ -23,12 +23,15 @@ public class Path {
    /**
     * The absolute x component of the motion to take.
     */
-   public int x;
+   int x;
 
    /**
     * The absolute y component of the motion to take.
     */
-   public int y;
+   int y;
+
+   int offsetX;
+   int offsetY;
 
    /**
     * The scribing or non-scribing activity the marking tool.
@@ -46,6 +49,18 @@ public class Path {
    {
       this.x = x;
       this.y = y;
+      this.offsetX = 0;
+      this.offsetY = 0;
       this.type = type;
+   }
+
+   public int getX()
+   {
+      return x + offsetX;
+   }
+
+   public int getY()
+   {
+      return y + offsetY;
    }
 }

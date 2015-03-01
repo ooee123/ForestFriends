@@ -8,7 +8,7 @@ public class D implements Letter
 
    public Paths getPaths()
    {
-      Paths paths = new Paths(Letter.WIDTH);
+      Paths paths = new Paths(Letter.WIDTH, Letter.HEIGHT);
       paths.add(new Path(0, Letter.HEIGHT, Path.MovementType.START));
       paths.add(new Path(0, 0, Path.MovementType.LINE));
       paths.add(new Path(D_CURVE_WIDTH, 0, Path.MovementType.LINE));

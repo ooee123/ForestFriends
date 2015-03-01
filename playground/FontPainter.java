@@ -22,15 +22,23 @@ public class FontPainter extends Component {
    private java.util.List<Paths> letters;
    private int currentX;
    private int currentY;
+   private SerialComs coms;
 
    public FontPainter()
    {
       letters = new ArrayList<Paths>();
+      coms = new SerialComs();
+   }
+
+   public void close()
+   {
+      coms.close();
    }
 
    public void paint(Graphics g2)
    {
       Graphics2D g = (Graphics2D) g2;
+      g.drawRect(100, 100, 5, 5);
       drawLetters(g);
 
 /*
@@ -74,43 +82,43 @@ public class FontPainter extends Component {
 
    public void addLetter(Paths paths)
    {
+      paths.flipCoordinates();
       letters.add(paths);
+      for (Path p : paths)
+      {
+         System.err.println("Sending prevX: " + p.getX());
+         coms.write(p.getX());
+         System.err.println("Sending prevY: " + p.getY());
+         coms.write(p.getY());
+      }
+      coms.flush();
    }
 
    private void drawLetters(Graphics2D g)
    {
-      SerialComs coms = new SerialComs();
-      OutputStream s = coms.getOutputStream();
       final boolean showGreen = false;
       for (Paths paths : letters)
       {
          System.out.println(paths.getHeight());
          g.setStroke(new BasicStroke(paths.getHeight() / 8, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-         int prevX = paths.get(0).x;
-         int prevY = paths.get(0).y;
+         int prevX = paths.get(0).getX();
+         int prevY = paths.get(0).getY();
          for (Path p : paths)
          {
+            int px = p.getX();
+            int py = p.getY();
             if (p.type == Path.MovementType.LINE)
             {
                g.setColor(Color.BLACK);
-               g.drawLine(prevX, -prevY, p.x, -p.y);
+               g.drawLine(prevX, prevY, px, py);
             }
             else if (showGreen && p.type == Path.MovementType.MOVE)
             {
                g.setColor(Color.GREEN);
-               g.drawLine(prevX, -prevY, p.x, -p.y);
+               g.drawLine(prevX, prevY, px, py);
             }
-            prevX = p.x;
-            prevY = p.y;
-            try {
-               System.out.println(s);
-               s.write(ByteBuffer.allocate(4).putInt(prevX).array());
-               s.write(ByteBuffer.allocate(4).putInt(prevY).array());
-            }
-            catch (IOException e)
-            {
-               System.err.println("IOException caught");
-            }
+            prevX = px;
+            prevY = py;
          }
       }
    }

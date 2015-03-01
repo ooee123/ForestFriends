@@ -8,7 +8,7 @@ public class U implements Letter
 
    public Paths getPaths()
    {
-      Paths paths = new Paths(Letter.WIDTH);
+      Paths paths = new Paths(Letter.WIDTH, Letter.HEIGHT);
       paths.add(new Path(0, Letter.HEIGHT, Path.MovementType.START));
       paths.add(new Path(0, CURVE_MAX_HEIGHT, Path.MovementType.LINE));
       int centerX = Letter.WIDTH / 2;

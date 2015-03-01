@@ -5,11 +5,13 @@ import java.util.*;
 public class Paths extends ArrayList<Path>
 {
    private int width;
+   private int height;
 
-   public Paths(int width)
+   public Paths(int width, int height)
    {
       super();
       this.width = width;
+      this.height = height;
    }
 
    public Paths scale(double scalar)
@@ -20,6 +22,7 @@ public class Paths extends ArrayList<Path>
          p.y *= scalar;
       }
       width *= scalar;
+      height *= scalar;
       return this;
    }
 
@@ -27,8 +30,8 @@ public class Paths extends ArrayList<Path>
    {
       for (Path p : this)
       {
-         p.x += deltaX;
-         p.y += deltaY;
+         p.offsetX += deltaX;
+         p.offsetY += deltaY;
       }
       return this;
    }
@@ -41,10 +44,10 @@ public class Paths extends ArrayList<Path>
     */
    public Paths flipCoordinates()
    {
-      int maxHeight = getHeight();
+      int height = getHeight();
       for (Path p : this)
       {
-         p.y = -p.y + maxHeight;
+         p.y = -p.y + height;
       }
       return this;
    }
@@ -56,11 +59,6 @@ public class Paths extends ArrayList<Path>
 
    public int getHeight()
    {
-      int maxHeight = -1;
-      for (Path p : this)
-      {
-         maxHeight = p.y > maxHeight ? p.y : maxHeight;
-      }
-      return maxHeight;
+      return height;
    }
 }

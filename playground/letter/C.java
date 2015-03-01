@@ -9,7 +9,7 @@ public class C implements Letter
 
    public Paths getPaths()
    {
-      Paths paths = new Paths(Letter.WIDTH);
+      Paths paths = new Paths(Letter.WIDTH, Letter.HEIGHT);
       int centerX = Letter.WIDTH / 2;
       int centerY = Letter.HEIGHT / 2;
       double actualWidth = centerX + Math.cos(STARTING_ANGLE * 2 * Math.PI / Letter.DISCRETE_POINTS) * centerX;
