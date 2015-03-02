@@ -82,7 +82,7 @@ public class FontDemo extends JApplet {
                   //paths = new K().getPaths();
                   break;
                case 'L':
-                  //paths = new L().getPaths();
+                  paths = new L().getPaths();
                   break;
                case 'M':
                   //paths = new M().getPaths();
@@ -134,6 +134,9 @@ public class FontDemo extends JApplet {
                   break;
                case '^':
                   //paths = new Up().getPaths();
+                  break;
+               case ' ':
+                  currentX += Letter.WIDTH;
                   break;
             }
             if (paths != null)

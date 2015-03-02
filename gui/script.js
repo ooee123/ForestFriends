@@ -331,8 +331,8 @@ updateRect()
   }
   
 document.getElementById('upload').onchange = function(){
-
    var file = this.files[0];
+   
 
    var reader = new FileReader();
    reader.onload = function(progressEvent){
@@ -344,19 +344,23 @@ document.getElementById('upload').onchange = function(){
          lines[n] = cleanString(lines[n])
       }
 
-      var dimensions = new Dimension(lines[0], lines[1], lines[2]);
-
+      //var dimensions = new Dimension(lines[0], lines[1], lines[2]);
+      document.getElementById("yCoord").value = dimension["length"] = lines[0];
+      document.getElementById("xCoord").value = dimension["width"] = lines[1];
+      document.getElementById("fontSize").value = lines[2];
+      updateRect();
       var texts = [];
 
       for(var line = 3; line + 3 < lines.length; line = line + 3){
          texts[texts.length] = new Text(lines[line], lines[line + 1], lines[line + 2]);
-         if (textBox.length < line / 3)
+         var index = line / 3
+         if (textBox.length < index)
          {
             createCanvas();
          }
-         var xElem = document.getElementById("x" + textBox.length);
-         var yElem = document.getElementById("y" + textBox.length);
-         var textElem = document.getElementById("text" + textBox.length);
+         var xElem = document.getElementById("x" + index);
+         var yElem = document.getElementById("y" + index);
+         var textElem = document.getElementById("text" + index);
          xElem.value = lines[line];
          yElem.value = lines[line + 1];
          textElem.value = lines[line + 2];

@@ -5,7 +5,7 @@ import java.util.*;
 public class Right implements Letter
 {
    private static final int height = Letter.HEIGHT;
-   private static final int width = height / 2 * 3;
+   private static final int width = height * 3 / 2;
 
    public Paths getPaths()
    {
