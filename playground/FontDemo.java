@@ -106,7 +106,7 @@ public class FontDemo extends JApplet {
                   //paths = new S().getPaths();
                   break;
                case 'T':
-                  //paths = new T().getPaths();
+                  paths = new T().getPaths();
                   break;
                case 'U':
                   paths = new U().getPaths();
@@ -125,6 +125,15 @@ public class FontDemo extends JApplet {
                   break;
                case 'Z':
                   //paths = new Z().getPaths();
+                  break;
+               case '<':
+                  paths = new Left().getPaths();
+                  break;
+               case '>':
+                  paths = new Right().getPaths();
+                  break;
+               case '^':
+                  //paths = new Up().getPaths();
                   break;
             }
             if (paths != null)

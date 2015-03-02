@@ -17,13 +17,13 @@ public interface Letter
    /**
     * The number of discrete encoder units per physical inch.
     */
-   public static final int UNITS_PER_INCH = TICKS_PER_REVOLUTION * REVOLUTION_PER_INCH;
+   public static final int INCH = TICKS_PER_REVOLUTION * REVOLUTION_PER_INCH;
 
    /**
     * The maximum height each letter will occupy.
     * All letters will reach this height. Symbols may or may not reach.
     */
-   public static final int HEIGHT = UNITS_PER_INCH;
+   public static final int HEIGHT = INCH;
 
    /**
     * The resolution of points it takes to draw a complete circle.

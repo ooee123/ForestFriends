@@ -25,30 +25,36 @@ public class FontPainter extends Component {
    private SerialComs coms;
 
    private PrintWriter printer;
+   private boolean useComs = false;
 
    public FontPainter()
    {
       letters = new ArrayList<Paths>();
-      coms = new SerialComs();
-      try {
-         printer = new PrintWriter("Printing.txt");
-      }
-      catch (FileNotFoundException e)
+      if (useComs)
       {
-         System.err.println(e.getMessage());
+         coms = new SerialComs();
+         try {
+            printer = new PrintWriter("Printing.txt");
+         }
+         catch (FileNotFoundException e)
+         {
+            System.err.println(e.getMessage());
+         }
       }
    }
 
    public void close()
    {
       coms.close();
-      printer.close();
+      if (useComs)
+      {
+         printer.close();
+      }
    }
 
    public void paint(Graphics g2)
    {
       Graphics2D g = (Graphics2D) g2;
-      g.drawRect(100, 100, 5, 5);
       drawLetters(g);
 
 /*
@@ -83,27 +89,23 @@ public class FontPainter extends Component {
    {
    }
       
-   public void drawLine(int x1, int y1, int x2, int y2)
-   {
-      Graphics2D g = (Graphics2D)getGraphics();
-      g.setStroke(new BasicStroke(12));
-      g.drawLine(x1, y1, x2, y2);
-   }
-
    public void addLetter(Paths paths)
    {
       paths.flipCoordinates();
       letters.add(paths);
-      for (Path p : paths)
+      if (useComs)
       {
-         //System.err.println("Sending prevX: " + p.getX());
-         printer.println(p.getX());
-         coms.write(p.getX());
-         //System.err.println("Sending prevY: " + p.getY());
-         printer.println(p.getY());
-         coms.write(p.getY());
+         for (Path p : paths)
+         {
+            //System.err.println("Sending prevX: " + p.getX());
+            printer.println(p.getX());
+            coms.write(p.getX());
+            //System.err.println("Sending prevY: " + p.getY());
+            printer.println(p.getY());
+            coms.write(p.getY());
+         }
+         coms.flush();
       }
-      coms.flush();
    }
 
    private void drawLetters(Graphics2D g)
@@ -111,7 +113,8 @@ public class FontPainter extends Component {
       final boolean showGreen = false;
       for (Paths paths : letters)
       {
-         g.setStroke(new BasicStroke(paths.getHeight() / 8, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+         //g.setStroke(new BasicStroke(paths.getHeight() / 8, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+         g.setStroke(new BasicStroke(Letter.INCH / 8, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
          int prevX = paths.get(0).getX();
          int prevY = paths.get(0).getY();
          for (Path p : paths)
