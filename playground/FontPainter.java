@@ -24,15 +24,25 @@ public class FontPainter extends Component {
    private int currentY;
    private SerialComs coms;
 
+   private PrintWriter printer;
+
    public FontPainter()
    {
       letters = new ArrayList<Paths>();
       coms = new SerialComs();
+      try {
+         printer = new PrintWriter("Printing.txt");
+      }
+      catch (FileNotFoundException e)
+      {
+         System.err.println(e.getMessage());
+      }
    }
 
    public void close()
    {
       coms.close();
+      printer.close();
    }
 
    public void paint(Graphics g2)
@@ -86,9 +96,11 @@ public class FontPainter extends Component {
       letters.add(paths);
       for (Path p : paths)
       {
-         System.err.println("Sending prevX: " + p.getX());
+         //System.err.println("Sending prevX: " + p.getX());
+         printer.println(p.getX());
          coms.write(p.getX());
-         System.err.println("Sending prevY: " + p.getY());
+         //System.err.println("Sending prevY: " + p.getY());
+         printer.println(p.getY());
          coms.write(p.getY());
       }
       coms.flush();
@@ -99,7 +111,6 @@ public class FontPainter extends Component {
       final boolean showGreen = false;
       for (Paths paths : letters)
       {
-         System.out.println(paths.getHeight());
          g.setStroke(new BasicStroke(paths.getHeight() / 8, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
          int prevX = paths.get(0).getX();
          int prevY = paths.get(0).getY();

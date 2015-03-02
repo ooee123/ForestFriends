@@ -97,7 +97,7 @@ public class SerialComs implements SerialPortEventListener {
       if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
          try {
             String inputLine=input.readLine();
-            System.out.println(inputLine);
+            System.out.println("|" + inputLine + "|");
          } catch (Exception e) {
             System.err.println(e.toString());
          }

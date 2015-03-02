@@ -16,12 +16,7 @@ public class FontDemo extends JApplet {
 
    public static void main(String args[]) {
       GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-      String[] fontFamilies = ge.getAvailableFontFamilyNames();
       Scanner scanner = new Scanner(System.in);
-
-      for (String s : fontFamilies) {
-         System.out.println(s);
-      }
 
       int currentX = 0;
       int currentY = -300;
