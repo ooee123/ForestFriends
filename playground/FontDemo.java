@@ -64,7 +64,7 @@ public class FontDemo extends JApplet {
                   paths = new E().getPaths();
                   break;
                case 'F':
-                  //paths = new F().getPaths();
+                  paths = new F().getPaths();
                   break;
                case 'G':
                   paths = new G().getPaths();
