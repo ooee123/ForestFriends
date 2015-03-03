@@ -25,13 +25,22 @@ public class FontPainter extends Component {
    private SerialComs coms;
 
    private PrintWriter printer;
-   private boolean useComs = false;
+   private boolean useComs = true;
 
    public FontPainter()
    {
       letters = new ArrayList<Paths>();
       if (useComs)
       {
+         /*
+         Thread t = new Thread() {
+            public void run() {
+               coms = new SerialComs();
+               while (true);
+            }
+         };
+         t.start();
+         */
          coms = new SerialComs();
          try {
             printer = new PrintWriter("Printing.txt");

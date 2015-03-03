@@ -97,7 +97,7 @@ public class SerialComs implements SerialPortEventListener {
       if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
          try {
             String inputLine=input.readLine();
-            System.out.println("|" + inputLine + "|");
+            System.out.println(inputLine);
          } catch (Exception e) {
             System.err.println(e.toString());
          }
@@ -108,12 +108,18 @@ public class SerialComs implements SerialPortEventListener {
    public boolean write(int i)
    {
       try {
+         Thread.sleep(50);
          output.write(ByteBuffer.allocate(4).putInt(i).array());
       }
       catch (IOException e)
       {
          System.err.println(e.getMessage());
          return false;
+      }
+      catch (InterruptedException e)
+      {
+         System.err.println(e.getMessage());
+         System.exit(0);
       }
       return true;
    }
