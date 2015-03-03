@@ -106,14 +106,18 @@ public class FontPainter extends Component {
       {
          for (Path p : paths)
          {
-            //System.err.println("Sending prevX: " + p.getX());
-            printer.println(p.getX());
             coms.write(p.getX());
-            //System.err.println("Sending prevY: " + p.getY());
-            printer.println(p.getY());
             coms.write(p.getY());
+            coms.write((short)p.type.ordinal());
+            coms.flush();
+            printer.print("(");
+            printer.print(p.getX());
+            printer.print(", ");
+            printer.print(p.getY());
+            printer.print(", ");
+            printer.print(p.type.ordinal());
+            printer.println(")");
          }
-         coms.flush();
       }
    }
 

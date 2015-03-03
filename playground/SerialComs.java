@@ -108,18 +108,44 @@ public class SerialComs implements SerialPortEventListener {
    public boolean write(int i)
    {
       try {
-         Thread.sleep(50);
+         Thread.sleep(16);
          output.write(ByteBuffer.allocate(4).putInt(i).array());
+         Thread.sleep(16);
       }
-      catch (IOException e)
+      catch (Exception e)
       {
          System.err.println(e.getMessage());
          return false;
       }
-      catch (InterruptedException e)
+      return true;
+   }
+
+   public boolean write(short i)
+   {
+      try {
+         Thread.sleep(16);
+         output.write(ByteBuffer.allocate(2).putShort(i).array());
+         Thread.sleep(16);
+      }
+      catch (Exception e)
       {
          System.err.println(e.getMessage());
-         System.exit(0);
+         return false;
+      }
+      return true;
+   }
+
+   public boolean write(byte i)
+   {
+      try {
+         Thread.sleep(16);
+         output.write(i);
+         Thread.sleep(16);
+      }
+      catch (Exception e)
+      {
+         System.err.println(e.getMessage());
+         return false;
       }
       return true;
    }

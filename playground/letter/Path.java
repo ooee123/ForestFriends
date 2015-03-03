@@ -54,13 +54,13 @@ public class Path {
       this.type = type;
    }
 
-   public int getX()
+   public short getX()
    {
-      return x + offsetX;
+      return (short)(x + offsetX);
    }
 
-   public int getY()
+   public short getY()
    {
-      return y + offsetY;
+      return (short)(y + offsetY);
    }
 }
