@@ -14,6 +14,7 @@ import java.nio.charset.*;
 public class SerialComs implements SerialPortEventListener {
    SerialPort serialPort;
         /** The port we're normally going to use. */
+   private static final int milliDelay = 12;
    private static final String PORT_NAMES[] = { 
          "/dev/tty.usbserial-A9007UX1", // Mac OS X
                         "/dev/ttyACM0", // Raspberry Pi
@@ -108,9 +109,9 @@ public class SerialComs implements SerialPortEventListener {
    public boolean write(int i)
    {
       try {
-         Thread.sleep(16);
+         Thread.sleep(milliDelay);
          output.write(ByteBuffer.allocate(4).putInt(i).array());
-         Thread.sleep(16);
+         Thread.sleep(milliDelay);
       }
       catch (Exception e)
       {
@@ -123,9 +124,9 @@ public class SerialComs implements SerialPortEventListener {
    public boolean write(short i)
    {
       try {
-         Thread.sleep(16);
+         Thread.sleep(milliDelay);
          output.write(ByteBuffer.allocate(2).putShort(i).array());
-         Thread.sleep(16);
+         Thread.sleep(milliDelay);
       }
       catch (Exception e)
       {
@@ -138,9 +139,9 @@ public class SerialComs implements SerialPortEventListener {
    public boolean write(byte i)
    {
       try {
-         Thread.sleep(16);
+         Thread.sleep(milliDelay);
          output.write(i);
-         Thread.sleep(16);
+         Thread.sleep(milliDelay);
       }
       catch (Exception e)
       {
