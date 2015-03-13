@@ -287,8 +287,8 @@ var createCanvasSample = function () {
 
 function saveTextAsFile() {
    var textToWrite = "";
-   textToWrite += document.getElementById("xCoord").value + "\n"
    textToWrite += document.getElementById("yCoord").value + "\n"
+   textToWrite += document.getElementById("xCoord").value + "\n"
    textToWrite += document.getElementById("fontSize").value + "\n"
    
    for (var i = 0; i < textBox.length; i++) {
