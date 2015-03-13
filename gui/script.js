@@ -1,15 +1,15 @@
-  var dimension = {width: 24, length: 12}
-   var fontSize = 1;
-   var canvas = document.getElementById('main');
-   var context = canvas.getContext('2d');
-   var textBox = []
-   var scale = 20;
+var dimension = {width: 24, length: 12}
+var fontSize = 1;
+var canvas = document.getElementById('main');
+var context = canvas.getContext('2d');
+var textBox = []
+var scale = 20;
 
 
-   var getDimension = function (varName) {
-      return function () {
-         dimension[varName] = document.getElementById(this.id).value
-         updateRect();
+var getDimension = function (varName) {
+   return function () {
+      dimension[varName] = document.getElementById(this.id).value
+      updateRect();
    }
 }
 
@@ -20,7 +20,7 @@ var changeWHF = function() {
       updateEverything(i+1)();
       //alert("this")
    }
-
+   
 }
 
 var updateEverything = function (canvasNumber) {
@@ -47,15 +47,36 @@ var updateEverything = function (canvasNumber) {
       
       // debug
       /*
-      context.strokeStyle = "red";
-      context.moveTo(1, scale);
-      context.lineTo(395, scale);
-      context.stroke();
-      */
+       context.strokeStyle = "red";
+       context.moveTo(1, scale);
+       context.lineTo(395, scale);
+       context.stroke();
+       */
    }
 }
 
 var updateRect = function () {
+   
+   if (dimension["width"] < 0) {
+      document.getElementById("xCoord").value = 1
+      dimension["width"] = 1;
+   }
+   if (dimension["length"] < 0) {
+      document.getElementById("yCoord").value = 1
+      dimension["length"] = 1;
+   }
+   
+   
+   if (dimension["width"] > 48) {
+      document.getElementById("xCoord").value = 48
+      dimension["width"] = 48;
+   }
+   if (dimension["length"] > 24) {
+      document.getElementById("yCoord").value = 24
+      dimension["length"] = 24;
+   }
+   
+   
    var width = dimension["width"]
    var length = dimension["length"]
    //alert(width + " " + length);
@@ -82,7 +103,7 @@ var updateRectSample = function () {
    context.lineWidth = 1;
    context.strokeStyle = 'black';
    context.stroke();
-
+   
    document.getElementById("xCoord").value = 36
    document.getElementById("yCoord").value = 16
    document.getElementById("fontSize").value = 1
@@ -92,14 +113,14 @@ var updateRectSample = function () {
 
 var createTextBoxDiv = function () {
    var container = document.createElement("div")
-
+   
    container.dimension = {width: 0, height: 0}
    container.x = 0
    container.y = 0
    container.font = fontSize;
-
+   
    var input = updateEverything(textBox.length)
-
+   
    var xInput = document.createElement("input");
    xInput.type = "number"
    xInput.min = "0"
@@ -107,7 +128,7 @@ var createTextBoxDiv = function () {
    xInput.id = "x" + textBox.length
    xInput.addEventListener("keyup", input);
    container.appendChild(xInput)
-
+   
    var yInput = document.createElement("input");
    yInput.type = "number"
    yInput.min = "0"
@@ -115,68 +136,68 @@ var createTextBoxDiv = function () {
    yInput.id = "y" + textBox.length
    yInput.addEventListener("keyup", input);
    container.appendChild(yInput)
-
+   
    var textInput = document.createElement("input");
    textInput.type = "text"
    textInput.id = "text" + textBox.length
    textInput.addEventListener("keyup", input);
    container.appendChild(textInput)
-
-      /*
-         var fontInput = document.createElement("input");
-         fontInput.type = "number"
-         fontInput.min = "0"
-         fontInput.id = "font" + textBox.length
-         fontInput.addEventListener("keyup", input);
-         container.appendChild(fontInput)
-       */
-      container.id = "div" + textBox.length
-      return container
+   
+   /*
+    var fontInput = document.createElement("input");
+    fontInput.type = "number"
+    fontInput.min = "0"
+    fontInput.id = "font" + textBox.length
+    fontInput.addEventListener("keyup", input);
+    container.appendChild(fontInput)
+    */
+   container.id = "div" + textBox.length
+   return container
 }
 
 /*
-   var createTextBoxDivSample = function () {
-
-   var container = document.createElement("div")
-
-   container.dimension = {width: 0, height: 0}
-   container.x = 0
-   container.y = 0
-
-   var input = updateEverything(textBox.length)
-
-   var xInput = document.createElement("input");
-   xInput.type = "number"
-   xInput.min = "0"
-   xInput.id = "x" + textBox.length
-   xInput.value = 12
-   container.appendChild(xInput)
-
-   var yInput = document.createElement("input");
-   yInput.type = "number"
-   yInput.min = "0"
-   yInput.id = "y" + textBox.length
-   yInput.value = 24
-   container.appendChild(yInput)
-
-   var textInput = document.createElement("input");
-   textInput.type = "text"
-   textInput.id = "text" + textBox.length
-   textInput.value = "Hello World"
-   container.appendChild(textInput)
-
-   container.id = "div" + textBox.length
-   updateEverything(textBox.length);
-
-   return container
-   }
+ var createTextBoxDivSample = function () {
+ 
+ var container = document.createElement("div")
+ 
+ container.dimension = {width: 0, height: 0}
+ container.x = 0
+ container.y = 0
+ 
+ var input = updateEverything(textBox.length)
+ 
+ var xInput = document.createElement("input");
+ xInput.type = "number"
+ xInput.min = "0"
+ xInput.id = "x" + textBox.length
+ xInput.value = 12
+ container.appendChild(xInput)
+ 
+ var yInput = document.createElement("input");
+ yInput.type = "number"
+ yInput.min = "0"
+ yInput.id = "y" + textBox.length
+ yInput.value = 24
+ container.appendChild(yInput)
+ 
+ var textInput = document.createElement("input");
+ textInput.type = "text"
+ textInput.id = "text" + textBox.length
+ textInput.value = "Hello World"
+ container.appendChild(textInput)
+ 
+ container.id = "div" + textBox.length
+ updateEverything(textBox.length);
+ 
+ return container
+ }
  */
 
 var createCanvas = function () {
    var newCanvas = document.createElement('canvas')
-
+   
    textBox[textBox.length] = newCanvas;
-
+   
    newCanvas.id = "txt" + textBox.length;
    newCanvas.width = dimension.width * scale;
    newCanvas.height = dimension.length * scale; // can be changed
@@ -184,52 +205,52 @@ var createCanvas = function () {
    //newCanvas.height = 480; // can be changed
    newCanvas.style.zIndex = 2;
    newCanvas.style.position = "absolute";
-
+   
    var textBoxElem = document.getElementById('textbox')
-      if (textBox.length == 1) {
-         var label = document.createElement('input')
-         label.type = "text"
-         label.value = "X Coordinate (in)"
-         label.readOnly = "true"
-         textBoxElem.appendChild(label)
-
-         var ylabel = document.createElement('input')
-         ylabel.type = "text"
-         ylabel.value = "Y Coordinate (in)"
-         ylabel.readOnly = "true"
-         textBoxElem.appendChild(ylabel)
-
-         var zlabel = document.createElement('input')
-         zlabel.type = "text"
-         zlabel.value = "Text"
-         zlabel.readOnly = "true"
-         textBoxElem.appendChild(zlabel)
-
-            /*
-               var flabel = document.createElement('input')
-               flabel.type = "text"
-               flabel.value = "Font Size"
-               flabel.readOnly = "true"
-               textBoxElem.appendChild(flabel)
-             */
-      }
-
+   if (textBox.length == 1) {
+      var label = document.createElement('input')
+      label.type = "text"
+      label.value = "X Coordinate (in)"
+      label.readOnly = "true"
+      textBoxElem.appendChild(label)
+      
+      var ylabel = document.createElement('input')
+      ylabel.type = "text"
+      ylabel.value = "Y Coordinate (in)"
+      ylabel.readOnly = "true"
+      textBoxElem.appendChild(ylabel)
+      
+      var zlabel = document.createElement('input')
+      zlabel.type = "text"
+      zlabel.value = "Text"
+      zlabel.readOnly = "true"
+      textBoxElem.appendChild(zlabel)
+      
+      /*
+       var flabel = document.createElement('input')
+       flabel.type = "text"
+       flabel.value = "Font Size"
+       flabel.readOnly = "true"
+       textBoxElem.appendChild(flabel)
+       */
+   }
+   
    textBoxElem.appendChild(createTextBoxDiv())
-
+   
    document.getElementById('canvas').appendChild(newCanvas);
 }
 
 var createCanvasSample = function () {
    var newCanvas = document.createElement('canvas')
-
+   
    textBox[textBox.length] = newCanvas;
-
+   
    newCanvas.id = "txt" + textBox.length;
    newCanvas.width = dimension.width * scale;
    newCanvas.height = dimension.length * scale; // can be changed
    newCanvas.style.zIndex = 2;
    newCanvas.style.position = "absolute";
-
+   
    var textBoxElem = document.getElementById('textbox')
    if (textBox.length == 1) {
       var label = document.createElement('input')
@@ -237,30 +258,30 @@ var createCanvasSample = function () {
       label.value = "X Coordinate"
       label.readOnly = "true"
       textBoxElem.appendChild(label)
-
+      
       var ylabel = document.createElement('input')
       ylabel.type = "text"
       ylabel.value = "Y Coordinate"
       ylabel.readOnly = "true"
       textBoxElem.appendChild(ylabel)
-
+      
       var zlabel = document.createElement('input')
       zlabel.type = "text"
       zlabel.value = "Text"
       zlabel.readOnly = "true"
       textBoxElem.appendChild(zlabel)
-
-            /*
-               var flabel = document.createElement('input')
-               flabel.type = "text"
-               flabel.value = "Font Size"
-               flabel.readOnly = "true"
-               textBoxElem.appendChild(flabel)
-             */
-      }
-
+      
+      /*
+       var flabel = document.createElement('input')
+       flabel.type = "text"
+       flabel.value = "Font Size"
+       flabel.readOnly = "true"
+       textBoxElem.appendChild(flabel)
+       */
+   }
+   
    textBoxElem.appendChild(createTextBoxDivSample())
-
+   
    document.getElementById('canvas').appendChild(newCanvas);
 }
 
@@ -269,35 +290,35 @@ function saveTextAsFile() {
    textToWrite += document.getElementById("xCoord").value + "\n"
    textToWrite += document.getElementById("yCoord").value + "\n"
    textToWrite += document.getElementById("fontSize").value + "\n"
-
+   
    for (var i = 0; i < textBox.length; i++) {
       var c = textBox[i]
       textToWrite += (c.x + "\n" + c.y + "\n" + c.text + "\n" /*+ c.font + "\n"*/)
    }
-
-var textFileAsBlob = new Blob([textToWrite], {
-   type: 'text/plain'
-});
-var fileNameToSaveAs = document.getElementById("inputFileNameToSaveAs").value;
-
-
-var downloadLink = document.createElement("a");
-downloadLink.download = fileNameToSaveAs;
-downloadLink.innerHTML = "Download File";
-if (window.webkitURL != null) {
-   // Chrome allows the link to be clicked
-   // without actually adding it to the DOM.
-   downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
-} else {
-   // Firefox requires the link to be added to the DOM
-   // before it can be clicked.
-   downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
-   downloadLink.onclick = destroyClickedElement;
-   downloadLink.style.display = "none";
-   document.body.appendChild(downloadLink);
-}
-
-downloadLink.click();
+   
+   var textFileAsBlob = new Blob([textToWrite], {
+                                 type: 'text/plain'
+                                 });
+   var fileNameToSaveAs = document.getElementById("inputFileNameToSaveAs").value;
+   
+   
+   var downloadLink = document.createElement("a");
+   downloadLink.download = fileNameToSaveAs;
+   downloadLink.innerHTML = "Download File";
+   if (window.webkitURL != null) {
+      // Chrome allows the link to be clicked
+      // without actually adding it to the DOM.
+      downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+   } else {
+      // Firefox requires the link to be added to the DOM
+      // before it can be clicked.
+      downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+      downloadLink.onclick = destroyClickedElement;
+      downloadLink.style.display = "none";
+      document.body.appendChild(downloadLink);
+   }
+   
+   downloadLink.click();
 }
 
 
@@ -313,44 +334,44 @@ document.getElementById("newTextBoxSampleBoard").addEventListener("click", updat
 updateRect()
 
 /* Begin Parsing Methods */
-  var Text = function(x, y, text) {
-    this.x = x
-    this.y = y
-    this.text = text
-  }
+var Text = function(x, y, text) {
+   this.x = x
+   this.y = y
+   this.text = text
+}
 
-  var Dimension = function(width, height, letterHeight) {
-    this.width = width
-    this.height = height
-    this.letterHeight = height
-  }
-  
-  var cleanString = function(s) {
-    var regex = /(<([^>]+)>)/ig
-    return s.replace(regex, "")
-  }
-  
+var Dimension = function(width, height, letterHeight) {
+   this.width = width
+   this.height = height
+   this.letterHeight = height
+}
+
+var cleanString = function(s) {
+   var regex = /(<([^>]+)>)/ig
+   return s.replace(regex, "")
+}
+
 document.getElementById('upload').onchange = function(){
    var file = this.files[0];
    
-
+   
    var reader = new FileReader();
    reader.onload = function(progressEvent){
       // By lines
       var lines = this.result.split('\n');
-
+      
       for (var n = 0; n < lines.length; n++)
       {
          lines[n] = cleanString(lines[n])
       }
-
+      
       //var dimensions = new Dimension(lines[0], lines[1], lines[2]);
       document.getElementById("yCoord").value = dimension["length"] = lines[0];
       document.getElementById("xCoord").value = dimension["width"] = lines[1];
       document.getElementById("fontSize").value = lines[2];
       updateRect();
       var texts = [];
-
+      
       for(var line = 3; line + 3 < lines.length; line = line + 3){
          texts[texts.length] = new Text(lines[line], lines[line + 1], lines[line + 2]);
          var index = line / 3
@@ -366,8 +387,8 @@ document.getElementById('upload').onchange = function(){
          textElem.value = lines[line + 2];
          updateEverything(textBox.length)();
       }
-    
-    return this.result
-  };
-  reader.readAsText(file);
+      
+      return this.result
+   };
+   reader.readAsText(file);
 };
