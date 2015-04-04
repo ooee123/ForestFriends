@@ -22,64 +22,45 @@ public class FontPainter extends Component {
    private java.util.List<Paths> letters;
    private int currentX;
    private int currentY;
-   private SerialComs coms;
-
-   private PrintWriter printer;
-   private boolean useComs = true;
+   private boolean saveImage = true;
+   private BufferedImage img;
+   private Graphics2D imgGraphics;
+   private int preferredWidth = 1400;
+   private int preferredHeight = 900;
+   private int strokeWidth = Letter.INCH / 8;
 
    public FontPainter()
    {
       letters = new ArrayList<Paths>();
-      if (useComs)
-      {
-         /*
-         Thread t = new Thread() {
-            public void run() {
-               coms = new SerialComs();
-               while (true);
-            }
-         };
-         t.start();
-         */
-         coms = new SerialComs();
-         try {
-            printer = new PrintWriter("Printing.txt");
-         }
-         catch (FileNotFoundException e)
-         {
-            System.err.println(e.getMessage());
-         }
-      }
-   }
-
-   public void close()
-   {
-      coms.close();
-      if (useComs)
-      {
-         printer.close();
-      }
+      img = new BufferedImage(preferredWidth, preferredHeight, BufferedImage.TYPE_INT_RGB);
+      imgGraphics = img.createGraphics();
+      imgGraphics.setBackground(Color.WHITE);
+      imgGraphics.setColor(Color.RED);
    }
 
    public void paint(Graphics g2)
    {
       Graphics2D g = (Graphics2D) g2;
       drawLetters(g);
+      if (saveImage)
+      {
+         drawLetters(imgGraphics);
+      }
+   }
 
-/*
-      String fontName = "Highway Gothic";
-      String example = "abcdefghijklmnopq".toUpperCase();
-      String example2 = "rstuvwxyz0123456789".toUpperCase();
-
-      Font f = new Font(fontName, 0, 100);
-      g.setFont(f);
-      g.drawString(example, 0, 200);
-      g.drawString(example2, 0, 500);
-*/
+   public void finishDrawing()
+   {
+      try {
+         ImageIO.write(img, "jpg", new File("image.jpg"));
+      }
+      catch (IOException e)
+      {
+         System.err.println(e.getMessage());
+      }
    }
 
    public Dimension getPreferredSize() {
-      return new Dimension(1200, 600);
+      return new Dimension(preferredWidth, preferredHeight);
    }
 
    public void moveOffset(int deltaX, int deltaY)
@@ -94,31 +75,10 @@ public class FontPainter extends Component {
       currentY = y;
    }
 
-   public void drawString(int x, int y, String s)
-   {
-   }
-      
    public void addLetter(Paths paths)
    {
       paths.flipCoordinates();
       letters.add(paths);
-      if (useComs)
-      {
-         for (Path p : paths)
-         {
-            coms.write(p.getX());
-            coms.write(p.getY());
-            coms.write((short)p.type.ordinal());
-            coms.flush();
-            printer.print("(");
-            printer.print(p.getX());
-            printer.print(", ");
-            printer.print(p.getY());
-            printer.print(", ");
-            printer.print(p.type.ordinal());
-            printer.println(")");
-         }
-      }
    }
 
    private void drawLetters(Graphics2D g)
@@ -126,8 +86,7 @@ public class FontPainter extends Component {
       final boolean showGreen = false;
       for (Paths paths : letters)
       {
-         //g.setStroke(new BasicStroke(paths.getHeight() / 8, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-         g.setStroke(new BasicStroke(Letter.INCH / 8, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+         g.setStroke(new BasicStroke(strokeWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
          int prevX = paths.get(0).getX();
          int prevY = paths.get(0).getY();
          for (Path p : paths)
@@ -146,6 +105,7 @@ public class FontPainter extends Component {
             }
             prevX = px;
             prevY = py;
+            System.out.printf("(%d, %d, %d)\n", prevX, prevY, p.type.ordinal());
          }
       }
    }

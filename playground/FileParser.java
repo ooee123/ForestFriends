@@ -79,7 +79,6 @@ public class FileParser extends JApplet
             y = file.nextInt();
          }
          String text = file.nextLine();
-         System.out.println(text);
          List<Paths> paths = verter.convertToPaths(x, y, text); 
          for (Paths p : paths) {
             fp.addLetter(p);
@@ -91,6 +90,7 @@ public class FileParser extends JApplet
          }
          allPaths.addAll(paths);
          fp.repaint();
+         fp.finishDrawing();
       }
       if (useComs)
       {

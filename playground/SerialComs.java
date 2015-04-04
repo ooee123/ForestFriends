@@ -11,6 +11,8 @@ import java.io.*;
 import java.nio.*;
 import java.nio.charset.*;
 
+import letter.*;
+
 public class SerialComs implements SerialPortEventListener {
    SerialPort serialPort;
         /** The port we're normally going to use. */
@@ -167,6 +169,25 @@ public class SerialComs implements SerialPortEventListener {
    {
       try {
          output.write(s.getBytes(Charset.forName("UTF-8")));;
+      }
+      catch (IOException e)
+      {
+         System.err.println(e.getMessage());
+         return false;
+      }
+      return true;
+   }
+
+   public boolean write(Paths paths)
+   {
+      try
+      {
+         for (Path p : paths)
+         {
+            output.write(p.getX());
+            output.write(p.getY());
+            output.write((short)p.type.ordinal());
+         }
       }
       catch (IOException e)
       {

@@ -23,7 +23,7 @@ public interface Letter
     * The maximum height each letter will occupy.
     * All letters will reach this height. Symbols may or may not reach.
     */
-   public static final int HEIGHT = INCH;
+   public static int HEIGHT = INCH;
 
    /**
     * The resolution of points it takes to draw a complete circle.

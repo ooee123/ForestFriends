@@ -4,7 +4,7 @@ import java.util.*;
 
 public class PathConverter {
 
-   public static final int KERNING = 20;
+   public static final int KERNING = Letter.INCH / 8;
    private int currentX;
    private int currentY;
    private double scalar;

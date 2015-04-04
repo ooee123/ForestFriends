@@ -6,11 +6,11 @@ public class T implements Letter
 {
    public Paths getPaths()
    {
-      Paths paths = new Paths(Letter.WIDTH, Letter.HEIGHT);
-      paths.add(new Path(0, Letter.HEIGHT, Path.MovementType.START));
-      paths.add(new Path(Letter.WIDTH, Letter.HEIGHT, Path.MovementType.LINE));
+      Paths paths = new Paths(Letter.WIDTH, Height.HEIGHT);
+      paths.add(new Path(0, Height.HEIGHT, Path.MovementType.START));
+      paths.add(new Path(Letter.WIDTH, Height.HEIGHT, Path.MovementType.LINE));
       paths.add(new Path(Letter.WIDTH / 2, 0, Path.MovementType.MOVE));
-      paths.add(new Path(Letter.WIDTH / 2, Letter.HEIGHT, Path.MovementType.LINE));
+      paths.add(new Path(Letter.WIDTH / 2, Height.HEIGHT, Path.MovementType.LINE));
       return paths;
    }
 }
