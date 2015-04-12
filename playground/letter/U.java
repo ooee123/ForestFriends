@@ -4,14 +4,14 @@ import java.util.*;
 
 public class U implements Letter
 {
-   public static final int CURVE_MAX_HEIGHT = Height.HEIGHT * 1 / 3;
+   public static final int CURVE_MAX_HEIGHT = Dimensions.MAX_HEIGHT * 1 / 3;
 
    public Paths getPaths()
    {
-      Paths paths = new Paths(Letter.WIDTH, Height.HEIGHT);
-      paths.add(new Path(0, Height.HEIGHT, Path.MovementType.START));
-      paths.add(new Path(0, CURVE_MAX_HEIGHT, Path.MovementType.LINE));
-      int centerX = Letter.WIDTH / 2;
+      Paths paths = new Paths(Dimensions.MAX_WIDTH, Dimensions.MAX_HEIGHT);
+      paths.add(new Path(Dimensions.MIN_WIDTH, Dimensions.MAX_HEIGHT, Path.MovementType.START));
+      paths.add(new Path(Dimensions.MIN_WIDTH, CURVE_MAX_HEIGHT, Path.MovementType.LINE));
+      int centerX = Dimensions.MAX_WIDTH / 2;
       int centerY = CURVE_MAX_HEIGHT;
       int unitCircleOffset = Letter.DISCRETE_POINTS / 2;
       for (int point = unitCircleOffset; point <= Letter.DISCRETE_POINTS; point++)
@@ -21,7 +21,7 @@ public class U implements Letter
          paths.add(new Path(x, y, Path.MovementType.LINE));
       }
 
-      paths.add(new Path(Letter.WIDTH, Height.HEIGHT, Path.MovementType.LINE));
+      paths.add(new Path(Dimensions.MAX_WIDTH, Dimensions.MAX_HEIGHT, Path.MovementType.LINE));
       return paths;
    }
 }

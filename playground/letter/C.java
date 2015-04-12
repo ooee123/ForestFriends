@@ -9,11 +9,11 @@ public class C implements Letter
 
    public Paths getPaths()
    {
-      Paths paths = new Paths(Letter.WIDTH, Height.HEIGHT);
-      int centerX = Letter.WIDTH / 2;
-      int centerY = Height.HEIGHT / 2;
+      Paths paths = new Paths(Dimensions.MAX_WIDTH, Dimensions.MAX_HEIGHT);
+      int centerX = Dimensions.MAX_WIDTH / 2;
+      int centerY = Dimensions.MAX_HEIGHT / 2;
       double actualWidth = centerX + Math.cos(STARTING_ANGLE * 2 * Math.PI / Letter.DISCRETE_POINTS) * centerX;
-      double scalar = Letter.WIDTH / actualWidth;
+      double scalar = Dimensions.MAX_WIDTH / actualWidth;
       int point = STARTING_ANGLE;
       int x = (int)Math.round((centerX + Math.cos(point * 2 * Math.PI / Letter.DISCRETE_POINTS) * centerX) * scalar);
       int y = (int)Math.round(centerY + Math.sin(point * 2 * Math.PI / Letter.DISCRETE_POINTS) * centerY);

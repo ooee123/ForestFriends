@@ -12,7 +12,6 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.*;
 import java.util.*;
-
 import java.nio.*;
 
 import letter.*;
@@ -27,10 +26,11 @@ public class FontPainter extends Component {
    private Graphics2D imgGraphics;
    private int preferredWidth = 1400;
    private int preferredHeight = 900;
-   private int strokeWidth = Letter.INCH / 8;
+   private int strokeWidth;
 
-   public FontPainter()
+   public FontPainter(int strokeWidth)
    {
+      this.strokeWidth = strokeWidth;
       letters = new ArrayList<Paths>();
       img = new BufferedImage(preferredWidth, preferredHeight, BufferedImage.TYPE_INT_RGB);
       imgGraphics = img.createGraphics();
@@ -84,9 +84,9 @@ public class FontPainter extends Component {
    private void drawLetters(Graphics2D g)
    {
       final boolean showGreen = false;
+      g.setStroke(new BasicStroke(strokeWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
       for (Paths paths : letters)
       {
-         g.setStroke(new BasicStroke(strokeWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
          int prevX = paths.get(0).getX();
          int prevY = paths.get(0).getY();
          for (Path p : paths)

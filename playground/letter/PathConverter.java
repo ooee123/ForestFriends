@@ -8,14 +8,16 @@ public class PathConverter {
    private int currentX;
    private int currentY;
    private double scalar;
+   private int strokeWidth;
 
    /**
     *
     * @param fontHeight The height of the font in inches
     */
-   public PathConverter(int fontHeight)
+   public PathConverter(int fontHeight, int strokeWidth)
    {
-      Height.HEIGHT = fontHeight * Letter.INCH;
+      this.strokeWidth = strokeWidth;
+      Dimensions.setDimensions(fontHeight, strokeWidth);
       currentX = 0;
       currentY = 0;
       scalar = 1;
@@ -33,12 +35,13 @@ public class PathConverter {
          Paths p = convertToPaths(c);
          if (p != null)
          {
-            p.moveOffset(currentX, currentY).scale(scalar);
+            p.translate(strokeWidth / 2, strokeWidth / 2);
+            p.translate(currentX, currentY).scale(scalar);
             paths.add(p);
             currentX += p.getWidth() + KERNING;
          }
       }
-      currentY += Height.HEIGHT;
+      currentY += Dimensions.HEIGHT;
       return paths;
    }
 
@@ -178,7 +181,7 @@ public class PathConverter {
             //paths = new Up().getPaths();
             break;
          case ' ':
-            currentX += Letter.WIDTH;
+            currentX += Dimensions.MAX_WIDTH;
             break;
          default:
             System.err.println("Not a pathable character: " + c);

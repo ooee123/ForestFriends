@@ -57,7 +57,7 @@ public class Paths extends ArrayList<Path>
     * @param deltaX The distance to move each path in the x direction.
     * @param deltaY The distance to move each path in the y direction.
     */
-   public Paths moveOffset(int deltaX, int deltaY)
+   public Paths translate(int deltaX, int deltaY)
    {
       for (Path p : this)
       {

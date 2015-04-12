@@ -20,13 +20,15 @@ import java.io.*;
  */
 public class FileParser extends JApplet
 {
+   private static int strokeWidth = Letter.INCH / 8;
+
    public static void main(String args[])
    {
       /* Java Applet Stuff */
       boolean useComs = false;
       boolean isFromFile = args.length > 1;
       JFrame frame = new JFrame("Font");
-      FontPainter fp = new FontPainter();
+      FontPainter fp = new FontPainter(strokeWidth);
       frame.add(fp);
       frame.pack();
       frame.setVisible(true);
@@ -68,7 +70,7 @@ public class FileParser extends JApplet
             System.err.println(e.getMessage());
          }
       }
-      PathConverter verter = new PathConverter(height);
+      PathConverter verter = new PathConverter(height, strokeWidth);
 
       while (file.hasNextLine()) {
          int x = 0;
