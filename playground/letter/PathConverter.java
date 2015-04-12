@@ -5,6 +5,7 @@ import java.util.*;
 public class PathConverter {
 
    public static final int KERNING = Letter.INCH / 8;
+   //public static final int KERNING = 0;
    private int currentX;
    private int currentY;
    private double scalar;
@@ -35,8 +36,9 @@ public class PathConverter {
          Paths p = convertToPaths(c);
          if (p != null)
          {
-            p.translate(strokeWidth / 2, strokeWidth / 2);
-            p.translate(currentX, currentY).scale(scalar);
+            p.translatePoints(strokeWidth / 2, strokeWidth / 2);
+            System.err.println("Translating by: " + (strokeWidth / 2));
+            p.translateOffset(currentX, currentY).scale(scalar);
             paths.add(p);
             currentX += p.getWidth() + KERNING;
          }
@@ -53,10 +55,6 @@ public class PathConverter {
    public void addScale(double s)
    {
       scalar += s;
-   }
-
-   public void close()
-   {
    }
 
    public Paths convertToPaths(char c)

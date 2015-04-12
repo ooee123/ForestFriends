@@ -21,6 +21,7 @@ import java.io.*;
 public class FileParser extends JApplet
 {
    private static int strokeWidth = Letter.INCH / 8;
+   private static int fontHeight = 1;
 
    public static void main(String args[])
    {
@@ -38,7 +39,6 @@ public class FileParser extends JApplet
       List<Paths> allPaths = new ArrayList<Paths>();
       int width = 0;
       int height = 1;
-      int fontHeight = 0;
 
       if (isFromFile)
       {
@@ -70,7 +70,7 @@ public class FileParser extends JApplet
             System.err.println(e.getMessage());
          }
       }
-      PathConverter verter = new PathConverter(height, strokeWidth);
+      PathConverter verter = new PathConverter(fontHeight, strokeWidth);
 
       while (file.hasNextLine()) {
          int x = 0;

@@ -57,12 +57,28 @@ public class Paths extends ArrayList<Path>
     * @param deltaX The distance to move each path in the x direction.
     * @param deltaY The distance to move each path in the y direction.
     */
-   public Paths translate(int deltaX, int deltaY)
+   public Paths translateOffset(int deltaX, int deltaY)
    {
       for (Path p : this)
       {
          p.offsetX += deltaX;
          p.offsetY += deltaY;
+      }
+      return this;
+   }
+
+   /**
+    * x, y translation of the points of the Paths.
+    * This operation is used when the stroke width is in effect.
+    * @param deltaX The distance to move each path in the x direction.
+    * @param deltaY The distance to move each path in the y direction.
+    */
+   public Paths translatePoints(int deltaX, int deltaY)
+   {
+      for (Path p : this)
+      {
+         p.x += deltaX;
+         p.y += deltaY;
       }
       return this;
    }
@@ -78,6 +94,7 @@ public class Paths extends ArrayList<Path>
       int height = getHeight();
       for (Path p : this)
       {
+         System.err.println("Old y: " + p.y + " Height: " + height);
          p.y = -p.y + height;
       }
       return this;
