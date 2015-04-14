@@ -21,7 +21,7 @@ import java.io.*;
 public class FileParser extends JApplet
 {
    private static int strokeWidth = Letter.INCH / 8;
-   private static int fontHeight = 1;
+   private static int fontHeight = 3;
 
    public static void main(String args[])
    {
@@ -107,5 +107,28 @@ public class FileParser extends JApplet
       {
          printer.print(String.format("(%d, %d, %d)\n", p.getX(), p.getY(), p.type.ordinal()));
       }
+   }
+
+   private boolean checkPathsWithinBounds(List<Paths> paths, int width, int height, int strokeWeight)
+   {
+      int minWidth = strokeWeight / 2;
+      int minHeight = strokeWeight / 2;
+      int maxWidth = width - strokeWeight / 2;
+      int maxHeight = height - strokeWeight / 2;
+      for (Paths p : paths)
+      {
+         for (Path path : p)
+         {
+            if (path.getX() < minWidth || path.getX() > maxWidth)
+            {
+               return false;
+            }
+            if (path.getY() < minHeight || path.getY() > maxHeight)
+            {
+               return false;
+            }
+         }
+      }
+      return true;
    }
 }

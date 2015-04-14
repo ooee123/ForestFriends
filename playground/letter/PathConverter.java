@@ -37,7 +37,6 @@ public class PathConverter {
          if (p != null)
          {
             p.translatePoints(strokeWidth / 2, strokeWidth / 2);
-            System.err.println("Translating by: " + (strokeWidth / 2));
             p.translateOffset(currentX, currentY).scale(scalar);
             paths.add(p);
             currentX += p.getWidth() + KERNING;

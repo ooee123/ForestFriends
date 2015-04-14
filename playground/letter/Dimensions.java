@@ -33,13 +33,16 @@ class Dimensions
     */
    static int MAX_WIDTH = WIDTH;
 
-   static void setDimensions(int fontHeight, int strokeWidth)
+   static int strokeWeight = Letter.INCH / 8;
+
+   static void setDimensions(int fontHeight, int _strokeWeight)
    {
+      strokeWeight = _strokeWeight;
       HEIGHT = fontHeight * Letter.INCH;
       WIDTH = HEIGHT * 3 / 5;
-      //MIN_HEIGHT = strokeWidth / 2;
-      MAX_HEIGHT = HEIGHT - strokeWidth;
-      //MIN_WIDTH = strokeWidth / 2;
-      MAX_WIDTH = WIDTH - strokeWidth;
+      //MIN_HEIGHT = strokeWeight / 2;
+      MAX_HEIGHT = HEIGHT - strokeWeight;
+      //MIN_WIDTH = strokeWeight / 2;
+      MAX_WIDTH = WIDTH - strokeWeight;
    }
 }

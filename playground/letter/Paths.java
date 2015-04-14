@@ -94,7 +94,6 @@ public class Paths extends ArrayList<Path>
       int height = getHeight();
       for (Path p : this)
       {
-         System.err.println("Old y: " + p.y + " Height: " + height);
          p.y = -p.y + height;
       }
       return this;
