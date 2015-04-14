@@ -21,24 +21,21 @@ import java.io.*;
 public class FileParser extends JApplet
 {
    private static int strokeWidth = Letter.INCH / 8;
-   private static int fontHeight = 3;
+   private static int fontHeight = 1;
+   private static int width = 48;
+   private static int height = 24;
+   private static final int SAFE_ZONE_BORDER_WIDTH = Letter.INCH;
+   private static final boolean useComs = false;
 
    public static void main(String args[])
    {
       /* Java Applet Stuff */
-      boolean useComs = false;
       boolean isFromFile = args.length > 1;
-      JFrame frame = new JFrame("Font");
       FontPainter fp = new FontPainter(strokeWidth);
-      frame.add(fp);
-      frame.pack();
-      frame.setVisible(true);
       Scanner file = null;
       /* End Java Applet Stuff */
 
       List<Paths> allPaths = new ArrayList<Paths>();
-      int width = 0;
-      int height = 1;
 
       if (isFromFile)
       {
@@ -72,6 +69,7 @@ public class FileParser extends JApplet
       }
       PathConverter verter = new PathConverter(fontHeight, strokeWidth);
 
+      /* Convert the entirety of the text file into a List of Paths */
       while (file.hasNextLine()) {
          int x = 0;
          int y = 0;
@@ -109,23 +107,19 @@ public class FileParser extends JApplet
       }
    }
 
-   private boolean checkPathsWithinBounds(List<Paths> paths, int width, int height, int strokeWeight)
+   private boolean checkPathsWithinBounds(List<Paths> paths, int width, int height, int strokeWeight) throws BorderException
    {
-      int minWidth = strokeWeight / 2;
-      int minHeight = strokeWeight / 2;
-      int maxWidth = width - strokeWeight / 2;
-      int maxHeight = height - strokeWeight / 2;
+      int minWidth = strokeWeight / 2 + SAFE_ZONE_BORDER_WIDTH;
+      int minHeight = strokeWeight / 2 + SAFE_ZONE_BORDER_WIDTH;
+      int maxWidth = width - strokeWeight / 2 - SAFE_ZONE_BORDER_WIDTH;
+      int maxHeight = height - strokeWeight / 2 - SAFE_ZONE_BORDER_WIDTH;
       for (Paths p : paths)
       {
          for (Path path : p)
          {
-            if (path.getX() < minWidth || path.getX() > maxWidth)
+            if (path.getX() < minWidth || path.getX() > maxWidth || path.getY() < minHeight || path.getY() > maxHeight)
             {
-               return false;
-            }
-            if (path.getY() < minHeight || path.getY() > maxHeight)
-            {
-               return false;
+               throw new BorderException("Letter '" + p.getLetter() + "' is out of bounds");
             }
          }
       }

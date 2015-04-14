@@ -30,6 +30,10 @@ public class FontPainter extends Component {
 
    public FontPainter(int strokeWidth)
    {
+      JFrame frame = new JFrame("Font");
+      frame.add(this);
+      frame.pack();
+      frame.setVisible(true);
       this.strokeWidth = strokeWidth;
       letters = new ArrayList<Paths>();
       img = new BufferedImage(preferredWidth, preferredHeight, BufferedImage.TYPE_INT_RGB);

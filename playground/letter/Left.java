@@ -8,20 +8,18 @@ public class Left implements Letter
    private static final int width = height * 3 / 2;
    private static final int maxHeight = height - Dimensions.strokeWeight;
    private static final int maxWidth = width - Dimensions.strokeWeight;
-   private static final int CENTER_X_REFERENCE = 31;
-   private static final int CENTER_X_REFERENCE_DENOMINATOR = 60;
+   private static final int CENTER_X_REFERENCE = 14;
 
    public Paths getPaths()
    {
-      int centerX = width * CENTER_X_REFERENCE / CENTER_X_REFERENCE_DENOMINATOR;
+      int centerX = width * CENTER_X_REFERENCE / 30;
       int centerY = height / 2;
       int curWidth = width;
       int curHeight = height;
       int curCenterX = centerX;
       int curCenterY = centerY;
-      Paths paths = new Paths(width, height);
+      Paths paths = new Paths(width, height, "Left");
       /* Outline */
-      paths.addAll(getLayer(curWidth, curHeight).translatePoints(centerX - curCenterX, centerY - curCenterY));
       paths.add(new Path(maxWidth, maxHeight * 9 / 16, Path.MovementType.START));
       paths.add(new Path(maxWidth * 1 / 2, maxHeight * 9 / 16, Path.MovementType.LINE));
       paths.add(new Path(maxWidth * 16 / 30, maxHeight, Path.MovementType.LINE));
@@ -34,9 +32,9 @@ public class Left implements Letter
       /* Fill */
       while (curWidth > 0 && curHeight > 0)
       {
-         curWidth -= 2 * Dimensions.strokeWeight;
-         curHeight -= 2 * Dimensions.strokeWeight;
-         curCenterX = curWidth * CENTER_X_REFERENCE / CENTER_X_REFERENCE_DENOMINATOR;
+         curWidth -= 2 * Dimensions.strokeWeight * 7 / 8;
+         curHeight -= 2 * Dimensions.strokeWeight * 7 / 8;
+         curCenterX = curWidth * CENTER_X_REFERENCE / 30;
          curCenterY = curHeight / 2 ;
          paths.addAll(getLayer(curWidth, curHeight).translatePoints(centerX - curCenterX, centerY - curCenterY));
       }
@@ -45,7 +43,7 @@ public class Left implements Letter
 
    private Paths getLayer(int width, int height)
    {
-      Paths paths = new Paths(width, height);
+      Paths paths = new Paths(width, height, "Left");
       width -= Dimensions.strokeWeight;
       height -= Dimensions.strokeWeight;
       

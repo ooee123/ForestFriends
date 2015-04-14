@@ -9,7 +9,7 @@ public class G implements Letter
 
    public Paths getPaths()
    {
-      Paths paths = new Paths(Dimensions.WIDTH, Dimensions.HEIGHT);
+      Paths paths = new Paths(Dimensions.WIDTH, Dimensions.HEIGHT, "G");
       int centerX = Dimensions.MAX_WIDTH / 2;
       int centerY = Dimensions.MAX_HEIGHT / 2;
       double actualWidth = centerX + Math.cos(ENDING_ANGLE * 2 * Math.PI / Letter.DISCRETE_POINTS) * centerX;

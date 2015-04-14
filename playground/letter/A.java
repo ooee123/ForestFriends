@@ -6,7 +6,7 @@ public class A implements Letter
 {
    public Paths getPaths()
    {
-      Paths paths = new Paths(Dimensions.WIDTH, Dimensions.HEIGHT);
+      Paths paths = new Paths(Dimensions.WIDTH, Dimensions.HEIGHT, "A");
       paths.add(new Path(Dimensions.MIN_WIDTH, Dimensions.MIN_HEIGHT, Path.MovementType.START));
       paths.add(new Path(Dimensions.MAX_WIDTH / 2, Dimensions.MAX_HEIGHT, Path.MovementType.LINE));
       paths.add(new Path(Dimensions.MAX_WIDTH, Dimensions.MIN_HEIGHT, Path.MovementType.LINE));

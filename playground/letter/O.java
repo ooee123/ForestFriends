@@ -6,7 +6,7 @@ public class O implements Letter
 {
    public Paths getPaths()
    {
-      Paths paths = new Paths(Dimensions.WIDTH, Dimensions.HEIGHT);
+      Paths paths = new Paths(Dimensions.WIDTH, Dimensions.HEIGHT, "O");
       paths.add(new Path(Dimensions.MAX_WIDTH, Dimensions.MAX_HEIGHT / 2, Path.MovementType.START));
       int centerX = Dimensions.MAX_WIDTH / 2;
       int centerY = Dimensions.MAX_HEIGHT / 2;

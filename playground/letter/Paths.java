@@ -11,6 +11,7 @@ public class Paths extends ArrayList<Path>
 {
    private int width;
    private int height;
+   private String letter;
 
    /**
     * Constructor for a Paths given the total width and height occupied by
@@ -18,11 +19,12 @@ public class Paths extends ArrayList<Path>
     * @param width The width of the Paths.
     * @param height The height of the Paths.
     */
-   public Paths(int width, int height)
+   public Paths(int width, int height, String letter)
    {
       super();
       this.width = width;
       this.height = height;
+      this.letter = letter;
    }
 
    /*
@@ -137,5 +139,10 @@ public class Paths extends ArrayList<Path>
       }
       return max - min;
       */
+   }
+
+   public String getLetter()
+   {
+      return letter;
    }
 }

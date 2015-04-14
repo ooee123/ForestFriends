@@ -5,7 +5,7 @@ import java.util.*;
 public class PathConverter {
 
    public static final int KERNING = Letter.INCH / 8;
-   //public static final int KERNING = 0;
+   public static final int LINE_SPACING = Letter.INCH / 8;
    private int currentX;
    private int currentY;
    private double scalar;
@@ -42,7 +42,7 @@ public class PathConverter {
             currentX += p.getWidth() + KERNING;
          }
       }
-      currentY += Dimensions.HEIGHT;
+      currentY += Dimensions.HEIGHT + LINE_SPACING;
       return paths;
    }
 
