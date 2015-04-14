@@ -80,6 +80,7 @@ body {
 }
 
 /* ----------------FONT FAMILY---------------- */
+/*
 h1 {
    font-family: "Helvetica Neue Light", "Helvetica Neue", "Helvetica", "Arial", "Lucida Grande", sans-serif;
    font-size: 23px;
@@ -120,7 +121,7 @@ pre {
    font-weight: 400;
    line-height: 23px;
 }
-
+*/
 
 /* ----------------BUTTONS---------------- */
 /* http://getbootstrap.com/2.3.2/base-css.html#buttons */
@@ -207,3 +208,18 @@ div#sample {
    float:left;
    overflow:hidden;
 }
+
+/* ----------------FONT---------------- */
+/*default version*/
+@font-face {
+	font-family: 'hwygoth';
+	src: url('hwygoth.ttf'); 
+	src: 
+		local('hwygoth'),
+		local('hwygoth'),
+		url('hwygoth.ttf') 
+		format('opentype');
+}
+
+/*container element*/
+div { font-family: 'hwygoth', sans-serif; }
