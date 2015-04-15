@@ -1,6 +1,6 @@
 #include "CPFF.h"
 
-Path paths[512];
+
 Axis xAxis, yAxis, zAxis;
 int len = 0;
 int cur = 0;
