@@ -12,7 +12,7 @@ clean:
 	rm *.class letter/*.class
 
 cleanJavadocs:
-	rm -r javadoc/*
+	rm -r javadocs/*
 
 cleanAll: clean cleanJavadocs
 

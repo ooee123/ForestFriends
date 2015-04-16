@@ -130,13 +130,13 @@ public class PathConverter {
             //paths = new W().getPaths();
             break;
          case 'X':
-            //paths = new X().getPaths();
+            paths = new X().getPaths();
             break;
          case 'Y':
             //paths = new Y().getPaths();
             break;
          case 'Z':
-            //paths = new Z().getPaths();
+            paths = new Z().getPaths();
             break;
          case '1':
             //paths = new One().getPaths();
