@@ -20,7 +20,7 @@ import java.io.*;
  */
 public class FileParser extends JApplet
 {
-   private static int strokeWidth = Letter.INCH / 8;
+   private static int strokeWidth = Letter.INCH * 1 / 8;
    private static int fontHeight = 1;
    private static int width = 48;
    private static int height = 24;
