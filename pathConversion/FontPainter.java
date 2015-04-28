@@ -51,19 +51,14 @@ public class FontPainter extends Component {
       if (saveImage)
       {
          drawLetters(imgGraphics);
+         finishDrawing();
       }
-      finishDrawing();
    }
 
    public void finishDrawing()
    {
       try {
-         //img.createGraphics().drawImage(createImage(preferredWidth, preferredHeight), 0, 0, null);
          ImageIO.write(img, "jpg", new File("image.jpg"));
-         if (saveImage)
-         {
-            ImageIO.write((BufferedImage)createImage(preferredWidth, preferredHeight), "jpg", new File("image2.jpg"));
-         }
       }
       catch (IOException e)
       {
@@ -106,7 +101,6 @@ public class FontPainter extends Component {
             int py = p.getY();
             if (p.type == Path.MovementType.LINE)
             {
-               //g.setColor(drawingColor);
                g.setColor(Color.BLACK);
                g.drawLine(prevX, prevY, px, py);
             }
