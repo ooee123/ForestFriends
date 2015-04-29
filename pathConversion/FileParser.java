@@ -22,8 +22,8 @@ public class FileParser
 {
    private static int strokeWidth = Letter.INCH * 1 / 8;
    private static int fontHeight = 1;
-   private static int width = 48;
-   private static int height = 24;
+   private static int width = 12;
+   private static int height = 12;
    private static final int SAFE_ZONE_BORDER_WIDTH = Letter.INCH;
    private static final boolean useComs = false;
    private static final boolean printToFile = true;
@@ -32,7 +32,6 @@ public class FileParser
    {
       /* Java Applet Stuff */
       boolean isFromFile = args.length > 0;
-      FontPainter fp = new FontPainter(strokeWidth);
       Scanner file = null;
       /* End Java Applet Stuff */
 
@@ -63,9 +62,7 @@ public class FileParser
          fontHeight = file.nextInt();
       }
       
-      System.out.println(width);
-      System.out.println(height);
-      System.out.println(fontHeight);
+      FontPainter fp = new FontPainter(width * Letter.INCH, height * Letter.INCH, strokeWidth);
       /* Serial Coms and Printing */
       SerialComs coms = null;
       PrintWriter printer = null;

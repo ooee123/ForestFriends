@@ -25,12 +25,14 @@ public class FontPainter extends Component {
    private boolean saveImage = true;
    private BufferedImage img;
    private Graphics2D imgGraphics;
-   private int preferredWidth = 1400;
-   private int preferredHeight = 900;
+   private int preferredWidth;
+   private int preferredHeight;
    private int strokeWidth;
 
-   public FontPainter(int strokeWidth)
+   public FontPainter(int width, int height, int strokeWidth)
    {
+      preferredWidth = width;
+      preferredHeight = height;
       JFrame frame = new JFrame("Font");
       frame.add(this);
       frame.pack();
