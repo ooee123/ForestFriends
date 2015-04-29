@@ -18,6 +18,7 @@ import letter.*;
 
 public class FontPainter extends Component {
 
+   private final boolean showGreen = false;
    private java.util.List<Paths> letters;
    private int currentX;
    private int currentY;
@@ -36,10 +37,11 @@ public class FontPainter extends Component {
       frame.setVisible(true);
       this.strokeWidth = strokeWidth;
       letters = new ArrayList<Paths>();
-      img = new BufferedImage(preferredWidth, preferredHeight, BufferedImage.TYPE_INT_RGB);
+      //img = new BufferedImage(preferredWidth, preferredHeight, BufferedImage.TYPE_INT_RGB);
+      img = new BufferedImage(preferredWidth, preferredHeight, BufferedImage.TYPE_BYTE_BINARY);
       imgGraphics = img.createGraphics();
-      imgGraphics.setBackground(Color.WHITE);
-      imgGraphics.setColor(Color.RED);
+      imgGraphics.setColor(Color.WHITE);
+      imgGraphics.fillRect(0, 0, preferredWidth, preferredHeight);
    }
 
    public void paint(Graphics g2)
@@ -49,6 +51,7 @@ public class FontPainter extends Component {
       if (saveImage)
       {
          drawLetters(imgGraphics);
+         finishDrawing();
       }
    }
 
@@ -87,7 +90,6 @@ public class FontPainter extends Component {
 
    private void drawLetters(Graphics2D g)
    {
-      final boolean showGreen = false;
       g.setStroke(new BasicStroke(strokeWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
       for (Paths paths : letters)
       {

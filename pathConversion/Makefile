@@ -1,7 +1,9 @@
 JAVA_FILES = *.java letter/*.java
-#JAVA_CLASSES = *.class letter/*.class
+JAVA_CLASSES = *.class letter/*.class
+FLAGS = -cp/rxtx-2.1-7-bins-r2/* -source 1.7 -target 1.7
+
 all:
-	javac $(JAVA_FILES)
+	javac $(FLAGS) $(JAVA_FILES)
 
 javadocs:
 	generateJavadocs
@@ -9,7 +11,7 @@ javadocs:
 everything: everything javadocs
 
 clean:
-	rm *.class letter/*.class
+	rm $(JAVA_CLASSES)
 
 cleanJavadocs:
 	rm -r javadocs/*
@@ -17,4 +19,4 @@ cleanJavadocs:
 cleanAll: clean cleanJavadocs
 
 %.class: %.java
-	javac $<
+	javac $(FLAGS) $<

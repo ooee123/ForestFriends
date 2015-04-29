@@ -11,7 +11,9 @@ class Dimensions
    /**
     * The width that all alphabetic characters will have.
     */
-   static int WIDTH = HEIGHT * 3 / 5;
+   static int WIDTH_RATIO_N = 8;
+   static int WIDTH_RATIO_D = 10;
+   static int WIDTH = HEIGHT * WIDTH_RATIO_N / WIDTH_RATIO_D;
 
    /**
     * The lower height bounds of where the center of the bit it allowed to go
@@ -39,7 +41,7 @@ class Dimensions
    {
       strokeWeight = _strokeWeight;
       HEIGHT = fontHeight * Letter.INCH;
-      WIDTH = HEIGHT * 3 / 5;
+      WIDTH = HEIGHT * WIDTH_RATIO_N / WIDTH_RATIO_D;
       //MIN_HEIGHT = strokeWeight / 2;
       MAX_HEIGHT = HEIGHT - strokeWeight;
       //MIN_WIDTH = strokeWeight / 2;
