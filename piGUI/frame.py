@@ -76,8 +76,10 @@ class ImportFile(tk.Frame):
       shutil.copyfile(filename, "file.txt") 
       if filename: 
          print("New Frame: Board Design")
+         # call java fuction
          self.cont.show_frame(VerifyDesign)
 
+   def javaExec(self):
 
 
 class VerifyDesign(tk.Frame):
