@@ -18,7 +18,7 @@ import java.io.*;
  * Y-COORDINATE
  * TEXT
  */
-public class FileParser extends JApplet
+public class FileParser
 {
    private static int strokeWidth = Letter.INCH * 1 / 8;
    private static int fontHeight = 1;
@@ -79,7 +79,15 @@ public class FileParser extends JApplet
             y = file.nextInt();
          }
          String text = file.nextLine();
-         List<Paths> paths = verter.convertToPaths(x, y, text); 
+         List<Paths> paths = null;
+         try
+         {
+            paths = verter.convertToPaths(x, y, text); 
+         }
+         catch (BorderException e)
+         {
+            System.exit(1);
+         }
          for (Paths p : paths) {
             fp.addLetter(p);
             if (useComs)

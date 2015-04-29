@@ -1,3 +1,4 @@
+import subprocess
 from Tkinter import *
 import Tkinter as tk
 from tkFileDialog import askopenfilename
@@ -77,9 +78,14 @@ class ImportFile(tk.Frame):
       if filename: 
          print("New Frame: Board Design")
          # call java fuction
+         javaExec()
          self.cont.show_frame(VerifyDesign)
 
    def javaExec(self):
+      # Up to redoing depending on path
+      os.chdir("../pathConversion/")
+      subprocess.call(["java", "-cp", "./rxtx-2.1-7-bins-r2/*:.", "FileParser", "../piGUI/file.txt"])
+      print("DONE!")
 
 
 class VerifyDesign(tk.Frame):
