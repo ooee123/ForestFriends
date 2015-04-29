@@ -29,10 +29,12 @@ public class PathConverter {
       // TO DO
       // Set up x and y in account for currentX and currentY
       List<Paths> paths = new ArrayList<Paths>();
-      currentX = 0;
+      currentX = x;
+      currentY = y;
       for (int i = 0; i < s.length(); i++)
       {
          char c = s.charAt(i);
+         System.out.println(c);
          Paths p = convertToPaths(c);
          if (p != null)
          {
@@ -42,7 +44,6 @@ public class PathConverter {
             currentX += p.getWidth() + KERNING;
          }
       }
-      currentY += Dimensions.HEIGHT + LINE_SPACING;
       return paths;
    }
 

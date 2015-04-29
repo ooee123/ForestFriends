@@ -37,7 +37,6 @@ public class FontPainter extends Component {
       frame.setVisible(true);
       this.strokeWidth = strokeWidth;
       letters = new ArrayList<Paths>();
-      //img = new BufferedImage(preferredWidth, preferredHeight, BufferedImage.TYPE_INT_RGB);
       img = new BufferedImage(preferredWidth, preferredHeight, BufferedImage.TYPE_BYTE_BINARY);
       imgGraphics = img.createGraphics();
       imgGraphics.setColor(Color.WHITE);
@@ -58,7 +57,7 @@ public class FontPainter extends Component {
    public void finishDrawing()
    {
       try {
-         ImageIO.write(img, "jpg", new File("image.jpg"));
+         ImageIO.write(img, "jpg", new File("original.jpg"));
       }
       catch (IOException e)
       {

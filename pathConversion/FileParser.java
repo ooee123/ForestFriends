@@ -26,11 +26,12 @@ public class FileParser
    private static int height = 24;
    private static final int SAFE_ZONE_BORDER_WIDTH = Letter.INCH;
    private static final boolean useComs = false;
+   private static final boolean printToFile = true;
 
    public static void main(String args[])
    {
       /* Java Applet Stuff */
-      boolean isFromFile = args.length > 1;
+      boolean isFromFile = args.length > 0;
       FontPainter fp = new FontPainter(strokeWidth);
       Scanner file = null;
       /* End Java Applet Stuff */
@@ -39,7 +40,15 @@ public class FileParser
 
       if (isFromFile)
       {
-         file = new Scanner(args[1]);
+         try
+         {
+            file = new Scanner(new File(args[0]));
+         }
+         catch (FileNotFoundException e)
+         {
+            System.err.println("NOT FOUND");
+            System.exit(10);
+         }
       }
       else
       {
@@ -48,11 +57,15 @@ public class FileParser
 
       if (isFromFile)
       {
+         //System.out.println(file.nextLine());
          width = file.nextInt();
          height = file.nextInt();
          fontHeight = file.nextInt();
       }
       
+      System.out.println(width);
+      System.out.println(height);
+      System.out.println(fontHeight);
       /* Serial Coms and Printing */
       SerialComs coms = null;
       PrintWriter printer = null;
@@ -70,21 +83,28 @@ public class FileParser
       PathConverter verter = new PathConverter(fontHeight, strokeWidth);
 
       /* Convert the entirety of the text file into a List of Paths */
-      while (file.hasNextLine()) {
+      while (file.hasNextInt()) {
          int x = 0;
          int y = 0;
          if (isFromFile)
          {
-            x = file.nextInt();
-            y = file.nextInt();
+            x = file.nextInt() * Letter.INCH;
+            y = file.nextInt() * Letter.INCH;
+            System.out.println(x + " " + y);
          }
+         else
+         {
+            x = 0;
+            y += fontHeight * Letter.INCH;
+         }
+         file.nextLine();
          String text = file.nextLine();
          List<Paths> paths = null;
          try
          {
             paths = verter.convertToPaths(x, y, text); 
          }
-         catch (BorderException e)
+         catch (Exception e)
          {
             System.exit(1);
          }
