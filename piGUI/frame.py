@@ -4,6 +4,7 @@ import Tkinter as tk
 from tkFileDialog import askopenfilename
 import shutil
 from PIL import Image, ImageTk
+import os
 
 LARGE_FONT= ("Verdana", 12)
 
@@ -78,7 +79,7 @@ class ImportFile(tk.Frame):
       if filename: 
          print("New Frame: Board Design")
          # call java fuction
-         javaExec()
+         #self.javaExec()
          self.cont.show_frame(VerifyDesign)
 
    def javaExec(self):
@@ -96,12 +97,11 @@ class VerifyDesign(tk.Frame):
       label.pack(pady=10,padx=10)
 
       # display image design
+      self.resize()
       photo = ImageTk.PhotoImage(Image.open("resize.jpg"))
-      label1 = Label(self, image = photo)
-      label1.image = photo
-      label1.pack()
-      #panel = tk.Label(window, image = photo)
-      #panel.pack(size = "bottom", fill = "both", expand= "yes")
+      label = Label(self, image = photo)
+      label.image = photo
+      label.pack()
 
       button1 = tk.Button(self, text="Design is correct",
          command=lambda: controller.show_frame(VerifyParts))
@@ -110,6 +110,16 @@ class VerifyDesign(tk.Frame):
       button2 = tk.Button(self, text="Design is not correct",
          command=lambda: controller.show_frame(Redesign))
       button2.pack()
+
+   def resize(self):
+      basewidth = 300
+      img = Image.open("original.jpg")
+      wpercent = (basewidth / float (img.size[0]))
+      hsize = int ((float (img.size[1]) * float (wpercent)))
+      img = img.resize((basewidth, hsize), Image.ANTIALIAS)
+      img.save('resize.jpg')
+      #os.remove("original.jpg")
+
 
 class Redesign(tk.Frame):
 

@@ -84,7 +84,7 @@ public class FileParser
          {
             paths = verter.convertToPaths(x, y, text); 
          }
-         catch (BorderException e)
+         catch (Exception e)
          {
             System.exit(1);
          }

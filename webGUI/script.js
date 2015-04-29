@@ -41,7 +41,7 @@ var updateEverything = function (canvasNumber) {
       canvas.width = width*scale;
       canvas.height = length*scale;
       context.font = 'normal ' + document.getElementById("fontSize").value*22 + 'pt hwygoth'; // ** take a look at this
-      alert((canvas.width - canvas.x * scale) - context.measureText(text).width + " " + canvas.width + " "  + canvas.x * scale + " " + context.measureText(text).width)
+      //alert((canvas.width - canvas.x * scale) - context.measureText(text).width + " " + canvas.width + " "  + canvas.x * scale + " " + context.measureText(text).width)
 //      alert(canvas.width + " "  + canvas.x * scale + " " + context.measureText(text).width)
       //context.textBaseline = "hanging";
       //alert( width + " " +  length + " " + canvas.width/scale + " " + canvas.height/scale);
