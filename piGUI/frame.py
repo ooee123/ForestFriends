@@ -1,5 +1,8 @@
 from Tkinter import *
 import Tkinter as tk
+from tkFileDialog import askopenfilename
+import shutil
+from PIL import Image, ImageTk
 
 LARGE_FONT= ("Verdana", 12)
 
@@ -50,19 +53,31 @@ class Start(tk.Frame):
 
 
 class ImportFile(tk.Frame):
-
+      
    def __init__(self, parent, controller):
+      self.cont = controller
       tk.Frame.__init__(self,parent)
       label = tk.Label(self, text="Import File", font=LARGE_FONT)
       label.pack(pady=10,padx=10)
 
       button = tk.Button(self, text="Import File",
-         command=lambda: controller.show_frame(VerifyDesign))
+         command=self.openFile)
+         #command=lambda: controller.show_frame(VerifyDesign))
       button.pack()
 
       button2 = tk.Button(self, text="End",
          command=lambda: controller.show_frame(Start))
       button2.pack()
+
+   def openFile(self):
+      print("importing file")
+      filename = askopenfilename()
+      print(filename)
+      shutil.copyfile(filename, "file.txt") 
+      if filename: 
+         print("New Frame: Board Design")
+         self.cont.show_frame(VerifyDesign)
+
 
 
 class VerifyDesign(tk.Frame):
@@ -71,6 +86,14 @@ class VerifyDesign(tk.Frame):
       tk.Frame.__init__(self, parent)
       label = tk.Label(self, text="Verify Design", font=LARGE_FONT)
       label.pack(pady=10,padx=10)
+
+      # display image design
+      photo = ImageTk.PhotoImage(Image.open("resize.jpg"))
+      label1 = Label(self, image = photo)
+      label1.image = photo
+      label1.pack()
+      #panel = tk.Label(window, image = photo)
+      #panel.pack(size = "bottom", fill = "both", expand= "yes")
 
       button1 = tk.Button(self, text="Design is correct",
          command=lambda: controller.show_frame(VerifyParts))
@@ -138,5 +161,6 @@ class Machine(tk.Frame):
       button3.pack()
 
 app = GUI()
+app.title("Forest Friends")
 app.geometry("320x240")
 app.mainloop()
