@@ -16,9 +16,7 @@ var getDimension = function (varName) {
 var changeWHF = function() {
    //alert(fontSize + " " + textBox.length);
    for (var i = 0 ; i < textBox.length; i++) {
-      //alert("that")
       updateEverything(i+1)();
-      //alert("this")
    }
    
 }
@@ -34,7 +32,8 @@ var updateEverything = function (canvasNumber) {
       var length = dimension["length"]
       canvas.x = x
       canvas.y = y
-      canvas.text = text;//.toUpperCase();
+      canvas.text = text;
+
       var context = canvas.getContext("2d")
       
       context.clearRect(0, 0, canvas.width*scale, canvas.height*scale)
@@ -42,6 +41,8 @@ var updateEverything = function (canvasNumber) {
       canvas.width = width*scale;
       canvas.height = length*scale;
       context.font = 'normal ' + document.getElementById("fontSize").value*22 + 'pt hwygoth'; // ** take a look at this
+      alert((canvas.width - canvas.x * scale) - context.measureText(text).width + " " + canvas.width + " "  + canvas.x * scale + " " + context.measureText(text).width)
+//      alert(canvas.width + " "  + canvas.x * scale + " " + context.measureText(text).width)
       //context.textBaseline = "hanging";
       //alert( width + " " +  length + " " + canvas.width/scale + " " + canvas.height/scale);
       context.fillText(text, x*scale, y*scale);

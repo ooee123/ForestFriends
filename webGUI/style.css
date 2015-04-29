@@ -223,3 +223,27 @@ div#sample {
 
 /*container element*/
 div { font-family: 'hwygoth', sans-serif; }
+
+/* ----------------ALERT---------------- */
+.alert {
+   padding: 15px;
+   margin-bottom: 20px;
+   border: 1px solid transparent;
+   border-radius: 4px;
+}
+
+.alert h4 {
+   margin-top: 0;
+   color: inherit;
+}
+
+.alert-warning {
+   color: #8a6d3b;
+   background-color: #fcf8e3;
+   border-color: #faebcc;
+}
+
+.alert-warning hr {
+   border-top-color: #f7e1b5;
+}
+
