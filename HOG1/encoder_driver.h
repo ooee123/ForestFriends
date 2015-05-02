@@ -60,7 +60,7 @@
  *  @param OCR the pwm control register 
  */
 
-class motor_driver
+class encoder_driver
 {
 	protected:
 		//instance/global variables

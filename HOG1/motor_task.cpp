@@ -60,8 +60,29 @@ void motor_task::run (void)
     
 	// Motor Drivers: PC0 = mode select A, PC1 = mode select B, PC2 = Output enable
 	
+   /* Kevin Notes 
+   Here's how I interpret the parameters
+
+   p_serial?
+   Direction Register of MOT_X (DDRD)
+   Direction Register of inA and inB
+   Direction Register of PWM pins
+   Output Pin for MOT_X. The PORTX value should match the letter of MOT_X
+   Output Register for inA and inB
+   Pin number for MOT_X
+   Pin number for inA
+   Pin number for inB
+   Pin number for PWM
+   COM1A1? "Compare output mode bits 1/0, how it's connected to Timer1
+   OCR1A? "Generate interupts after num of clock ticks to it
+   */
+
 	// pan motor
 	motor_driver* yaw_motor = new motor_driver (p_serial, &DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1A1, &OCR1A);
+	// motor2 
+	motor_driver* motor2 = new motor_driver (p_serial, &DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1B1, &OCR1B);
+	// motor3
+	//motor_driver* motor3 = new motor_driver (p_serial, &DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1A1, &OCR1A);
 	// tilt motor
 	
 	
@@ -78,8 +99,8 @@ void motor_task::run (void)
 	for (;;)
 	{	
 	  
-		yaw_motor -> brake();
-		
+		//yaw_motor -> brake();
+		p_serial->puts("HI");
 		runs++;
 		
 		delay_from_to (previousTicks, configMS_TO_TICKS (10));

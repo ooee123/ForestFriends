@@ -75,6 +75,11 @@ frt_queue<uint32_t> queue_1 (20);
 
 int main (void)
 {
+   /* Kevin's testing stuff. Test for pin output */
+   
+   DDRA |= (1 << 0);
+   PORTA |= (1 << 0);
+
 	// Disable the watchdog timer unless it's needed later. This is important because
 	// sometimes the watchdog timer may have been left on...and it tends to stay on
 	//MCUSR = 0;

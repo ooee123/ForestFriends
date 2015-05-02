@@ -39,52 +39,19 @@
  */
 	//motor_driver* p_motor_1 = new my_motor_driver (p_serial, &DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1B1, &OCR1B);
 //Initialize my_motor_driver
-motor_driver::motor_driver (emstream* p_serial_port, volatile uint8_t* DDR_en, volatile uint8_t* DDR_dir, volatile uint8_t* DDR_pwm, volatile uint8_t* PORT_en, volatile uint8_t* PORT_dir, uint8_t ENbit, uint8_t INAbit, uint8_t INBbit, uint8_t PWMbit, uint8_t COMtimer, volatile uint16_t* OCRtimer)
+encoder_driver::encoder_driver(emstream* p_serial_port, volatile uint8_t* DDR_en, volatile uint8_t* PIN_en, uint8_t Abit, uint8_t Bbit)
 {
 	ptr_to_serial = p_serial_port;
 	
-	DDR_DIR = DDR_dir;
+   position = 0;
 	DDR_EN = DDR_en;
-	DDR_PWM = DDR_pwm;
 	
-	PORT_EN = PORT_en;
-	PORT_DIR = PORT_dir;
+	PIN = PIN_en;
 	
-	COMTIMER = COMtimer;
+	INA = Abit; 
+	INB = Bbit; 
 	
-	INA = INAbit; 
-	INB = INBbit; 
-	EN = ENbit;
-	OCR = OCRtimer;
-	PWM = PWMbit;
-	
-	*DDR_EN |= (1 << EN); // Output enable motors 1 and 2
-	*DDR_DIR |= (1 << INA) | (1 << INB); // Output enable motors 1 and 2
-	*DDR_PWM |= (1 << PWM); // Turn on PWM for motors 1 and 2 as outputs
-
-	*PORT_EN |= (1 << EN); // Initialize mode for motor
-	*PORT_DIR |= (1 << INA) | (1 << INB);
-
-	
-	// To set 10-bit fast PWM mode we must set bits WGM30 and WGM32, which are in two
-	// different registers (ugh). We use COM3B1 and Com3B0 to set up the PWM so that
-	// the pin output will have inverted sense, that is, a 0 is on and a 1 is off; 
-	// this is needed because the LED connects from Vcc to the pin. 
-	
-   // The line below is true for whatever ATmega they were using */
-	TCCR1A |= (1 << WGM10) | (1 << WGM11) | (1 << COMTIMER);
-   
-   // For ATmega128 To activate 10 bit fast PWM mode...
-   // Actually I don't know with confidence
-   // To activate 10 bit fast PWM mode on a 16 bit timer/counter
-   //TCCR1A |= (1 << WGM10) | (1 << WGM11 ) (1 << COMTIMER);
-
-   
-	
-	// The CS11 bit sets the prescaler for this timer/counter to run the
-	// timer at F_CPU / 8
-	
-	TCCR1B |= (1 << WGM12) | (1 << CS11); // 10-bit PWM and prescale to 8	
+	*DDR_EN &= ~((1 << INA) | (1 << INB)); // Input enable for Encoder Pin A and B
 }
 
 //------------------------------------------------------------------------------------------
@@ -96,95 +63,52 @@ motor_driver::motor_driver (emstream* p_serial_port, volatile uint8_t* DDR_en, v
  *  @param  power dictates the value of the PWM
  */
 
-void motor_driver::set_power (double power)
+uint8_t encoder_driver::getA(void)
 {	
-	//if(motorType == true)
-	if(true)
-	{
-		if (power == 0)
-		{
-			*OCR = 0;
-		}
-		
-		// Counter clockwise
-		else if (power < 0)
-		{
-			*PORT_DIR &= ~(1 << INA);
-			*PORT_DIR |= (1 << INB) | (1 << EN);
-			
-			*OCR = uint16_t(1.0*abs(power));
-		}
-		
-		// Clockwise
-		else if(power > 0)
-		{
-			*PORT_DIR |= (1 << INA) | (1 << EN);
-			*PORT_DIR &= ~(1 << INB);
-			
-			*OCR = uint16_t(1.0*abs(power));
-			
-		}	
-		// freewheeling
-		else
-		{
-			*OCR = 0;
-		}
-	}
-	else
-	{
-		*OCR = uint16_t(1.0*abs(power));
-	}
+   return (PIN >> INA) & 0x1;
 }
 
-//-------------------------------------------------------------------------------------
-/** \brief This function stops the motor.
- *  \details The brake function sets the mode select bits A & B to the same value.    
- */
-
-void motor_driver::brake (void)
-{
-   *PORT_DIR |= (1 << INA) | (1 << INB);
-   *PORT_EN |= (1 << EN); // Initialize mode for motor
-}
-
-//-------------------------------------------------------------------------------------
-/** \brief This function sets the position of the motor.
- *  \details The brake function sets the mode select bits A & B to the same value.    
- */
-void motor_driver::move_cw (void)
-{
-    //*OCR = 10000;
-    *PORT_EN |= (1 << EN); // Initialize mode for motor
-    if(motor_trans)
-    {
-     *PORT_DIR |= (1 << INA);
-     *PORT_DIR &= ~(1 << INB);
-     motor_trans = false;
-    }
-    else{
-     *PORT_DIR |= (1 << INB);
-     *PORT_DIR &= ~(1 << INA);
-     motor_trans = true;
-    }
-}
-
-/*
- * 
-void motor_driver::set_position(void)
+uint8_t encoder_driver::getB(void)
 {	
-	if(encoder_desired.get() > encoder_position.get())
-	{
-		set_power(PI()); //go clockwise
-	}
-	
-	else if(encoder_desired.get() < encoder_position.get())
-	{
-		set_power(-PI()); // go counterclockwise
-	}
-	
-	position_error.put(encoder_desired.get() - encoder_position.get());
-	
-}*/
+   return (PIN >> INB) & 0x1;
+}
+
+uint8_t encoder_driver::updatePosition(void)
+{
+   uint8_t newA = getA();
+   uint8_t newB = getB();
+
+   uint8_t sum = (newA << 1) + newB;
+   uint8_t prevSum = (prevA << 1) + prevB;
+
+   if (sum != prevSum)
+   {
+      if (prevA != newA)
+      {
+         if (prevSum == 1 || prevSum == 2)
+         {
+            pos++;
+         }
+         else
+         {
+            pos--;
+         }
+      }
+      else
+      {
+         if (prevSum == 0 || prevSum == 3)
+         {
+            pos++;
+         }
+         else
+         {
+            pos--;
+         }
+      }
+      prevA = newA;
+      prevB = newB;
+   }
+}
 
 double motor_driver::PI(void)
 {
