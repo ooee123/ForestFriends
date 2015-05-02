@@ -45,7 +45,7 @@ motor_task::motor_task (const char* a_name,
    frt_task (a_name, a_priority, a_stack_size, p_ser_dev)
 {
    motor = motor_in;
-   motor->setSerial(p_serial);
+   dump_stack(p_serial);
 	// Nothing is done in the body of this constructor. All the work is done in the
 	// call to the frt_task constructor on the line just above this one
 }
@@ -102,12 +102,13 @@ void motor_task::run (void)
 	
 	for (;;)
 	{	
-	  
-		//yaw_motor -> brake();
-		p_serial->puts("HI");
 		runs++;
-		
-		delay_from_to (previousTicks, configMS_TO_TICKS (10));
+	  
+      *p_serial << "hello\n";
+      PORTA |= (1 << 0);
+		delay_from_to (previousTicks, configMS_TO_TICKS (200));
+      PORTA &= ~(1 << 0);
+		delay_from_to (previousTicks, configMS_TO_TICKS (200));
 	}
 }
 

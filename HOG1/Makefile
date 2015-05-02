@@ -254,7 +254,7 @@ install:  $(TARGET).hex
   else ifeq ($(PROG), bootloader)
 	@echo "ERROR: No bootloader set up for this Makefile"
   else ifeq ($(PROG), usbtiny)
-	avrdude -p $(MCU) -c usbtiny -V -B 1 -Uflash:w:$(TARGET).hex
+	avrdude -p $(MCU) -c usbtiny -B 1 -Uflash:w:$(TARGET).hex
   else
 	@echo "ERROR: No programmer" $(PROG) "in the Makefile"
   endif
