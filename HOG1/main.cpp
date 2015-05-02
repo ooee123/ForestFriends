@@ -92,9 +92,14 @@ int main (void)
 	rs232 ser_port (9600, 1);
 
 	// task that controls motors
-	new motor_task ("MotorTask", task_priority (1), 280, &ser_port);
+	motor_driver* xAxis = new motor_driver (&DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1A1, &OCR1A);
+	new motor_task ("xAxis", task_priority (1), 280, &ser_port, xAxis);
 
+	motor_driver* yAxis = new motor_driver ( &DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1B1, &OCR1B);
+	new motor_task ("yAxis", task_priority (1), 280, &ser_port, yAxis);
 
+	//motor_driver* zAxis = new motor_driver ( &DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1B1, &OCR1B);
+	//new motor_task ("zAxis", task_priority (1), 280, &ser_port, yAxis);
 	// Here's where the RTOS scheduler is started up. It should never exit as long as
 	// power is on and the microcontroller isn't rebooted
 	vTaskStartScheduler ();

@@ -39,10 +39,8 @@
  */
 	//motor_driver* p_motor_1 = new my_motor_driver (p_serial, &DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1B1, &OCR1B);
 //Initialize my_motor_driver
-motor_driver::motor_driver (emstream* p_serial_port, volatile uint8_t* DDR_en, volatile uint8_t* DDR_dir, volatile uint8_t* DDR_pwm, volatile uint8_t* PORT_en, volatile uint8_t* PORT_dir, uint8_t ENbit, uint8_t INAbit, uint8_t INBbit, uint8_t PWMbit, uint8_t COMtimer, volatile uint16_t* OCRtimer)
+motor_driver::motor_driver (volatile uint8_t* DDR_en, volatile uint8_t* DDR_dir, volatile uint8_t* DDR_pwm, volatile uint8_t* PORT_en, volatile uint8_t* PORT_dir, uint8_t ENbit, uint8_t INAbit, uint8_t INBbit, uint8_t PWMbit, uint8_t COMtimer, volatile uint16_t* OCRtimer)
 {
-	ptr_to_serial = p_serial_port;
-	
 	DDR_DIR = DDR_dir;
 	DDR_EN = DDR_en;
 	DDR_PWM = DDR_pwm;
@@ -85,6 +83,11 @@ motor_driver::motor_driver (emstream* p_serial_port, volatile uint8_t* DDR_en, v
 	// timer at F_CPU / 8
 	
 	TCCR1B |= (1 << WGM12) | (1 << CS11); // 10-bit PWM and prescale to 8	
+}
+
+void motor_driver::setSerial(emstream* stream)
+{
+   ptr_to_serial = stream;
 }
 
 //------------------------------------------------------------------------------------------

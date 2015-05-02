@@ -38,10 +38,14 @@
 motor_task::motor_task (const char* a_name, 
 								 unsigned portBASE_TYPE a_priority, 
 								 size_t a_stack_size,
-								 emstream* p_ser_dev
+								 emstream* p_ser_dev,
+                         motor_driver* motor_in 
 								)
-	: frt_task (a_name, a_priority, a_stack_size, p_ser_dev)
+	:
+   frt_task (a_name, a_priority, a_stack_size, p_ser_dev)
 {
+   motor = motor_in;
+   motor->setSerial(p_serial);
 	// Nothing is done in the body of this constructor. All the work is done in the
 	// call to the frt_task constructor on the line just above this one
 }
@@ -78,9 +82,9 @@ void motor_task::run (void)
    */
 
 	// pan motor
-	motor_driver* yaw_motor = new motor_driver (p_serial, &DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1A1, &OCR1A);
+	//motor_driver* yaw_motor = new motor_driver (p_serial, &DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1A1, &OCR1A);
 	// motor2 
-	motor_driver* motor2 = new motor_driver (p_serial, &DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1B1, &OCR1B);
+	//motor_driver* motor2 = new motor_driver (p_serial, &DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1B1, &OCR1B);
 	// motor3
 	//motor_driver* motor3 = new motor_driver (p_serial, &DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1A1, &OCR1A);
 	// tilt motor

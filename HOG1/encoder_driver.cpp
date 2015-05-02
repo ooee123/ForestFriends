@@ -23,7 +23,7 @@
 #include <avr/interrupt.h>
 
 #include "rs232int.h"                       // Include header for serial port class
-#include "motor_driver.h"                // Include header for the A/D class
+#include "encoder_driver.h"                // Include header for the A/D class
 #define STOP_CONST 25
 
 //---------------------		//p_motor_1->set_power(control1);----------------------------------------------------------------
@@ -39,11 +39,12 @@
  */
 	//motor_driver* p_motor_1 = new my_motor_driver (p_serial, &DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1B1, &OCR1B);
 //Initialize my_motor_driver
-encoder_driver::encoder_driver(emstream* p_serial_port, volatile uint8_t* DDR_en, volatile uint8_t* PIN_en, uint8_t Abit, uint8_t Bbit)
+encoder_driver::encoder_driver(volatile uint8_t* DDR_en, volatile uint8_t* PIN_en, uint8_t Abit, uint8_t Bbit)
 {
-	ptr_to_serial = p_serial_port;
 	
    position = 0;
+   prevA = 0;
+   prevB = 0;
 	DDR_EN = DDR_en;
 	
 	PIN = PIN_en;
@@ -65,15 +66,15 @@ encoder_driver::encoder_driver(emstream* p_serial_port, volatile uint8_t* DDR_en
 
 uint8_t encoder_driver::getA(void)
 {	
-   return (PIN >> INA) & 0x1;
+   return (*PIN >> INA) & 0x1;
 }
 
 uint8_t encoder_driver::getB(void)
 {	
-   return (PIN >> INB) & 0x1;
+   return (*PIN >> INB) & 0x1;
 }
 
-uint8_t encoder_driver::updatePosition(void)
+void encoder_driver::updatePosition(void)
 {
    uint8_t newA = getA();
    uint8_t newB = getB();
@@ -87,22 +88,22 @@ uint8_t encoder_driver::updatePosition(void)
       {
          if (prevSum == 1 || prevSum == 2)
          {
-            pos++;
+            position++;
          }
          else
          {
-            pos--;
+            position--;
          }
       }
       else
       {
          if (prevSum == 0 || prevSum == 3)
          {
-            pos++;
+            position++;
          }
          else
          {
-            pos--;
+            position--;
          }
       }
       prevA = newA;
@@ -110,44 +111,7 @@ uint8_t encoder_driver::updatePosition(void)
    }
 }
 
-double motor_driver::PI(void)
+void encoder_driver::setSerial(emstream* p_serial_port)
 {
-  /*
-	//Porportional error variables
-	double pGain = 0.005;
-	double pTerm = 95 + pGain*abs(position_error.get());
-	
-	//Integral error variables
-	double iTerm = 0.0000005;
-	uint32_t iState = 0;
-	uint32_t iMax = 72000000;
-	uint8_t iMin = 0;
-	double iGain = 0.0;
-	
-	
-	if(position_error.get() <= 60)
-	{
-	  iState = 0;
-	}
-	
-	else
-	{
-	  iState += position_error.get();
-	  
-	  if( iState > iMax )
-	  {
-		iState = iMax;
-	  }
-	  else if( iState < iMin )
-	  {
-		iState = iMin;
-	  }
-	  
-	  iTerm = iGain * iState;
-	}
-
-	return(iTerm + pTerm);*/
-   return 0;
+	ptr_to_serial = p_serial_port;
 }
-
-

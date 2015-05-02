@@ -89,7 +89,7 @@ class motor_driver
 		// where this constructor is called, the compiler will just fill in "NULL".
 		// In this case that has the effect of turning off diagnostic printouts.
 		// This follows for the "= 0" part.
-		motor_driver (emstream* p_serial_port, volatile uint8_t* DDR_en, volatile uint8_t* DDR_dir, volatile uint8_t* DDR_pwm, volatile uint8_t* PORT_en, volatile uint8_t* PORT_dir, uint8_t ENbit, uint8_t INAbit, uint8_t INBbit, uint8_t PWMbit,uint8_t COMtimer, volatile uint16_t* OCRbit);
+		motor_driver (volatile uint8_t* DDR_en, volatile uint8_t* DDR_dir, volatile uint8_t* DDR_pwm, volatile uint8_t* PORT_en, volatile uint8_t* PORT_dir, uint8_t ENbit, uint8_t INAbit, uint8_t INBbit, uint8_t PWMbit,uint8_t COMtimer, volatile uint16_t* OCRbit);
 		
 		// The set_power function first obtains 
    		// a reading from the power variables. 
@@ -97,6 +97,8 @@ class motor_driver
     		// signed integter into an unsigned integer which is interpreted by the motor controllers
      		// a pwm signal or duty cycle.
 		void set_power (double power);
+
+      void setSerial(emstream*);
 
 		// The brake function sets the mode select bits A & B to the same value.   
 		void brake (void);
