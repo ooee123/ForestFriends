@@ -41,7 +41,7 @@
 encoder_driver::encoder_driver(volatile uint8_t* DDR_en, volatile uint8_t* PIN_en, uint8_t Abit, uint8_t Bbit)
 {
 	
-   position = 1000;
+   position = 0;
 	DDR_EN = DDR_en;
 	
 	PIN = PIN_en;

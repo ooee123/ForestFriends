@@ -46,7 +46,7 @@ public class FileParser
          catch (FileNotFoundException e)
          {
             System.err.println("NOT FOUND");
-            System.exit(10);
+            System.exit(-1);
          }
       }
       else
@@ -68,8 +68,11 @@ public class FileParser
       if (useComs)
       {
          coms = new SerialComs();
+      }
+      if (printToFile)
+      {
          try {
-            printer = new PrintWriter("Printing.txt");
+            printer = new PrintWriter("coordinates.txt");
          }
          catch (FileNotFoundException e)
          {
@@ -79,13 +82,14 @@ public class FileParser
       PathConverter verter = new PathConverter(fontHeight, strokeWidth);
 
       /* Convert the entirety of the text file into a List of Paths */
-      while (file.hasNextInt()) {
+      while (file.hasNext()) {
          int x = 0;
          int y = 0;
          if (isFromFile)
          {
             x = file.nextInt() * Letter.INCH;
-            y = file.nextInt() * Letter.INCH;
+            y = (file.nextInt() - 1) * Letter.INCH;
+            file.nextLine();
             System.out.println(x + " " + y);
          }
          else
@@ -93,7 +97,6 @@ public class FileParser
             x = 0;
             y += fontHeight * Letter.INCH;
          }
-         file.nextLine();
          String text = file.nextLine();
          List<Paths> paths = null;
          try
@@ -109,6 +112,9 @@ public class FileParser
             if (useComs)
             {
                coms.write(p);
+            }
+            if (printToFile)
+            {
                printPaths(p, printer);
             }
          }
@@ -118,8 +124,11 @@ public class FileParser
       }
       if (useComs)
       {
-         printer.close();
          coms.close();
+      }
+      if (printToFile)
+      {
+         printer.close();
       }
    }
 

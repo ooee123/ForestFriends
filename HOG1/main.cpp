@@ -129,8 +129,8 @@ int main (void)
 	motor_driver* yAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1B1, &OCR1B);
 	new motor_task ("yAxis", task_priority (1), 280, &ser_port, yAxis, xEncoder);
 
-	//motor_driver* zAxis = new motor_driver ( &DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1B1, &OCR1B);
-	//new motor_task ("zAxis", task_priority (1), 280, &ser_port, yAxis);
+	motor_driver* zAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1C1, &OCR1C);
+	new motor_task ("zAxis", task_priority (1), 280, &ser_port, zAxis);
 	// Here's where the RTOS scheduler is started up. It should never exit as long as
 	// power is on and the microcontroller isn't rebooted
 	vTaskStartScheduler ();
