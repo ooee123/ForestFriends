@@ -1,0 +1,3 @@
+cd /home/pi
+sudo cp TallFlamingo.conf /etc/wpa_supplicant/wpa_supplicant.conf
+sudo ifdown wlan0; sudo ifup wlan0

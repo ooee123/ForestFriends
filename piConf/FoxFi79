@@ -1,0 +1,4 @@
+cd /home/pi
+sudo cp FoxFi79.conf /etc/wpa_supplicant/wpa_supplicant.conf
+sudo ifdown wlan0; sudo ifup wlan0
+
