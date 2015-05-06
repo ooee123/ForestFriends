@@ -56,7 +56,6 @@ public class FileParser
 
       if (isFromFile)
       {
-         //System.out.println(file.nextLine());
          width = file.nextInt();
          height = file.nextInt();
          fontHeight = file.nextInt();

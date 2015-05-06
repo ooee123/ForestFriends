@@ -30,7 +30,6 @@
 /** \brief This constructor initializes the motor driver. 
  *  \details The motor driver is made ready so that when a function such as \c set_power() is called the motor runs.
  *  when the \c brake() function is called it stops the motor if running. 
- *  @param ptr_to_serial The my_motor_driver class uses this pointer to the serial port to print desired data
  *  @param PORT initializes the data direction registers for the motor
  *  @param INA mode select for bit A of the motor
  *  @param INB mode select for bit B of the motor
@@ -42,9 +41,7 @@
 encoder_driver::encoder_driver(volatile uint8_t* DDR_en, volatile uint8_t* PIN_en, uint8_t Abit, uint8_t Bbit)
 {
 	
-   position = 0;
-   prevA = 0;
-   prevB = 0;
+   position = 1000;
 	DDR_EN = DDR_en;
 	
 	PIN = PIN_en;
@@ -53,16 +50,9 @@ encoder_driver::encoder_driver(volatile uint8_t* DDR_en, volatile uint8_t* PIN_e
 	INB = Bbit; 
 	
 	*DDR_EN &= ~((1 << INA) | (1 << INB)); // Input enable for Encoder Pin A and B
+   prevA = (*PIN >> INA) & 0b01;
+   prevB = (*PIN >> INB) & 0b01;
 }
-
-//------------------------------------------------------------------------------------------
-/** \brief The set_power function first obtains a reading from the global power variable and converts 
- *  \brief it from an unsigned 10 bit integer to a signed 10 bit integer. 
- *  \details The sign of the input determines ccw or cw rotation of motor and converts 
- *   signed integter into an unsigned integer which is interpreted by the motor controllers
- *   a pwm signal or duty cycle.
- *  @param  power dictates the value of the PWM
- */
 
 uint8_t encoder_driver::getA(void)
 {	
@@ -74,13 +64,13 @@ uint8_t encoder_driver::getB(void)
    return (*PIN >> INB) & 0x1;
 }
 
-void encoder_driver::updatePosition(void)
+uint32_t encoder_driver::updatePosition(void)
 {
    uint8_t newA = getA();
    uint8_t newB = getB();
 
-   uint8_t sum = (newA << 1) + newB;
-   uint8_t prevSum = (prevA << 1) + prevB;
+   uint8_t sum = (newA << 1) | newB;
+   uint8_t prevSum = (prevA << 1) | prevB;
 
    if (sum != prevSum)
    {
@@ -109,6 +99,7 @@ void encoder_driver::updatePosition(void)
       prevA = newA;
       prevB = newB;
    }
+   return position;
 }
 
 void encoder_driver::setSerial(emstream* p_serial_port)

@@ -1,1 +1,1 @@
-java -cp "./rxtx-2.1-7-bins-r2/*:." FileParser $0
+java -cp "./rxtx-2.1-7-bins-r2/*:." FileParser example.cpff

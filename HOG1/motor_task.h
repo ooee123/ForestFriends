@@ -50,6 +50,7 @@
 
 #include "shares.h"                         // Global ('extern') queue declarations
 #include "motor_driver.h"
+#include "encoder_driver.h"
 
 
 //-------------------------------------------------------------------------------------
@@ -63,6 +64,7 @@ class motor_task : public frt_task
 {
 private:
    motor_driver* motor;
+   encoder_driver* encoder;
 	// No private variables or methods for this class
 
 protected:
@@ -70,7 +72,7 @@ protected:
 
 public:
 	// This constructor creates a task for controlling motor 1.
-	motor_task (const char*, unsigned portBASE_TYPE, size_t, emstream*, motor_driver*);
+	motor_task (const char*, unsigned portBASE_TYPE, size_t, emstream*, motor_driver*, encoder_driver*);
 
 	// This method is called by the RTOS once to run the task loop for ever and ever.
 	void run (void);

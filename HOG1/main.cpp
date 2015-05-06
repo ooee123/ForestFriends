@@ -88,7 +88,7 @@ ISR(INT7_vect)
 int main (void)
 {
    /* Kevin's testing stuff. Test for pin output */
-   sei();
+   //sei();
    EICRB = 0b10101010;
    EIMSK = 0b11010000;
 
@@ -96,10 +96,10 @@ int main (void)
    
    DDRE = 0;
    PORTE = ~0;
+   /*
    for (;;)
    {
       PORTA = 0;
-      /*
       if ((PINE >> 7) & 1)
       //if ((PINE >> 4) & 1)
       {
@@ -109,8 +109,8 @@ int main (void)
       {
          PORTA &= ~(1 << 0);
       }
-      */
    }
+   */
          
 	// Disable the watchdog timer unless it's needed later. This is important because
 	// sometimes the watchdog timer may have been left on...and it tends to stay on
@@ -119,19 +119,20 @@ int main (void)
 	// mation, or to allow user interaction, or for whatever use is appropriate.  The
 	// serial port will be used by the user interface task after setup is complete and
 	// the task scheduler has been started by the function vTaskStartScheduler()
-	rs232 ser_port (9600, 1);
+	rs232 ser_port (9600, 0);
       
 	// task that controls motors
 	motor_driver* xAxis = new motor_driver (&DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1A1, &OCR1A);
-	new motor_task ("xAxis", task_priority (1), 280, &ser_port, xAxis);
+   encoder_driver* xEncoder = new encoder_driver(&DDRE, &PINE, PE6, PE7);
+	new motor_task ("xAxis", task_priority (1), 280, &ser_port, xAxis, xEncoder);
 
-	//motor_driver* yAxis = new motor_driver ( &DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1B1, &OCR1B);
-	//new motor_task ("yAxis", task_priority (1), 280, &ser_port, yAxis);
+	motor_driver* yAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1B1, &OCR1B);
+	new motor_task ("yAxis", task_priority (1), 280, &ser_port, yAxis, xEncoder);
 
 	//motor_driver* zAxis = new motor_driver ( &DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1B1, &OCR1B);
 	//new motor_task ("zAxis", task_priority (1), 280, &ser_port, yAxis);
 	// Here's where the RTOS scheduler is started up. It should never exit as long as
 	// power is on and the microcontroller isn't rebooted
-	//vTaskStartScheduler ();
+	vTaskStartScheduler ();
 }
 

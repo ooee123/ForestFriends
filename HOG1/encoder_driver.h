@@ -85,7 +85,7 @@ class encoder_driver
 		
 		uint8_t getA(void);
 		uint8_t getB(void);
-      void updatePosition(void);
+      uint32_t updatePosition(void);
 
       void setSerial(emstream*);
 
