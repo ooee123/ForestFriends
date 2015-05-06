@@ -30,7 +30,7 @@ TARGET = main
 
 # A list of the source (.c, .cc, .cpp) files in the project, including $(TARGET). Files
 # in library subdirectories do not go in this list; they're automatically in LIB_OBJS
-ADDITIONAL_FILES = encoder_task.cpp encoder_driver.cpp
+ADDITIONAL_FILES = encoder_task.cpp encoder_driver.cpp read_serial_driver.cpp read_serial_task.cpp
 SRC = $(TARGET).cpp motor_task.cpp motor_driver.cpp $(ADDITIONAL_FILES)
 # Clock frequency of the CPU, in Hz. This number should be an unsigned long integer.
 # For example, 16 MHz would be represented as 16000000UL. 

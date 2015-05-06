@@ -106,7 +106,9 @@ class motor_driver
 		void move_cw(void);
 		
 		
-		double PI(void);
+		double PI(uint16_t);
+
+      void move(int16_t);
 
 		
 }; // end of class my_motor_driver

@@ -179,10 +179,10 @@ public class PathConverter {
             paths = new Right().getPaths();
             break;
          case '^':
-            //paths = new Up().getPaths();
+            paths = new Up().getPaths();
             break;
          case ' ':
-            currentX += Dimensions.MAX_WIDTH;
+            currentX += Dimensions.getRelativeY(1, 2);
             break;
          default:
             System.err.println("Not a pathable character: " + c);

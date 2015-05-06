@@ -35,8 +35,13 @@
 #include "frt_shared_data.h"                // Header for thread-safe shared data
 #include "shares.h"                         // Global ('extern') queue declarations
 #include "motor_task.h"  
+#include "encoder_driver.h"  
+#include "read_serial_driver.h"  
+#include "read_serial_task.h"  
 
 #include <util/delay.h>			     // Delay 
+#include "pinLayout.h"
+#include "state.h"
 
 // Declare the queues which are used by tasks to communicate with each other here. 
 // Each queue must also be declared 'extern' in a header file which will be read 
@@ -57,26 +62,16 @@ frt_text_queue print_ser_queue (32, NULL, 10);
  *  have been removed in this revision).
  */
 
-frt_queue<uint32_t> queue_1 (20);
-
+/*
+frt_queue<uint16_t> queue_x (20);
+frt_queue<uint16_t> queue_y (20);
+frt_queue<uint16_t> queue_z (20);
+*/
 /** This shared data item allows communication between the motor task and the task user.
  *  In this way, we can make a user interface which can update the motor operation in
  *  realtime as the tasks are called pseudo simultaneously in the RTOS.
  */
 //shared_data<uint16_t> power_level; // motor power level
-
-ISR(INT4_vect)
-{
-   PORTA = 0b00000001;
-}
-ISR(INT6_vect)
-{
-   PORTA = 0b00000001;
-}
-ISR(INT7_vect)
-{
-   PORTA = 0b00000001;
-}
 
 //=====================================================================================
 /** The main function sets up the RTOS.  Some test tasks are created. Then the 
@@ -85,68 +80,108 @@ ISR(INT7_vect)
  *  @return This is a real-time microcontroller program which doesn't return. Ever.
  */
 
+encoder_driver* xEncoder = new encoder_driver(&DDRE, &PINE, &PORTE, PE4, PE5);
+encoder_driver* yEncoder = new encoder_driver(&DDRE, &PINE, &PORTE, PE6, PE7);
+encoder_driver* zEncoder = new encoder_driver(&DDRE, &PINE, &PORTE, PA1, PA0);
+// Enc 1 A SCL
+ISR(INT0_vect)
+{
+}
+
+// Enc 1 B SDA
+ISR(INT1_vect)
+{
+}
+
+// Enc X A PE4
+ISR(INT4_vect)
+{
+   xEncoder->updatePosition();
+}
+
+// Enc X B INT
+ISR(INT5_vect)
+{
+   xEncoder->updatePosition();
+}
+
+// Enc Y A PE6
+ISR(INT6_vect)
+{
+   yEncoder->updatePosition();
+}
+
+// Enc Y B PE7
+ISR(INT7_vect)
+{
+   yEncoder->updatePosition();
+}
+
 int main (void)
 {
    /* Kevin's testing stuff. Test for pin output */
-   //sei();
-   /*
-   EICRB = 0b10101010;
-   EIMSK = 0b11010000;
-
-   DDRA |= 0b00000001;
-   
-   DDRE = 0;
-   PORTE = ~0;
-   */
-   /*
-   for (;;)
-   {
-      PORTA = 0;
-      if ((PINE >> 7) & 1)
-      //if ((PINE >> 4) & 1)
-      {
-         PORTA |= (1 << 0);
-      }
-      else
-      {
-         PORTA &= ~(1 << 0);
-      }
-   }
-   */
          
 	// Disable the watchdog timer unless it's needed later. This is important because
 	// sometimes the watchdog timer may have been left on...and it tends to stay on
 	wdt_disable ();
+   sei();
+   EICRB = 0b01010101; // Set Int_4-7 to activate on pin toggle
+   EIMSK = 0b11110000; // Turn on Int_4-7
 	// Configure a serial port which can be used by a task to print debugging infor-
 	// mation, or to allow user interaction, or for whatever use is appropriate.  The
 	// serial port will be used by the user interface task after setup is complete and
 	// the task scheduler has been started by the function vTaskStartScheduler()
 	rs232 ser_port (9600, 0);
-      
+
+   uint16_t desiredX = 0;
+   uint16_t desiredY = 0;
+   uint16_t desiredZ = 0;
+   State state = NORMAL;
+
 	// task that controls motors
 	motor_driver* xAxis = new motor_driver (&DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1A1, &OCR1A);
-   encoder_driver* xEncoder = new encoder_driver(&DDRA, &PINA, &PORTA, PA5, PA4);
    xEncoder->setSerial(&ser_port);
-	new motor_task ("xAxis", task_priority (1), 280, &ser_port, xAxis, xEncoder);
-
+	new motor_task ("X", task_priority (2), 280, &ser_port, xAxis, xEncoder, &desiredX, &DDRA, &PINA, PA7, &state);
 	motor_driver* yAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1B1, &OCR1B);
-   encoder_driver* yEncoder = new encoder_driver(&DDRA, &PINA, &PORTA, PA3, PA2);
    yEncoder->setSerial(&ser_port);
-	new motor_task ("yAxis", task_priority (1), 280, &ser_port, yAxis, xEncoder);
-
+	new motor_task ("Y", task_priority (2), 280, &ser_port, yAxis, yEncoder, &desiredY, &DDRA, &PINA, PA6, &state);
 	motor_driver* zAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC1, PC7, PC6, PB7, COM1C1, &OCR1C);
-   encoder_driver* zEncoder = new encoder_driver(&DDRA, &PINA, &PORTA, PA1, PA0);
    zEncoder->setSerial(&ser_port);
-	new motor_task ("zAxis", task_priority (1), 280, &ser_port, zAxis, zEncoder);
+	new motor_task ("Z", task_priority (2), 280, &ser_port, zAxis, zEncoder, &desiredZ, &DDRA, &PINA, PA5, &state);
 
-   for (;;)
-   {
-      xEncoder->updatePosition();
-      yEncoder->updatePosition();
-      zEncoder->updatePosition();
-   }
+   read_serial_driver* serial = new read_serial_driver(&ser_port);
+   new read_serial_task("S", task_priority (1), 280, &ser_port, serial, &desiredX, &desiredY, &desiredZ, xEncoder, yEncoder, zEncoder, &state);
+   // task that reads incoming serial data
 	// Here's where the RTOS scheduler is started up. It should never exit as long as
 	// power is on and the microcontroller isn't rebooted
+
+
+   /*
+   // While both limit switches are not activated
+   while (!getXLimitSwitch() && !getYLimitSwitch())
+   {
+      //Calibrate here
+      // Adjust X Axis
+      if (!getXLimitSwitch())
+      {
+         xAxis->move(-CALIBRATE_SPEED);
+      }
+      else
+      {
+         xAxis->brake();
+      }
+      // Adjust Y Axis
+      if (getYLimitSwitch())
+      {
+         yAxis->move(-CALIBRATE_SPEED);
+      }
+      else
+      {
+         yAxis->brake();
+      }
+   }
+   xEncoder->reset();
+   yEncoder->reset();
+   */
 	vTaskStartScheduler ();
 }
-

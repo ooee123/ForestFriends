@@ -1,5 +1,5 @@
 //======================================================================================
-/** \file encoder_driver.h
+/** \file motor_driver.h
  *   This file contains a motor driver header file. The functions that come with this 
  *    motor driver class include set_power and brake. The set_power function first obtains 
  *    a reading from the task_user power_level1 and power_level2 values and converts it 
@@ -37,8 +37,8 @@
 //======================================================================================
 
 // This define prevents this .H file from being included multiple times in a .CPP file
-#ifndef _ENCODER_driver_H_
-#define _ENCODER_driver_H_
+#ifndef _serial_driver_H_
+#define _serial_driver_H_
 
 
 #include "emstream.h"                       // Header for serial ports and devices
@@ -48,6 +48,7 @@
 #include "semphr.h"                         // Header for FreeRTOS semaphores
 
 #include "shares.h"
+#include "rs232int.h"
 //-------------------------------------------------------------------------------------
 /** \brief This class should run the motor driver on an AVR processor. 
  *  \details my_motor_driver class holds the member functions in order to output a PWM signal 
@@ -60,20 +61,11 @@
  *  @param OCR the pwm control register 
  */
 
-class encoder_driver
+class read_serial_driver
 {
 	protected:
 		//instance/global variables
-		emstream* ptr_to_serial;
-
-		volatile uint8_t* DDR_EN;
-      volatile uint8_t* PIN;
-		
-		uint8_t INA; 
-		uint8_t INB; 
-      uint32_t position;
-      uint8_t prevA;
-      uint8_t prevSum;
+		emstream* serial;
 		
 	public:
 		// The constructor sets up the motor driver. The "= NULL" part is a
@@ -81,15 +73,13 @@ class encoder_driver
 		// where this constructor is called, the compiler will just fill in "NULL".
 		// In this case that has the effect of turning off diagnostic printouts.
 		// This follows for the "= 0" part.
-      encoder_driver(volatile uint8_t* DDR_en, volatile uint8_t* PIN_en, volatile uint8_t* PORT_EN, uint8_t Abit, uint8_t Bbit);
+      read_serial_driver(rs232* serial_in);
 		
-      uint32_t updatePosition(void);
+      void read();
+      uint16_t read_uint16_t();
+      uint8_t read_uint8_t();
 
-      void setSerial(emstream*);
-
-      uint16_t getPosition(void);		
-
-      void reset(void);
+		
 }; // end of class my_motor_driver
 
 #endif // _AVR_my_motor_driver_H_

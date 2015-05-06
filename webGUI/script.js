@@ -1,15 +1,15 @@
 var dimension = {width: 24, length: 12}
+
 var fontSize = 1;
 var canvas = document.getElementById('main');
 var context = canvas.getContext('2d');
 var textBox = []
 var scale = 20;
 
-
 var getDimension = function (varName) {
    return function () {
       dimension[varName] = document.getElementById(this.id).value
-      updateRect();
+      updateRect(0);
    }
 
 }
@@ -22,66 +22,73 @@ var changeWHF = function() {
    
 }
 
-var checkWidth = function() {
-   
-   var context = canvas.getContext("2d")
-   
-   var x = document.getElementById("x" + canvasNumber).value;
-   var width = dimension["width"]
-   var text = document.getElementById("text" + canvasNumber).value.toUpperCase();
-   
-   for (var i = 0 ; i < textBox.length; i++) {
-      
-      test = (width - x * scale) - context.measureText(text).width
-      if (test < 0) {
-         alert("too lng, cant save")
-         return false
-      }
-
-   }
-   return true
-   
-}
-
 var updateEverything = function (canvasNumber) {
    return function () {
       var x = document.getElementById("x" + canvasNumber).value;
       var y = document.getElementById("y" + canvasNumber).value;
       var text = document.getElementById("text" + canvasNumber).value.toUpperCase();
-		//alert(text);
       var canvas = textBox[canvasNumber - 1]
+      if (dimension["length"] - 2 <= parseInt(document.getElementById("fontSize").value)) {
+         dimension["length"] = parseInt(document.getElementById("fontSize").value)+2;
+         document.getElementById("yCoord").value = dimension["length"] 
+         updateRect(canvasNumber)
+         //alert("here " + dimension["length"])
+      }
       var width = dimension["width"]
       var length = dimension["length"]
+      
+      if (x != "" && x < 1) {
+         x = 1;
+         document.getElementById("x" + canvasNumber).value = 1
+      }
+      var height = parseInt(document.getElementById("fontSize").value);
+      if (y != "" && (y < 2 || height >= y)) {
+         if (height != 1) {
+            y = height + 1
+        } 
+         else {
+      //      y = 2;
+      
+      context.clearRect(0, 0, canvas.width*scale, canvas.height*scale)
+         }
+      }
+      else if (y != "" && y > length - 1) {
+         y = length - 1;
+      }
+      document.getElementById("y" + canvasNumber).value = y
       canvas.x = x
       canvas.y = y
       canvas.text = text;
+      var contextTemp = canvas.getContext("2d")
+      contextTemp.font = 'normal ' + document.getElementById("fontSize").value*22 + 'pt hwygoth'; 
+      contextTemp.fillText(text, x*scale, y*scale);
+      canvas.border = (width * scale - 20 - x * scale) - contextTemp.measureText(text).width
+      contextTemp.clearRect(0,0,canvas.width*scale, canvas.height*scale)
 
       var context = canvas.getContext("2d")
-      
       context.clearRect(0, 0, canvas.width*scale, canvas.height*scale)
       context.rect(0, 0, width*scale, length*scale);
       canvas.width = width*scale;
       canvas.height = length*scale;
-      context.font = 'normal ' + document.getElementById("fontSize").value*22 + 'pt hwygoth'; // ** take a look at this
-      //alert((canvas.width - canvas.x * scale) - context.measureText(text).width + " " + canvas.width + " "  + canvas.x * scale + " " + context.measureText(text).width)
-      test = (canvas.width - canvas.x * scale) - context.measureText(text).width
-      if (test < 0) {
-         alert("too lng")
+      if (canvas.border < 0) {
+         // red
+         context.fillStyle = 'red'
+         alert("Your text is not within a 1 inch border. \nPlease adjust your text to be within 1 inch.")
       }
+      context.font = 'normal ' + document.getElementById("fontSize").value*22 + 'pt hwygoth'; // ** take a look at this
       context.fillText(text, x*scale, y*scale);
-
    }
 }
 
-var updateRect = function () {
-   
-   if (dimension["width"] < 0) {
-      document.getElementById("xCoord").value = 1
-      dimension["width"] = 1;
-   }
-   if (dimension["length"] < 0) {
-      document.getElementById("yCoord").value = 1
-      dimension["length"] = 1;
+var updateRect = function (number) {
+   if (dimension["width"] < 12) {
+      document.getElementById("xCoord").value = 12
+      dimension["width"] = 12;
+   } 
+
+   if (dimension["length"] < 12) {
+      document.getElementById("yCoord").value = 12
+      dimension["length"] = 12;
    }
    
    
@@ -106,7 +113,9 @@ var updateRect = function () {
    context.lineWidth = 1;
    context.strokeStyle = 'black';
    context.stroke();
-   changeWHF();
+   if (!number) {
+      changeWHF();
+   }
 };
 
 var createCanvas = function () {
@@ -164,7 +173,8 @@ var createTextBoxDiv = function () {
    xInput.min = "0"
    xInput.max = "48"
    xInput.id = "x" + textBox.length
-   xInput.addEventListener("keyup", input);
+   //xInput.addEventListener("keyup", input);
+   xInput.addEventListener("focusout", input);
    container.appendChild(xInput)
    
    var yInput = document.createElement("input");
@@ -172,7 +182,8 @@ var createTextBoxDiv = function () {
    yInput.min = "0"
    yInput.max = "24"
    yInput.id = "y" + textBox.length
-   yInput.addEventListener("keyup", input);
+   //yInput.addEventListener("keyup", input);
+   yInput.addEventListener("focusout", input);
    container.appendChild(yInput)
    
    var textInput = document.createElement("input");
@@ -262,23 +273,36 @@ var updateRectSample = function () {
    document.getElementById("yCoord").value = 16
    document.getElementById("fontSize").value = 1
    changeWHF();
-   updateRect();
+   updateRect(0);
 };
 
 
 
 /* Assigning listeners to the length and width number fields */
-document.getElementById("yCoord").addEventListener("keyup", getDimension("length"))
-document.getElementById("xCoord").addEventListener("keyup", getDimension("width"))
-document.getElementById("fontSize").addEventListener("keyup", changeWHF)
+//document.getElementById("yCoord").addEventListener("keyup", getDimension("length"))
+//document.getElementById("xCoord").addEventListener("keyup", getDimension("width"))
+document.getElementById("yCoord").addEventListener("focusout", getDimension("length"))
+document.getElementById("xCoord").addEventListener("focusout", getDimension("width"))
+//document.getElementById("fontSize").addEventListener("keyup", changeWHF)
+document.getElementById("fontSize").addEventListener("focusout", changeWHF)
 document.getElementById("newTextBox").addEventListener("click", createCanvas)
 document.getElementById("sampleBoard").addEventListener("click", createCanvasSample)
 document.getElementById("newTextBoxSampleBoard").addEventListener("click", updateRectSample)
 
 
-updateRect()
+updateRect(0)
 changeWHF()
 
+var checkRed = function () {
+   for (var i = 0; i < textBox.length; i++) {
+      if (textBox[i].border < 0) {
+         //alert("red")
+         alert("Please make sure your text is within a 1 inch border.\n")
+         return false;
+      }
+   }
+   return true;
+}
 
 function saveTextAsFile() {
    
@@ -296,30 +320,30 @@ function saveTextAsFile() {
                                  type: 'text/plain'
                                  });
    var fileNameToSaveAs = document.getElementById("inputFileNameToSaveAs").value;
-   
+   if (fileNameToSaveAs == "") {
+      alert("Please Enter a Filename");
+      return;
+   }
    
    var downloadLink = document.createElement("a");
-   downloadLink.download = fileNameToSaveAs;
+   downloadLink.download = fileNameToSaveAs// + ".cpff";
    downloadLink.innerHTML = "Download File";
    
-   if (window.webkitURL != null) {
-     // alert("er")
-      // Chrome allows the link to be clicked
-      // without actually adding it to the DOM.
-      downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
-   } else {
-      // Firefox requires the link to be added to the DOM
-      // before it can be clicked.
-      downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
-      downloadLink.onclick = destroyClickedElement;
-      downloadLink.style.display = "none";
-      document.body.appendChild(downloadLink);
+   if (checkRed()) {
+      if (window.webkitURL != null) {
+         // Chrome allows the link to be clicked
+         // without actually adding it to the DOM.
+         downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+      } else {
+         // Firefox requires the link to be added to the DOM
+         // before it can be clicked.
+         downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+         downloadLink.onclick = destroyClickedElement;
+         downloadLink.style.display = "none";
+         document.body.appendChild(downloadLink);
+      }
    }
    downloadLink.click();
-   //}
-   //else {
-   //alert("File cannot save, values are incorrect")
-   //}
 }
 
 /* Begin Parsing Methods */
@@ -358,7 +382,7 @@ document.getElementById('upload').onchange = function(){
       document.getElementById("yCoord").value = dimension["length"] = lines[0];
       document.getElementById("xCoord").value = dimension["width"] = lines[1];
       document.getElementById("fontSize").value = lines[2];
-      updateRect();
+      updateRect(0);
       var texts = [];
       
       for(var line = 3; line + 3 < lines.length; line = line + 3){
