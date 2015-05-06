@@ -79,7 +79,7 @@ class ImportFile(tk.Frame):
       if filename: 
          print("New Frame: Board Design")
          # call java fuction
-         #self.javaExec()
+         self.javaExec()
          self.cont.show_frame(VerifyDesign)
 
    def javaExec(self):
