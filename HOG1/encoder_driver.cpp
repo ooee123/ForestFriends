@@ -1,0 +1,117 @@
+//*************************************************************************************
+/** \file my_motor_driver.cpp
+ 
+ *  License:
+ *    This file is copyright 2012 by JR Ridgely and released under the Lesser GNU 
+ *    Public License, version 2. It intended for educational use only, but its use
+ *    is not limited thereto. */
+/*    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ *    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ *    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ *    ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ *    LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUEN-
+ *    TIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS 
+ *    OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ *    CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
+ *    OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ *    OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
+//*************************************************************************************
+
+#include <stdlib.h>                         // Include standard library header files
+#include <avr/io.h>
+#include <math.h>
+#include <avr/interrupt.h>
+
+#include "rs232int.h"                       // Include header for serial port class
+#include "encoder_driver.h"                // Include header for the A/D class
+#define STOP_CONST 25
+
+//---------------------		//p_motor_1->set_power(control1);----------------------------------------------------------------
+/** \brief This constructor initializes the motor driver. 
+ *  \details The motor driver is made ready so that when a function such as \c set_power() is called the motor runs.
+ *  when the \c brake() function is called it stops the motor if running. 
+ *  @param ptr_to_serial The my_motor_driver class uses this pointer to the serial port to print desired data
+ *  @param PORT initializes the data direction registers for the motor
+ *  @param INA mode select for bit A of the motor
+ *  @param INB mode select for bit B of the motor
+ *  @param EN output enable and diagnostics
+ *  @param OCR the pwm control register 
+ */
+	//motor_driver* p_motor_1 = new my_motor_driver (p_serial, &DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1B1, &OCR1B);
+//Initialize my_motor_driver
+encoder_driver::encoder_driver(volatile uint8_t* DDR_en, volatile uint8_t* PIN_en, uint8_t Abit, uint8_t Bbit)
+{
+	
+   position = 0;
+   prevA = 0;
+   prevB = 0;
+	DDR_EN = DDR_en;
+	
+	PIN = PIN_en;
+	
+	INA = Abit; 
+	INB = Bbit; 
+	
+	*DDR_EN &= ~((1 << INA) | (1 << INB)); // Input enable for Encoder Pin A and B
+}
+
+//------------------------------------------------------------------------------------------
+/** \brief The set_power function first obtains a reading from the global power variable and converts 
+ *  \brief it from an unsigned 10 bit integer to a signed 10 bit integer. 
+ *  \details The sign of the input determines ccw or cw rotation of motor and converts 
+ *   signed integter into an unsigned integer which is interpreted by the motor controllers
+ *   a pwm signal or duty cycle.
+ *  @param  power dictates the value of the PWM
+ */
+
+uint8_t encoder_driver::getA(void)
+{	
+   return (*PIN >> INA) & 0x1;
+}
+
+uint8_t encoder_driver::getB(void)
+{	
+   return (*PIN >> INB) & 0x1;
+}
+
+void encoder_driver::updatePosition(void)
+{
+   uint8_t newA = getA();
+   uint8_t newB = getB();
+
+   uint8_t sum = (newA << 1) + newB;
+   uint8_t prevSum = (prevA << 1) + prevB;
+
+   if (sum != prevSum)
+   {
+      if (prevA != newA)
+      {
+         if (prevSum == 1 || prevSum == 2)
+         {
+            position++;
+         }
+         else
+         {
+            position--;
+         }
+      }
+      else
+      {
+         if (prevSum == 0 || prevSum == 3)
+         {
+            position++;
+         }
+         else
+         {
+            position--;
+         }
+      }
+      prevA = newA;
+      prevB = newB;
+   }
+}
+
+void encoder_driver::setSerial(emstream* p_serial_port)
+{
+	ptr_to_serial = p_serial_port;
+}

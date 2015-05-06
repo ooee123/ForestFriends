@@ -39,10 +39,8 @@
  */
 	//motor_driver* p_motor_1 = new my_motor_driver (p_serial, &DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1B1, &OCR1B);
 //Initialize my_motor_driver
-motor_driver::motor_driver (emstream* p_serial_port, volatile uint8_t* DDR_en, volatile uint8_t* DDR_dir, volatile uint8_t* DDR_pwm, volatile uint8_t* PORT_en, volatile uint8_t* PORT_dir, uint8_t ENbit, uint8_t INAbit, uint8_t INBbit, uint8_t PWMbit, uint8_t COMtimer, volatile uint16_t* OCRtimer)
+motor_driver::motor_driver (volatile uint8_t* DDR_en, volatile uint8_t* DDR_dir, volatile uint8_t* DDR_pwm, volatile uint8_t* PORT_en, volatile uint8_t* PORT_dir, uint8_t ENbit, uint8_t INAbit, uint8_t INBbit, uint8_t PWMbit, uint8_t COMtimer, volatile uint16_t* OCRtimer)
 {
-	ptr_to_serial = p_serial_port;
-	
 	DDR_DIR = DDR_dir;
 	DDR_EN = DDR_en;
 	DDR_PWM = DDR_pwm;
@@ -71,12 +69,25 @@ motor_driver::motor_driver (emstream* p_serial_port, volatile uint8_t* DDR_en, v
 	// the pin output will have inverted sense, that is, a 0 is on and a 1 is off; 
 	// this is needed because the LED connects from Vcc to the pin. 
 	
+   // The line below is true for whatever ATmega they were using */
 	TCCR1A |= (1 << WGM10) | (1 << WGM11) | (1 << COMTIMER);
+   
+   // For ATmega128 To activate 10 bit fast PWM mode...
+   // Actually I don't know with confidence
+   // To activate 10 bit fast PWM mode on a 16 bit timer/counter
+   //TCCR1A |= (1 << WGM10) | (1 << WGM11 ) (1 << COMTIMER);
+
+   
 	
 	// The CS11 bit sets the prescaler for this timer/counter to run the
 	// timer at F_CPU / 8
 	
 	TCCR1B |= (1 << WGM12) | (1 << CS11); // 10-bit PWM and prescale to 8	
+}
+
+void motor_driver::setSerial(emstream* stream)
+{
+   ptr_to_serial = stream;
 }
 
 //------------------------------------------------------------------------------------------
@@ -90,8 +101,8 @@ motor_driver::motor_driver (emstream* p_serial_port, volatile uint8_t* DDR_en, v
 
 void motor_driver::set_power (double power)
 {	
-/*
-	if(motorType == true)
+	//if(motorType == true)
+	if(true)
 	{
 		if (power == 0)
 		{
@@ -125,7 +136,7 @@ void motor_driver::set_power (double power)
 	else
 	{
 		*OCR = uint16_t(1.0*abs(power));
-	}*/
+	}
 }
 
 //-------------------------------------------------------------------------------------
@@ -178,7 +189,7 @@ void motor_driver::set_position(void)
 	
 }*/
 
-void motor_driver::PI(void)
+double motor_driver::PI(void)
 {
   /*
 	//Porportional error variables
@@ -215,6 +226,7 @@ void motor_driver::PI(void)
 	}
 
 	return(iTerm + pTerm);*/
+   return 0;
 }
 
 

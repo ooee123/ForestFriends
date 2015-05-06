@@ -30,8 +30,8 @@ TARGET = main
 
 # A list of the source (.c, .cc, .cpp) files in the project, including $(TARGET). Files
 # in library subdirectories do not go in this list; they're automatically in LIB_OBJS
-SRC = $(TARGET).cpp motor_task.cpp motor_driver.cpp
-
+ADDITIONAL_FILES = encoder_task.cpp encoder_driver.cpp
+SRC = $(TARGET).cpp motor_task.cpp motor_driver.cpp $(ADDITIONAL_FILES)
 # Clock frequency of the CPU, in Hz. This number should be an unsigned long integer.
 # For example, 16 MHz would be represented as 16000000UL. 
 F_CPU = 16000000UL
@@ -254,7 +254,7 @@ install:  $(TARGET).hex
   else ifeq ($(PROG), bootloader)
 	@echo "ERROR: No bootloader set up for this Makefile"
   else ifeq ($(PROG), usbtiny)
-	avrdude -p $(MCU) -c usbtiny -V -B 1 -Uflash:w:$(TARGET).hex
+	avrdude -p $(MCU) -c usbtiny -B 1 -Uflash:w:$(TARGET).hex
   else
 	@echo "ERROR: No programmer" $(PROG) "in the Makefile"
   endif

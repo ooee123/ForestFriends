@@ -38,10 +38,14 @@
 motor_task::motor_task (const char* a_name, 
 								 unsigned portBASE_TYPE a_priority, 
 								 size_t a_stack_size,
-								 emstream* p_ser_dev
+								 emstream* p_ser_dev,
+                         motor_driver* motor_in 
 								)
-	: frt_task (a_name, a_priority, a_stack_size, p_ser_dev)
+	:
+   frt_task (a_name, a_priority, a_stack_size, p_ser_dev)
 {
+   motor = motor_in;
+   dump_stack(p_serial);
 	// Nothing is done in the body of this constructor. All the work is done in the
 	// call to the frt_task constructor on the line just above this one
 }
@@ -60,8 +64,29 @@ void motor_task::run (void)
     
 	// Motor Drivers: PC0 = mode select A, PC1 = mode select B, PC2 = Output enable
 	
+   /* Kevin Notes 
+   Here's how I interpret the parameters
+
+   p_serial?
+   Direction Register of MOT_X (DDRD)
+   Direction Register of inA and inB
+   Direction Register of PWM pins
+   Output Pin for MOT_X. The PORTX value should match the letter of MOT_X
+   Output Register for inA and inB
+   Pin number for MOT_X
+   Pin number for inA
+   Pin number for inB
+   Pin number for PWM
+   COM1A1? "Compare output mode bits 1/0, how it's connected to Timer1
+   OCR1A? "Generate interupts after num of clock ticks to it
+   */
+
 	// pan motor
-	motor_driver* yaw_motor = new motor_driver (p_serial, &DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1A1, &OCR1A);
+	//motor_driver* yaw_motor = new motor_driver (p_serial, &DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1A1, &OCR1A);
+	// motor2 
+	//motor_driver* motor2 = new motor_driver (p_serial, &DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1B1, &OCR1B);
+	// motor3
+	//motor_driver* motor3 = new motor_driver (p_serial, &DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1A1, &OCR1A);
 	// tilt motor
 	
 	
@@ -77,12 +102,13 @@ void motor_task::run (void)
 	
 	for (;;)
 	{	
-	  
-		yaw_motor -> brake();
-		
 		runs++;
-		
-		delay_from_to (previousTicks, configMS_TO_TICKS (10));
+	  
+      *p_serial << "hello\n";
+      PORTA |= (1 << 0);
+		delay_from_to (previousTicks, configMS_TO_TICKS (200));
+      PORTA &= ~(1 << 0);
+		delay_from_to (previousTicks, configMS_TO_TICKS (200));
 	}
 }
 

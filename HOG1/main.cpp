@@ -65,6 +65,18 @@ frt_queue<uint32_t> queue_1 (20);
  */
 //shared_data<uint16_t> power_level; // motor power level
 
+ISR(INT4_vect)
+{
+   PORTA = 0b00000001;
+}
+ISR(INT6_vect)
+{
+   PORTA = 0b00000001;
+}
+ISR(INT7_vect)
+{
+   PORTA = 0b00000001;
+}
 
 //=====================================================================================
 /** The main function sets up the RTOS.  Some test tasks are created. Then the 
@@ -75,23 +87,51 @@ frt_queue<uint32_t> queue_1 (20);
 
 int main (void)
 {
+   /* Kevin's testing stuff. Test for pin output */
+   sei();
+   EICRB = 0b10101010;
+   EIMSK = 0b11010000;
+
+   DDRA |= 0b00000001;
+   
+   DDRE = 0;
+   PORTE = ~0;
+   for (;;)
+   {
+      PORTA = 0;
+      /*
+      if ((PINE >> 7) & 1)
+      //if ((PINE >> 4) & 1)
+      {
+         PORTA |= (1 << 0);
+      }
+      else
+      {
+         PORTA &= ~(1 << 0);
+      }
+      */
+   }
+         
 	// Disable the watchdog timer unless it's needed later. This is important because
 	// sometimes the watchdog timer may have been left on...and it tends to stay on
-	//MCUSR = 0;
 	wdt_disable ();
-	
 	// Configure a serial port which can be used by a task to print debugging infor-
 	// mation, or to allow user interaction, or for whatever use is appropriate.  The
 	// serial port will be used by the user interface task after setup is complete and
 	// the task scheduler has been started by the function vTaskStartScheduler()
 	rs232 ser_port (9600, 1);
-
+      
 	// task that controls motors
-	new motor_task ("MotorTask", task_priority (1), 280, &ser_port);
+	motor_driver* xAxis = new motor_driver (&DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1A1, &OCR1A);
+	new motor_task ("xAxis", task_priority (1), 280, &ser_port, xAxis);
 
+	//motor_driver* yAxis = new motor_driver ( &DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1B1, &OCR1B);
+	//new motor_task ("yAxis", task_priority (1), 280, &ser_port, yAxis);
 
+	//motor_driver* zAxis = new motor_driver ( &DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1B1, &OCR1B);
+	//new motor_task ("zAxis", task_priority (1), 280, &ser_port, yAxis);
 	// Here's where the RTOS scheduler is started up. It should never exit as long as
 	// power is on and the microcontroller isn't rebooted
-	vTaskStartScheduler ();
+	//vTaskStartScheduler ();
 }
 
