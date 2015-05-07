@@ -96,8 +96,8 @@ class ImportFile(tk.Frame):
 
    def javaExec(self):
       # Up to redoing depending on path
-      os.chdir("../pathConversion/")
-      subprocess.call(["java", "-cp", "./rxtx-2.1-7-bins-r2/*:.", "FileParser", "../piGUI/file.txt"])
+      #os.chdir("../pathConversion/")
+      subprocess.call(["java", "-cp", "../pathConversion/rxtx-2.1-7-bins-r2/*:../pathConversion/.", "../pathConversion/FileParser", "../piGUI/file.txt"])
       print("DONE!")
 
 
