@@ -109,10 +109,10 @@ class VerifyDesign(tk.Frame):
       label.pack(pady=10,padx=10)
 
       # display image design
-      photo = ImageTk.PhotoImage(Image.open("resize.jpg"))
-      label = Label(self, image = photo)
-      label.image = photo
-      label.pack()
+      #photo = ImageTk.PhotoImage(Image.open("resize.jpg"))
+      #label = Label(self, image = photo)
+      #label.image = photo
+      #label.pack()
 
       button1 = tk.Button(self, text="Design is correct",
          command=lambda: controller.show_frame(VerifyParts))
