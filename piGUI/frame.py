@@ -8,6 +8,7 @@ import os
 
 LARGE_FONT= ("Verdana", 12)
 
+frames = {}
 
 class GUI(tk.Tk):
 
@@ -21,18 +22,19 @@ class GUI(tk.Tk):
       container.grid_rowconfigure(0, weight=1)
       container.grid_columnconfigure(0, weight=1)
 
-      self.frames = {}
 
       for F in (Start, ImportFile, VerifyDesign, Redesign, VerifyParts, Reverify, Machine):
          frame = F(container, self)
-         self.frames[F] = frame
+         frames[F] = frame
          frame.grid(row=0, column=0, sticky="nsew")
 
       self.show_frame(Start)
+      
+
 
    def show_frame(self, cont):
 
-      frame = self.frames[cont]
+      frame = frames[cont]
       frame.tkraise()
 
 
@@ -92,6 +94,7 @@ class ImportFile(tk.Frame):
       hsize = int ((float (img.size[1]) * float (wpercent)))
       img = img.resize((basewidth, hsize), Image.ANTIALIAS)
       img.save('resize.jpg')
+      frames[VerifyDesign].updateImage()
       #os.remove("original.jpg")
 
    def javaExec(self):
@@ -122,6 +125,12 @@ class VerifyDesign(tk.Frame):
          command=lambda: controller.show_frame(Redesign))
       button2.pack()
 
+   def updateImage(self):
+      # display image design
+      photo = ImageTk.PhotoImage(Image.open("resize.jpg"))
+      label = Label(self, image = photo)
+      label.image = photo
+      label.pack()
 
 class Redesign(tk.Frame):
 
