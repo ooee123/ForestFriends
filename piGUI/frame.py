@@ -45,7 +45,7 @@ class Start(tk.Frame):
 
       button = tk.Button(self, height=10, bg="red", text="Ready...",
          command=lambda: controller.show_frame(ImportFile))
-      button.grid(row = 2, column = 2, sticky= W)
+      #button.grid(row = 2, column = 2, sticky= W)
       button.pack()
 
       #button2 = tk.Button(self, text="End",
@@ -81,6 +81,18 @@ class ImportFile(tk.Frame):
          # call java fuction
          self.javaExec()
          self.cont.show_frame(VerifyDesign)
+         self.resize()
+
+   def resize(self):
+      basewidth = 300
+      print("image is opened")
+
+      img = Image.open("original.jpg")
+      wpercent = (basewidth / float (img.size[0]))
+      hsize = int ((float (img.size[1]) * float (wpercent)))
+      img = img.resize((basewidth, hsize), Image.ANTIALIAS)
+      img.save('resize.jpg')
+      #os.remove("original.jpg")
 
    def javaExec(self):
       # Up to redoing depending on path
@@ -97,7 +109,6 @@ class VerifyDesign(tk.Frame):
       label.pack(pady=10,padx=10)
 
       # display image design
-      self.resize()
       photo = ImageTk.PhotoImage(Image.open("resize.jpg"))
       label = Label(self, image = photo)
       label.image = photo
@@ -110,15 +121,6 @@ class VerifyDesign(tk.Frame):
       button2 = tk.Button(self, text="Design is not correct",
          command=lambda: controller.show_frame(Redesign))
       button2.pack()
-
-   def resize(self):
-      basewidth = 300
-      img = Image.open("original.jpg")
-      wpercent = (basewidth / float (img.size[0]))
-      hsize = int ((float (img.size[1]) * float (wpercent)))
-      img = img.resize((basewidth, hsize), Image.ANTIALIAS)
-      img.save('resize.jpg')
-      #os.remove("original.jpg")
 
 
 class Redesign(tk.Frame):
@@ -140,6 +142,15 @@ class VerifyParts(tk.Frame):
       label = tk.Label(self, text="Verify Parts", font=LARGE_FONT)
       label.pack(pady=10,padx=10)
 
+      data = open("file.txt", "r")
+      line = data.readline()
+      print "read line %s" % (line)
+      line = data.readline()
+      print "read line %s" % (line)
+      line = data.readline()
+      print "read line %s" % (line)
+      data.close()
+
       button1 = tk.Button(self, text="Parts are correct",
          command=lambda: controller.show_frame(Machine))
       button1.pack()
@@ -147,6 +158,7 @@ class VerifyParts(tk.Frame):
       button2 = tk.Button(self, text="Parts are not correct",
          command=lambda: controller.show_frame(Reverify))
       button2.pack()
+
 
 
 class Reverify(tk.Frame):
