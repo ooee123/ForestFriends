@@ -80,14 +80,14 @@ class ImportFile(tk.Frame):
          print("New Frame: Board Design")
          # call java fuction
          self.javaExec()
-         self.cont.show_frame(VerifyDesign)
          self.resize()
+         self.cont.show_frame(VerifyDesign)
 
    def resize(self):
       basewidth = 300
       print("image is opened")
 
-      img = Image.open("original.jpg")
+      img = Image.open("../pathConversion/original.jpg")
       wpercent = (basewidth / float (img.size[0]))
       hsize = int ((float (img.size[1]) * float (wpercent)))
       img = img.resize((basewidth, hsize), Image.ANTIALIAS)
