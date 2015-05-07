@@ -30,7 +30,6 @@ public class FontPainter extends Component {
    private int strokeWidth;
    private static final boolean displayFrame = true;
 
-
    public FontPainter(int width, int height, int strokeWidth)
    {
       preferredWidth = width;

@@ -133,6 +133,8 @@ public class FileParser
       {
          printer.close();
       }
+      fp.finishDrawing();
+      System.exit(0);
    }
 
    private static void printPaths(Paths paths, PrintWriter printer)

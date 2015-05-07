@@ -85,9 +85,9 @@ class ImportFile(tk.Frame):
 
    def resize(self):
       basewidth = 300
-      print("image is opened")
+      img = Image.open("original.jpg")
 
-      img = Image.open("../pathConversion/original.jpg")
+      print("image is opened")
       wpercent = (basewidth / float (img.size[0]))
       hsize = int ((float (img.size[1]) * float (wpercent)))
       img = img.resize((basewidth, hsize), Image.ANTIALIAS)
@@ -97,7 +97,7 @@ class ImportFile(tk.Frame):
    def javaExec(self):
       # Up to redoing depending on path
       #os.chdir("../pathConversion/")
-      subprocess.call(["java", "-cp", "../pathConversion/rxtx-2.1-7-bins-r2/*:../pathConversion/.", "../pathConversion/FileParser", "../piGUI/file.txt"])
+      subprocess.call(["java", "-cp", "../pathConversion/rxtx-2.1-7-bins-r2/*:../pathConversion/.", "FileParser", "../piGUI/file.txt"])
       print("DONE!")
 
 
