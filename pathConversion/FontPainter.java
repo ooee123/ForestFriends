@@ -22,27 +22,35 @@ public class FontPainter extends Component {
    private java.util.List<Paths> letters;
    private int currentX;
    private int currentY;
-   private boolean saveImage = true;
+   private static final boolean saveImage = true;
    private BufferedImage img;
    private Graphics2D imgGraphics;
    private int preferredWidth;
    private int preferredHeight;
    private int strokeWidth;
+   private static final boolean displayFrame = true;
+
 
    public FontPainter(int width, int height, int strokeWidth)
    {
       preferredWidth = width;
       preferredHeight = height;
-      JFrame frame = new JFrame("Font");
-      frame.add(this);
-      frame.pack();
-      frame.setVisible(true);
+      if (displayFrame)
+      {
+         JFrame frame = new JFrame("Font");
+         frame.add(this);
+         frame.pack();
+         frame.setVisible(true);
+      }
       this.strokeWidth = strokeWidth;
       letters = new ArrayList<Paths>();
-      img = new BufferedImage(preferredWidth, preferredHeight, BufferedImage.TYPE_BYTE_BINARY);
-      imgGraphics = img.createGraphics();
-      imgGraphics.setColor(Color.WHITE);
-      imgGraphics.fillRect(0, 0, preferredWidth, preferredHeight);
+      if (saveImage)
+      {
+         img = new BufferedImage(preferredWidth, preferredHeight, BufferedImage.TYPE_BYTE_BINARY);
+         imgGraphics = img.createGraphics();
+         imgGraphics.setColor(Color.WHITE);
+         imgGraphics.fillRect(0, 0, preferredWidth, preferredHeight);
+      }
    }
 
    public void paint(Graphics g2)
@@ -89,7 +97,7 @@ public class FontPainter extends Component {
       letters.add(paths);
    }
 
-   private void drawLetters(Graphics2D g)
+   public void drawLetters(Graphics2D g)
    {
       g.setStroke(new BasicStroke(strokeWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
       for (Paths paths : letters)

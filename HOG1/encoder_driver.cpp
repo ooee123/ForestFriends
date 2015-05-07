@@ -38,7 +38,7 @@
  */
 	//motor_driver* p_motor_1 = new my_motor_driver (p_serial, &DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1B1, &OCR1B);
 //Initialize my_motor_driver
-encoder_driver::encoder_driver(volatile uint8_t* DDR_en, volatile uint8_t* PIN_en, uint8_t Abit, uint8_t Bbit)
+encoder_driver::encoder_driver(volatile uint8_t* DDR_en, volatile uint8_t* PIN_en, volatile uint8_t* PORT_EN, uint8_t Abit, uint8_t Bbit)
 {
 	
    position = 0;
@@ -50,27 +50,19 @@ encoder_driver::encoder_driver(volatile uint8_t* DDR_en, volatile uint8_t* PIN_e
 	INB = Bbit; 
 	
 	*DDR_EN &= ~((1 << INA) | (1 << INB)); // Input enable for Encoder Pin A and B
+
+   *PORT_EN |= (1 << INA) | (1 << INB); // Activate pull up resister
    prevA = (*PIN >> INA) & 0b01;
-   prevB = (*PIN >> INB) & 0b01;
-}
-
-uint8_t encoder_driver::getA(void)
-{	
-   return (*PIN >> INA) & 0x1;
-}
-
-uint8_t encoder_driver::getB(void)
-{	
-   return (*PIN >> INB) & 0x1;
+   uint8_t prevB = (*PIN >> INB) & 0b01;
+   prevSum = prevA << 1 | prevB;
 }
 
 uint32_t encoder_driver::updatePosition(void)
 {
-   uint8_t newA = getA();
-   uint8_t newB = getB();
-
+   uint8_t newA = (*PIN >> INA) & 0x1;
+   uint8_t newB = (*PIN >> INB) & 0x1;
+   
    uint8_t sum = (newA << 1) | newB;
-   uint8_t prevSum = (prevA << 1) | prevB;
 
    if (sum != prevSum)
    {
@@ -97,7 +89,12 @@ uint32_t encoder_driver::updatePosition(void)
          }
       }
       prevA = newA;
-      prevB = newB;
+      prevSum = sum;
+      if (position % 20 == 0)
+      {
+         *ptr_to_serial << position;
+         *ptr_to_serial << "\n";
+      }
    }
    return position;
 }

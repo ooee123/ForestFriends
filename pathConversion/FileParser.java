@@ -27,6 +27,7 @@ public class FileParser
    private static final int SAFE_ZONE_BORDER_WIDTH = Letter.INCH;
    private static final boolean useComs = false;
    private static final boolean printToFile = true;
+   private static final boolean previewSign = true;
 
    public static void main(String args[])
    {
@@ -61,7 +62,11 @@ public class FileParser
          fontHeight = file.nextInt();
       }
       
-      FontPainter fp = new FontPainter(width * Letter.INCH, height * Letter.INCH, strokeWidth);
+      FontPainter fp = null;
+      if (previewSign)
+      {
+         fp = new FontPainter(width * Letter.INCH, height * Letter.INCH, strokeWidth);
+      }
       /* Serial Coms and Printing */
       SerialComs coms = null;
       PrintWriter printer = null;
@@ -90,7 +95,6 @@ public class FileParser
             x = file.nextInt() * Letter.INCH;
             y = (file.nextInt() - 1) * Letter.INCH;
             file.nextLine();
-            System.out.println(x + " " + y);
          }
          else
          {
@@ -99,16 +103,12 @@ public class FileParser
          }
          String text = file.nextLine();
          List<Paths> paths = null;
-         try
-         {
-            paths = verter.convertToPaths(x, y, text); 
-         }
-         catch (Exception e)
-         {
-            System.exit(1);
-         }
+         paths = verter.convertToPaths(x, y, text); 
          for (Paths p : paths) {
-            fp.addLetter(p);
+            if (previewSign)
+            {
+               fp.addLetter(p);
+            }
             if (useComs)
             {
                coms.write(p);
@@ -119,8 +119,11 @@ public class FileParser
             }
          }
          allPaths.addAll(paths);
-         fp.repaint();
-         fp.finishDrawing();
+         if (previewSign)
+         {
+            fp.repaint();
+            fp.finishDrawing();
+         }
       }
       if (useComs)
       {

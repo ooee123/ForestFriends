@@ -107,8 +107,8 @@ void motor_task::run (void)
       
 
 
-      motor->set_power(0b1010100111);
-      p_serial->puts("HELLO");
+      //motor->set_power(0b1010100111);
+      //p_serial->puts("HELLO");
    //dump_stack(p_serial);
       //motor->set_power(30000);
       PORTA = 1;

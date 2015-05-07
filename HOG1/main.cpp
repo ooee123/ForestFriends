@@ -89,6 +89,7 @@ int main (void)
 {
    /* Kevin's testing stuff. Test for pin output */
    //sei();
+   /*
    EICRB = 0b10101010;
    EIMSK = 0b11010000;
 
@@ -96,6 +97,7 @@ int main (void)
    
    DDRE = 0;
    PORTE = ~0;
+   */
    /*
    for (;;)
    {
@@ -123,14 +125,26 @@ int main (void)
       
 	// task that controls motors
 	motor_driver* xAxis = new motor_driver (&DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1A1, &OCR1A);
-   encoder_driver* xEncoder = new encoder_driver(&DDRE, &PINE, PE6, PE7);
+   encoder_driver* xEncoder = new encoder_driver(&DDRA, &PINA, &PORTA, PA5, PA4);
+   xEncoder->setSerial(&ser_port);
 	new motor_task ("xAxis", task_priority (1), 280, &ser_port, xAxis, xEncoder);
 
 	motor_driver* yAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1B1, &OCR1B);
+   encoder_driver* yEncoder = new encoder_driver(&DDRA, &PINA, &PORTA, PA3, PA2);
+   yEncoder->setSerial(&ser_port);
 	new motor_task ("yAxis", task_priority (1), 280, &ser_port, yAxis, xEncoder);
 
-	motor_driver* zAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1C1, &OCR1C);
-	new motor_task ("zAxis", task_priority (1), 280, &ser_port, zAxis);
+	motor_driver* zAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC1, PC7, PC6, PB7, COM1C1, &OCR1C);
+   encoder_driver* zEncoder = new encoder_driver(&DDRA, &PINA, &PORTA, PA1, PA0);
+   zEncoder->setSerial(&ser_port);
+	new motor_task ("zAxis", task_priority (1), 280, &ser_port, zAxis, zEncoder);
+
+   for (;;)
+   {
+      xEncoder->updatePosition();
+      yEncoder->updatePosition();
+      zEncoder->updatePosition();
+   }
 	// Here's where the RTOS scheduler is started up. It should never exit as long as
 	// power is on and the microcontroller isn't rebooted
 	vTaskStartScheduler ();

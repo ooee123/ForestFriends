@@ -73,7 +73,7 @@ class encoder_driver
 		uint8_t INB; 
       uint32_t position;
       uint8_t prevA;
-      uint8_t prevB;
+      uint8_t prevSum;
 		
 	public:
 		// The constructor sets up the motor driver. The "= NULL" part is a
@@ -81,10 +81,8 @@ class encoder_driver
 		// where this constructor is called, the compiler will just fill in "NULL".
 		// In this case that has the effect of turning off diagnostic printouts.
 		// This follows for the "= 0" part.
-      encoder_driver(volatile uint8_t* DDR_en, volatile uint8_t* PIN_en, uint8_t Abit, uint8_t Bbit);
+      encoder_driver(volatile uint8_t* DDR_en, volatile uint8_t* PIN_en, volatile uint8_t* PORT_EN, uint8_t Abit, uint8_t Bbit);
 		
-		uint8_t getA(void);
-		uint8_t getB(void);
       uint32_t updatePosition(void);
 
       void setSerial(emstream*);

@@ -191,7 +191,6 @@ void motor_driver::set_position(void)
 
 double motor_driver::PI(void)
 {
-  /*
 	//Porportional error variables
 	double pGain = 0.005;
 	double pTerm = 95 + pGain*abs(position_error.get());
@@ -225,7 +224,7 @@ double motor_driver::PI(void)
 	  iTerm = iGain * iState;
 	}
 
-	return(iTerm + pTerm);*/
+	return(iTerm + pTerm);
    return 0;
 }
 
