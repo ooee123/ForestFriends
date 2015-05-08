@@ -78,16 +78,13 @@ class ImportFile(tk.Frame):
       filename = askopenfilename()
       print(filename)
       shutil.copyfile(filename, "file.txt") 
-      if (checkSyntax()):
-         frames[VerifyParts].readFile()
-         if filename: 
-            print("New Frame: Board Design")
-            # call java fuction
-            self.javaExec()
-            self.resize()
-            self.cont.show_frame(VerifyDesign)
-      else:
-         self.cont.show_frame(badFileSyntax)
+      frames[VerifyParts].readFile()
+      if filename: 
+         print("New Frame: Board Design")
+         # call java fuction
+         self.javaExec()
+         self.resize()
+         self.cont.show_frame(VerifyDesign)
 
    def resize(self):
       basewidth = 300
@@ -119,7 +116,7 @@ class ImportFile(tk.Frame):
    def javaExec(self):
       # Up to redoing depending on path
       #os.chdir("../pathConversion/")
-      subprocess.call(["java", "-cp", "../pathConversion/rxtx-2.1-7-bins-r2/*:../pathConversion/.", "FileParser", "../piGUI/file.txt"])
+      retCode = subprocess.call(["java", "-cp", "../pathConversion/rxtx-2.1-7-bins-r2/*:../pathConversion/.", "FileParser", "../piGUI/file.txt"])
       print("DONE!")
 
 class badFileSyntax(tk.Frame):

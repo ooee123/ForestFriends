@@ -128,7 +128,7 @@ public class PathConverter {
             paths = new V().getPaths();
             break;
          case 'W':
-            //paths = new W().getPaths();
+            paths = new W().getPaths();
             break;
          case 'X':
             paths = new X().getPaths();

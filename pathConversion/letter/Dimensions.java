@@ -47,4 +47,14 @@ class Dimensions
       //MIN_WIDTH = strokeWeight / 2;
       MAX_WIDTH = WIDTH - strokeWeight;
    }
+
+   static int getRelativeX(int num, int den)
+   {
+      return (Dimensions.MAX_WIDTH - Dimensions.MIN_WIDTH) * num / den + Dimensions.MIN_WIDTH;
+   }
+
+   static int getRelativeY(int num, int den)
+   {
+      return (Dimensions.MAX_HEIGHT - Dimensions.MIN_HEIGHT) * num / den + Dimensions.MIN_HEIGHT;
+   }
 }
