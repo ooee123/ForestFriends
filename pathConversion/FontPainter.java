@@ -22,7 +22,7 @@ public class FontPainter extends Component {
    private java.util.List<Paths> letters;
    private int currentX;
    private int currentY;
-   private static final boolean saveImage = true;
+   private static final boolean saveImage = false;
    private BufferedImage img;
    private Graphics2D imgGraphics;
    private int preferredWidth;
@@ -65,12 +65,15 @@ public class FontPainter extends Component {
 
    public void finishDrawing()
    {
-      try {
-         ImageIO.write(img, "jpg", new File("original.jpg"));
-      }
-      catch (IOException e)
+      if (saveImage)
       {
-         System.err.println(e.getMessage());
+         try {
+            ImageIO.write(img, "jpg", new File("original.jpg"));
+         }
+         catch (IOException e)
+         {
+            System.err.println(e.getMessage());
+         }
       }
    }
 
