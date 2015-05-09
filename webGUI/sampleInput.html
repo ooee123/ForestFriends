@@ -25,27 +25,29 @@
                <input type="file" id="upload">
             </div>
             <div id="sample">
-            <button type="button" id="newTextBoxSampleBoard">Sample Board</button>
-            <button type="button" id="newTextBoxSampleText">Sample Text</button>
+               <button type="button" id="newTextBoxSampleBoard">Sample Board</button>
+               <button type="button" id="sampleBoard">Sample Board with Text</button>
             </div>
             <br>
             <br>
-            Height of Board: <input id="yCoord" type="number" placeholder="inches">
-            Width of Board: <input id="xCoord" type="number" placeholder="inches">
-            Height of Letter: <input id="fontSize" type="number" placeholder="inches"> <br>
+            <br>
+            <div align="center">
+               Height of Board: <input id="yCoord" type="number" placeholder="inches">
+               Width of Board: <input id="xCoord" type="number" placeholder="inches">
+               Height of Letter: <input id="fontSize" type="number" placeholder="inches"> <br>
                
             <br>
-            <!--
-             -->
-            
-            <button id="newTextBox" type="button">Add Text</button><br><br>
-            <div id="textbox">
+               <button id="newTextBox" type="button">Add Text</button><br><br>
+               <div id="textbox">
+               </div>
             </div>
             <br>
-            
-            Filename to Save As: <input id="inputFileNameToSaveAs">
-            <button onclick="saveTextAsFile()">Save Text to File</button><br>
-            <br>
+         
+            <div align="center">
+               Filename to Save As: <input id="inputFileNameToSaveAs">
+               <button onclick="saveTextAsFile()">Save Text to File</button><br>
+               <br>
+            </div>
          </div>
       </div>
       <script src="script.js"></script>

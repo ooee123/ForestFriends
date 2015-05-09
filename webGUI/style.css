@@ -199,14 +199,20 @@ input {
 
 
 /* ----------------DIV---------------- */
-div#upload{
-   margin-right: 50px;
+div#uploadDiv{
+   margin: 0 50px;
    float:left;
    overflow:hidden;
 }
 div#sample {
-   float:left;
+   margin: 0 50px;
+   float:right;
    overflow:hidden;
+}
+
+div#boardInfo {
+
+   margin: 0 50px;
 }
 
 /* ----------------FONT---------------- */
