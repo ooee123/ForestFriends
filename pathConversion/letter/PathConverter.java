@@ -98,10 +98,10 @@ public class PathConverter {
             paths = new L().getPaths();
             break;
          case 'M':
-            //paths = new M().getPaths();
+            paths = new M().getPaths();
             break;
          case 'N':
-            //paths = new N().getPaths();
+            paths = new N().getPaths();
             break;
          case 'O':
             paths = new O().getPaths();
