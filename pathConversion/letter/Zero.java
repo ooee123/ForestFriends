@@ -2,11 +2,11 @@ package letter;
 
 import java.util.*;
 
-public class O implements Letter
+public class Zero implements Letter
 {
    public Paths getPaths()
    {
-      Paths paths = new Paths(Dimensions.WIDTH, Dimensions.HEIGHT, "O");
+      Paths paths = new Paths(Dimensions.WIDTH, Dimensions.HEIGHT, "0");
       paths.add(new Path(Dimensions.MAX_WIDTH, Dimensions.MAX_HEIGHT / 2, Path.MovementType.START));
       int centerX = Dimensions.MAX_WIDTH / 2;
       int centerY = Dimensions.MAX_HEIGHT / 2;
