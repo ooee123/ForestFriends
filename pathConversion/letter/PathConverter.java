@@ -92,7 +92,7 @@ public class PathConverter {
             paths = new J().getPaths();
             break;
          case 'K':
-            //paths = new K().getPaths();
+            paths = new K().getPaths();
             break;
          case 'L':
             paths = new L().getPaths();
@@ -116,7 +116,7 @@ public class PathConverter {
             paths = new R().getPaths();
             break;
          case 'S':
-            //paths = new S().getPaths();
+            paths = new S().getPaths();
             break;
          case 'T':
             paths = new T().getPaths();
@@ -134,7 +134,7 @@ public class PathConverter {
             paths = new X().getPaths();
             break;
          case 'Y':
-            //paths = new Y().getPaths();
+            paths = new Y().getPaths();
             break;
          case 'Z':
             paths = new Z().getPaths();

@@ -75,23 +75,24 @@ class Dimensions
       WIDTH_80 = (WIDTH * 4 / 5);
       WIDTH_90 = (WIDTH * 9 / 10);
       WIDTH_20 = (WIDTH * 1 / 5);
+      WIDTH_20 = strokeWeight * 1;
       MAX_WIDTH_80 = WIDTH_80 - strokeWeight;
       MAX_WIDTH_90 = WIDTH_90 - strokeWeight;
-      MAX_WIDTH_20 = WIDTH_20 - strokeWeight;
+      MAX_WIDTH_20 = strokeWeight;
    }
 
    static int getRelativeX(int num, int den)
    {
-      return (Dimensions.MAX_WIDTH - Dimensions.MIN_WIDTH) * num / den + Dimensions.MIN_WIDTH;
+      return (int)Math.round((double)(Dimensions.MAX_WIDTH - Dimensions.MIN_WIDTH) * num / den + Dimensions.MIN_WIDTH);
    }
 
    static int getRelativeX(int maxWidth, int num, int den)
    {
-      return (maxWidth - Dimensions.MIN_WIDTH) * num / den + Dimensions.MIN_WIDTH;
+      return (int)Math.round((double)(maxWidth - Dimensions.MIN_WIDTH) * num / den + Dimensions.MIN_WIDTH);
    }
 
    static int getRelativeY(int num, int den)
    {
-      return (MAX_HEIGHT - Dimensions.MIN_HEIGHT) * num / den + Dimensions.MIN_HEIGHT;
+      return (int)Math.round((double)(MAX_HEIGHT - Dimensions.MIN_HEIGHT) * num / den + Dimensions.MIN_HEIGHT);
    }
 }
