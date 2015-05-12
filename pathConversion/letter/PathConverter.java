@@ -107,13 +107,13 @@ public class PathConverter {
             paths = new O().getPaths();
             break;
          case 'P':
-            //paths = new P().getPaths();
+            paths = new P().getPaths();
             break;
          case 'Q':
             paths = new Q().getPaths();
             break;
          case 'R':
-            //paths = new R().getPaths();
+            paths = new R().getPaths();
             break;
          case 'S':
             //paths = new S().getPaths();
