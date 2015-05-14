@@ -139,35 +139,38 @@ public class PathConverter {
          case 'Z':
             paths = new Z().getPaths();
             break;
+         case '.':
+            paths = new Period().getPaths();
+            break;
          case '1':
-            //paths = new One().getPaths();
+            paths = new One().getPaths();
             break;
          case '2':
-            //paths = new Two().getPaths();
+            paths = new Two().getPaths();
             break;
          case '3':
-            //paths = new Three().getPaths();
+            paths = new Three().getPaths();
             break;
          case '4':
             paths = new Four().getPaths();
             break;
          case '5':
-            //paths = new Five().getPaths();
+            paths = new Five().getPaths();
             break;
          case '6':
-            //paths = new Six().getPaths();
+            paths = new Six().getPaths();
             break;
          case '7':
-            //paths = new Seven().getPaths();
+            paths = new Seven().getPaths();
             break;
          case '8':
-            //paths = new Eight().getPaths();
+            paths = new Eight().getPaths();
             break;
          case '9':
-            //paths = new Nine().getPaths();
+            paths = new Nine().getPaths();
             break;
          case '0':
-            //paths = new Zero().getPaths();
+            paths = new Zero().getPaths();
             break;
          case '<':
             paths = new Left().getPaths();
