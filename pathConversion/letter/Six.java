@@ -28,15 +28,6 @@ public class Six implements Letter
       int point = FIRST_STARTING_ANGLE;
       int x = (int)Math.round(FIRST_CENTER_X + Math.cos(point * 2 * Math.PI / Letter.DISCRETE_POINTS) * FIRST_RADIUS_X);
       int y = (int)Math.round(FIRST_CENTER_Y + Math.sin(point * 2 * Math.PI / Letter.DISCRETE_POINTS) * FIRST_RADIUS_Y);
-      /*
-      paths.add(new Path(x, y, Path.MovementType.START));
-      for (point++; point <= FIRST_ENDING_ANGLE; point++)
-      {
-         x = (int)Math.round(FIRST_CENTER_X + Math.cos(point * 2 * Math.PI / Letter.DISCRETE_POINTS) * FIRST_RADIUS_X);
-         y = (int)Math.round(FIRST_CENTER_Y + Math.sin(point * 2 * Math.PI / Letter.DISCRETE_POINTS) * FIRST_RADIUS_Y);
-         paths.add(new Path(x, y, Path.MovementType.LINE));
-      }
-      */
       for (point = SECOND_STARTING_ANGLE; point >= SECOND_ENDING_ANGLE; point--)
       {
          x = (int)Math.round(SECOND_CENTER_X + Math.cos(point * 2 * Math.PI / Letter.DISCRETE_POINTS) * SECOND_RADIUS_X);
