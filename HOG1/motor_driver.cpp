@@ -171,7 +171,7 @@ void motor_driver::move_cw (void)
     }
 }
 
-void motor_driver::move(uint16_t delta)
+void motor_driver::move(int16_t delta)
 {	
 	if(delta > 0)
 	{
@@ -191,6 +191,7 @@ double motor_driver::PI(uint16_t error)
 {
 	//Porportional error variables
 	double pGain = 0.005;
+	pGain = 2.000;
 	double pTerm = 95 + pGain*abs(error);
 	
    /* Integral part

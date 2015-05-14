@@ -49,6 +49,7 @@ motor_task::motor_task (const char* a_name,
    motor = motor_in;
    encoder = encoder_in;
    desired = desired_in;
+   //serial = serial_in;
 	// Nothing is done in the body of this constructor. All the work is done in the
 	// call to the frt_task constructor on the line just above this one
 }
@@ -106,18 +107,16 @@ void motor_task::run (void)
 	for (;;)
 	{	
 		runs++;
-      
 
-
-      //motor->set_power(0b1010100111);
-      motor->set_power(motor->move(encoder.getPosition() - desired));
-      //p_serial->puts("HELLO");
-   //dump_stack(p_serial);
-      //motor->set_power(30000);
-      PORTA = 1;
-		//delay_from_to (previousTicks, configMS_TO_TICKS (600));
-      //motor->brake();
-		delay_from_to (previousTicks, configMS_TO_TICKS (600));
+      uint16_t pos = encoder->updatePosition();
+      *p_serial << get_name();
+      *p_serial << pos;
+      *p_serial << "\n";
+      motor->move((int16_t)pos);
+      //*desired = serial->read_uint16_t();
+      //*p_serial << *desired;
+      //*p_serial << "\n";
+      //motor->move((int16_t)*desired);
+		delay_from_to (previousTicks, configMS_TO_TICKS (30));
 	}
 }
-

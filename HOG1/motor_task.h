@@ -51,6 +51,7 @@
 #include "shares.h"                         // Global ('extern') queue declarations
 #include "motor_driver.h"
 #include "encoder_driver.h"
+#include "read_serial_driver.h"
 
 
 //-------------------------------------------------------------------------------------
@@ -66,6 +67,7 @@ private:
    motor_driver* motor;
    encoder_driver* encoder;
    uint16_t* desired;
+   read_serial_driver* serial;
 	// No private variables or methods for this class
 
 protected:
