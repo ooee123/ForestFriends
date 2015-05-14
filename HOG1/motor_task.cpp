@@ -40,13 +40,15 @@ motor_task::motor_task (const char* a_name,
 								 size_t a_stack_size,
 								 emstream* p_ser_dev,
                          motor_driver* motor_in,
-                         encoder_driver* encoder_in
+                         encoder_driver* encoder_in,
+                         uint16_t* desired_in
 								)
 	:
    frt_task (a_name, a_priority, a_stack_size, p_ser_dev)
 {
    motor = motor_in;
    encoder = encoder_in;
+   desired = desired_in;
 	// Nothing is done in the body of this constructor. All the work is done in the
 	// call to the frt_task constructor on the line just above this one
 }
@@ -108,6 +110,7 @@ void motor_task::run (void)
 
 
       //motor->set_power(0b1010100111);
+      motor->set_power(motor->move(encoder.getPosition() - desired));
       //p_serial->puts("HELLO");
    //dump_stack(p_serial);
       //motor->set_power(30000);

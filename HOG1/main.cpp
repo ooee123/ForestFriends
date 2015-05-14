@@ -122,29 +122,29 @@ int main (void)
 	// serial port will be used by the user interface task after setup is complete and
 	// the task scheduler has been started by the function vTaskStartScheduler()
 	rs232 ser_port (9600, 0);
+
+   uint16_t desiredX;
+   uint16_t desiredY;
+   uint16_t desiredZ;
       
 	// task that controls motors
 	motor_driver* xAxis = new motor_driver (&DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1A1, &OCR1A);
    encoder_driver* xEncoder = new encoder_driver(&DDRA, &PINA, &PORTA, PA5, PA4);
    xEncoder->setSerial(&ser_port);
-	new motor_task ("xAxis", task_priority (1), 280, &ser_port, xAxis, xEncoder);
+	new motor_task ("xAxis", task_priority (1), 280, &ser_port, xAxis, xEncoder, &desiredX);
 
 	motor_driver* yAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1B1, &OCR1B);
    encoder_driver* yEncoder = new encoder_driver(&DDRA, &PINA, &PORTA, PA3, PA2);
    yEncoder->setSerial(&ser_port);
-	new motor_task ("yAxis", task_priority (1), 280, &ser_port, yAxis, xEncoder);
+	new motor_task ("yAxis", task_priority (1), 280, &ser_port, yAxis, xEncoder, &desiredY);
 
 	motor_driver* zAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC1, PC7, PC6, PB7, COM1C1, &OCR1C);
    encoder_driver* zEncoder = new encoder_driver(&DDRA, &PINA, &PORTA, PA1, PA0);
    zEncoder->setSerial(&ser_port);
-	new motor_task ("zAxis", task_priority (1), 280, &ser_port, zAxis, zEncoder);
+	new motor_task ("zAxis", task_priority (1), 280, &ser_port, zAxis, zEncoder, &desiredZ);
 
-   for (;;)
-   {
-      xEncoder->updatePosition();
-      yEncoder->updatePosition();
-      zEncoder->updatePosition();
-   }
+   // task that reads incoming serial data
+   read_serial_driver* serial = new read_serial_driver(&ser_port, &desiredX, &desiredY, &desiredZ);
 	// Here's where the RTOS scheduler is started up. It should never exit as long as
 	// power is on and the microcontroller isn't rebooted
 	vTaskStartScheduler ();
