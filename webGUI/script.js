@@ -1,4 +1,5 @@
 var dimension = {width: 24, length: 12}
+
 var fontSize = 1;
 var canvas = document.getElementById('main');
 var context = canvas.getContext('2d');
@@ -52,36 +53,70 @@ var updateEverything = function (canvasNumber) {
       var canvas = textBox[canvasNumber - 1]
       var width = dimension["width"]
       var length = dimension["length"]
-      canvas.x = x
-      canvas.y = y
-      canvas.text = text;
 
-      var context = canvas.getContext("2d")
-      
-      context.clearRect(0, 0, canvas.width*scale, canvas.height*scale)
-      context.rect(0, 0, width*scale, length*scale);
-      canvas.width = width*scale;
-      canvas.height = length*scale;
-      context.font = 'normal ' + document.getElementById("fontSize").value*22 + 'pt hwygoth'; // ** take a look at this
+      if (x < 1) {
+         x = 1;
+         document.getElementById("x" + canvasNumber).value = 1
+      }
+      if (y < 2) {
+         y = 2;
+         document.getElementById("y" + canvasNumber).value = 2
+      }
+      if (y > length - 1) {
+         y = length - 1;
+         document.getElementById("y" + canvasNumber).value = length - 1
+      }
+
+         canvas.x = x
+         canvas.y = y
+         canvas.text = text;
+/*
+         var contextTemp = canvas.getContext("2d")
+         contextTemp.font = 'normal ' + document.getElementById("fontSize").value*22 + 'pt hwygoth'; 
+         contextTemp.fillText(text, x*scale, y*scale);
+      test = (width * scale - 20 - x * scale) - contextTemp.measureText(text).width
+      alert(test)
+*/
+         var context = canvas.getContext("2d")
+         context.clearRect(0, 0, canvas.width*scale, canvas.height*scale)
+         context.rect(0, 0, width*scale, length*scale);
+         canvas.width = width*scale;
+         canvas.height = length*scale;
+         context.font = 'normal ' + document.getElementById("fontSize").value*22 + 'pt hwygoth'; // ** take a look at this
+         context.fillText(text, x*scale, y*scale);
       //alert((canvas.width - canvas.x * scale) - context.measureText(text).width + " " + canvas.width + " "  + canvas.x * scale + " " + context.measureText(text).width)
-      test = (canvas.width - canvas.x * scale) - context.measureText(text).width
-      if (test < 0) {
+      /*
+      if (test > 0) {
+         canvas.x = x
+         canvas.y = y
+         canvas.text = text;
+
+         var context = canvas.getContext("2d")
+
+         context.clearRect(0, 0, canvas.width*scale, canvas.height*scale)
+         context.rect(0, 0, width*scale, length*scale);
+         canvas.width = width*scale;
+         canvas.height = length*scale;
+         context.font = 'normal ' + document.getElementById("fontSize").value*22 + 'pt hwygoth'; // ** take a look at this
+         context.fillText(text, x*scale, y*scale);
+      }
+      else {
          alert("too lng")
       }
-      context.fillText(text, x*scale, y*scale);
+      */
 
    }
 }
 
 var updateRect = function () {
    
-   if (dimension["width"] < 0) {
-      document.getElementById("xCoord").value = 1
-      dimension["width"] = 1;
+   if (dimension["width"] < 3) {
+      document.getElementById("xCoord").value = 3
+      dimension["width"] = 3;
    }
-   if (dimension["length"] < 0) {
-      document.getElementById("yCoord").value = 1
-      dimension["length"] = 1;
+   if (dimension["length"] < 3) {
+      document.getElementById("yCoord").value = 3
+      dimension["length"] = 3;
    }
    
    
