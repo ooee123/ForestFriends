@@ -37,8 +37,8 @@
 //======================================================================================
 
 // This define prevents this .H file from being included multiple times in a .CPP file
-#ifndef _motor_driver_H_
-#define _motor_driver_H_
+#ifndef _serial_driver_H_
+#define _serial_driver_H_
 
 
 #include "emstream.h"                       // Header for serial ports and devices
@@ -60,28 +60,14 @@
  *  @param OCR the pwm control register 
  */
 
-class motor_driver
+class read_serial_driver
 {
 	protected:
 		//instance/global variables
-		emstream* ptr_to_serial;
-
-		volatile uint8_t* DDR_DIR;
-		volatile uint8_t* DDR_EN;
-		volatile uint8_t* DDR_PWM;
-		
-		volatile uint8_t* PORT_EN;
-		volatile uint8_t* PORT_DIR;
-		
-		uint8_t COMTIMER;
-		
-		uint8_t INA; 
-		uint8_t INB; 
-		uint8_t EN;
-		volatile uint16_t* OCR;
-		uint8_t PWM;
-		
-		bool motor_trans;
+		emstream* serial;
+      uint16_t* desiredX;
+      uint16_t* desiredY;
+      uint16_t* desiredZ;
 		
 	public:
 		// The constructor sets up the motor driver. The "= NULL" part is a
@@ -89,26 +75,10 @@ class motor_driver
 		// where this constructor is called, the compiler will just fill in "NULL".
 		// In this case that has the effect of turning off diagnostic printouts.
 		// This follows for the "= 0" part.
-		motor_driver (volatile uint8_t* DDR_en, volatile uint8_t* DDR_dir, volatile uint8_t* DDR_pwm, volatile uint8_t* PORT_en, volatile uint8_t* PORT_dir, uint8_t ENbit, uint8_t INAbit, uint8_t INBbit, uint8_t PWMbit,uint8_t COMtimer, volatile uint16_t* OCRbit);
+      read_serial_driver(rs232 *serial_in, uint16_t* desiredX_in, uint16_t* desiredY_in, uint16_t* desiredZ_in);
 		
-		// The set_power function first obtains 
-   		// a reading from the power variables. 
-		// The sign of the input determines ccw or cw rotation of motor and converts 
-    		// signed integter into an unsigned integer which is interpreted by the motor controllers
-     		// a pwm signal or duty cycle.
-		void set_power (double power);
-
-      void setSerial(emstream*);
-
-		// The brake function sets the mode select bits A & B to the same value.   
-		void brake (void);
-		
-		void move_cw(void);
-		
-		
-		double PI(uint16_t);
-
-      void move(int16_t);
+      void read();
+      uint16_t read_uint16_t();
 
 		
 }; // end of class my_motor_driver

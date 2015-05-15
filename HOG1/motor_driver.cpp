@@ -171,30 +171,30 @@ void motor_driver::move_cw (void)
     }
 }
 
-/*
- * 
-void motor_driver::set_position(void)
+void motor_driver::move(int16_t delta)
 {	
-	if(encoder_desired.get() > encoder_position.get())
+	if(delta > 0)
 	{
-		set_power(PI()); //go clockwise
+		set_power(PI(delta)); //go clockwise
 	}
 	
-	else if(encoder_desired.get() < encoder_position.get())
+	else if(delta < 0)
 	{
-		set_power(-PI()); // go counterclockwise
+		set_power(-PI(delta)); // go counterclockwise
 	}
 	
-	position_error.put(encoder_desired.get() - encoder_position.get());
+	//position_error.put(encoder_desired.get() - encoder_position.get());
 	
-}*/
+}
 
-double motor_driver::PI(void)
+double motor_driver::PI(uint16_t error)
 {
 	//Porportional error variables
 	double pGain = 0.005;
-	double pTerm = 95 + pGain*abs(position_error.get());
+	pGain = 2.000;
+	double pTerm = 95 + pGain*abs(error);
 	
+   /* Integral part
 	//Integral error variables
 	double iTerm = 0.0000005;
 	uint32_t iState = 0;
@@ -203,7 +203,7 @@ double motor_driver::PI(void)
 	double iGain = 0.0;
 	
 	
-	if(position_error.get() <= 60)
+	if(error <= 60)
 	{
 	  iState = 0;
 	}
@@ -223,9 +223,9 @@ double motor_driver::PI(void)
 	  
 	  iTerm = iGain * iState;
 	}
+   End Integral */
 
-	return(iTerm + pTerm);
-   return 0;
+	return pTerm;
 }
 
 

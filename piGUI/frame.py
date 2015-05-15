@@ -87,13 +87,25 @@ class ImportFile(tk.Frame):
          self.cont.show_frame(VerifyDesign)
 
    def resize(self):
-      basewidth = 300
       img = Image.open("original.jpg")
 
-      print("image is opened")
-      wpercent = (basewidth / float (img.size[0]))
-      hsize = int ((float (img.size[1]) * float (wpercent)))
-      img = img.resize((basewidth, hsize), Image.ANTIALIAS)
+      #print("image is opened")
+      #print(str(img.size[0]) + " " + str( img.size[1]))
+      ratio = img.size[0] / img.size[1]; 
+      #print(str(ratio))
+      if ratio >= 2:
+         # width + golden ratio
+         basewidth = 300
+         wpercent = (basewidth / float (img.size[0]))
+         hsize = int ((float (img.size[1]) * float (wpercent)))
+         img = img.resize((basewidth, hsize), Image.ANTIALIAS)
+      else:# if ratio < 2:
+         # height
+         basewidth = 150
+         hpercent = (basewidth / float (img.size[1]))
+         wsize = int ((float (img.size[0]) * float (hpercent)))
+         img = img.resize((wsize, basewidth), Image.ANTIALIAS)
+
       img.save('resize.jpg')
       frames[VerifyDesign].updateImage(self.cont)
       #os.remove("original.jpg")

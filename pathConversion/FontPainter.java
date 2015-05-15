@@ -22,7 +22,7 @@ public class FontPainter extends Component {
    private java.util.List<Paths> letters;
    private int currentX;
    private int currentY;
-   private static final boolean saveImage = false;
+   private static final boolean saveImage = true;
    private BufferedImage img;
    private Graphics2D imgGraphics;
    private int preferredWidth;

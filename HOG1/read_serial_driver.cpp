@@ -21,80 +21,52 @@
 #include <avr/io.h>
 #include <math.h>
 #include <avr/interrupt.h>
+#include <ctype.h>
 
 #include "rs232int.h"                       // Include header for serial port class
-#include "encoder_driver.h"                // Include header for the A/D class
+#include "read_serial_driver.h"                // Include header for the A/D class
 #define STOP_CONST 25
 
 //---------------------		//p_motor_1->set_power(control1);----------------------------------------------------------------
 /** \brief This constructor initializes the motor driver. 
  *  \details The motor driver is made ready so that when a function such as \c set_power() is called the motor runs.
  *  when the \c brake() function is called it stops the motor if running. 
+ *  @param ptr_to_serial The my_motor_driver class uses this pointer to the serial port to print desired data
  *  @param PORT initializes the data direction registers for the motor
  *  @param INA mode select for bit A of the motor
  *  @param INB mode select for bit B of the motor
  *  @param EN output enable and diagnostics
  *  @param OCR the pwm control register 
  */
-	//motor_driver* p_motor_1 = new my_motor_driver (p_serial, &DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1B1, &OCR1B);
 //Initialize my_motor_driver
-encoder_driver::encoder_driver(volatile uint8_t* DDR_en, volatile uint8_t* PIN_en, volatile uint8_t* PORT_EN, uint8_t Abit, uint8_t Bbit)
+read_serial_driver::read_serial_driver(rs232 *serial_in, uint16_t* desiredX_in, uint16_t* desiredY_in, uint16_t* desiredZ_in)
 {
-	
-   position = 0;
-	DDR_EN = DDR_en;
-	
-	PIN = PIN_en;
-	
-	INA = Abit; 
-	INB = Bbit; 
-	
-	*DDR_EN &= ~((1 << INA) | (1 << INB)); // Input enable for Encoder Pin A and B
-
-   *PORT_EN |= (1 << INA) | (1 << INB); // Activate pull up resister
-   prevA = (*PIN >> INA) & 0b01;
-   uint8_t prevB = (*PIN >> INB) & 0b01;
-   prevSum = prevA << 1 | prevB;
+   serial = serial_in;
+   desiredX = desiredX_in;
+   desiredY = desiredY_in;
+   desiredZ = desiredZ_in;
 }
 
-uint32_t encoder_driver::updatePosition(void)
+uint16_t read_serial_driver::read_uint16_t()
 {
-   uint8_t newA = (*PIN >> INA) & 0x1;
-   uint8_t newB = (*PIN >> INB) & 0x1;
-   
-   uint8_t sum = (newA << 1) | newB;
-
-   if (sum != prevSum)
+   uint16_t num = 0;
+   char c;
+   c = serial->getchar();
+   //if (isdigit(c))
    {
-      if (prevA != newA)
-      {
-         if (prevSum == 1 || prevSum == 2)
-         {
-            position++;
-         }
-         else
-         {
-            position--;
-         }
-      }
-      else
-      {
-         if (prevSum == 0 || prevSum == 3)
-         {
-            position++;
-         }
-         else
-         {
-            position--;
-         }
-      }
-      prevA = newA;
-      prevSum = sum;
+      num = c - '0';
    }
-   return position;
+   c = serial->getchar();
+   //if (isdigit(c))
+   {
+      num = (num << 8) | (c - '0');
+   }
+   return num;
 }
 
-void encoder_driver::setSerial(emstream* p_serial_port)
+void read_serial_driver::read()
 {
-	ptr_to_serial = p_serial_port;
+   *desiredX = read_uint16_t();
+   *desiredY = read_uint16_t();
+   *desiredZ = read_uint16_t();
 }
