@@ -1,0 +1,45 @@
+package letter;
+
+import java.util.*;
+
+public class Five implements Letter
+{
+   public static final int CENTER_X = Dimensions.getRelativeX(Dimensions.MAX_WIDTH_80, 1, 2);
+   public static final int RADIUS_X = Dimensions.getRelativeX(Dimensions.MAX_WIDTH_80, 1, 2);
+   public static final int LOOP_START_Y = Dimensions.getRelativeY(7, 12);
+   //public static final int CENTER_Y = Dimensions.getRelativeY(3, 12);
+   public static final int CENTER_Y = LOOP_START_Y - (int)Math.round(Math.tan(2 * Math.PI / 36) * RADIUS_X) - 10;
+
+   public static final int FIRST_STARTING_ANGLE = Letter.DISCRETE_POINTS * 170/360;
+   public static final int FIRST_ENDING_ANGLE = 0;
+   public static final int SECOND_STARTING_ANGLE = 0;
+   public static final int SECOND_ENDING_ANGLE = Letter.DISCRETE_POINTS * -135/360;
+   public static final int FIRST_RADIUS_Y = Dimensions.getRelativeY(7, 32);
+   //public static final int SECOND_RADIUS_Y = Dimensions.getRelativeY(9, 32);
+   public static final int SECOND_RADIUS_Y = CENTER_Y;
+   public Paths getPaths()
+   {
+      Paths paths = new Paths(Dimensions.WIDTH_80, Dimensions.HEIGHT, "5");
+      int point;
+      int x, y;
+
+      paths.add(new Path(Dimensions.MAX_WIDTH_80, Dimensions.MAX_HEIGHT, Path.MovementType.START));
+      paths.add(new Path(Dimensions.MIN_WIDTH, Dimensions.MAX_HEIGHT, Path.MovementType.LINE));
+      paths.add(new Path(Dimensions.MIN_WIDTH, Dimensions.getRelativeY(7,12), Path.MovementType.LINE));
+      for (point = FIRST_STARTING_ANGLE; point >= FIRST_ENDING_ANGLE; point--)
+      {
+         x = (int)Math.round(CENTER_X + Math.cos(point * 2 * Math.PI / Letter.DISCRETE_POINTS) * RADIUS_X);
+         y = (int)Math.round(CENTER_Y + Math.sin(point * 2 * Math.PI / Letter.DISCRETE_POINTS) * FIRST_RADIUS_Y);
+         paths.add(new Path(x, y, Path.MovementType.LINE));
+      }
+      for (point = SECOND_STARTING_ANGLE - 1; point >= SECOND_ENDING_ANGLE; point--)
+      {
+         //x = (int)Math.round(CENTER_X + Math.cos(point * 2 * Math.PI / Letter.DISCRETE_POINTS) * RADIUS_X);
+         x = (int)Math.round(Dimensions.getRelativeX(Dimensions.MAX_WIDTH_80, 9, 16) + Math.cos(point * 2 * Math.PI / Letter.DISCRETE_POINTS) * RADIUS_X);
+         y = (int)Math.round(CENTER_Y + Math.sin(point * 2 * Math.PI / Letter.DISCRETE_POINTS) * SECOND_RADIUS_Y);
+         paths.add(new Path(x, y, Path.MovementType.LINE));
+      }
+//      paths.add(new Path(Dimensions.getRelativeX(Dimensions.MAX_WIDTH_80, 3, 8), Dimensions.MIN_HEIGHT, Path.MovementType.LINE));
+      return paths;
+   }
+}

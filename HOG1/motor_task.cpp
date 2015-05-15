@@ -108,15 +108,16 @@ void motor_task::run (void)
 	{	
 		runs++;
 
-      uint16_t pos = encoder->updatePosition();
-      *p_serial << get_name();
+      uint16_t pos; // = encoder->updatePosition();
+      pos = p_serial->getchar();
+      //pos = (pos << 8) | p_serial->getchar();
       *p_serial << pos;
       *p_serial << "\n";
-      motor->move((int16_t)pos);
+      //motor->move((int16_t)pos);
       //*desired = serial->read_uint16_t();
       //*p_serial << *desired;
       //*p_serial << "\n";
       //motor->move((int16_t)*desired);
-		delay_from_to (previousTicks, configMS_TO_TICKS (30));
+		//delay_from_to (previousTicks, configMS_TO_TICKS (30));
 	}
 }
