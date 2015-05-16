@@ -91,6 +91,8 @@ uint32_t encoder_driver::updatePosition(void)
       prevA = newA;
       prevSum = sum;
    }
+   if (position % 4 == 0)
+      *ptr_to_serial << position;
    return position;
 }
 

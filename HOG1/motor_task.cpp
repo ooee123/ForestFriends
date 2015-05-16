@@ -109,7 +109,7 @@ void motor_task::run (void)
 		runs++;
 
       uint16_t pos; // = encoder->updatePosition();
-      pos = p_serial->getchar();
+      //pos = p_serial->getchar();
       //pos = (pos << 8) | p_serial->getchar();
       *p_serial << pos;
       *p_serial << "\n";

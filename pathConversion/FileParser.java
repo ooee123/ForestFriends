@@ -61,7 +61,6 @@ public class FileParser
          height = file.nextInt();
          fontHeight = file.nextInt();
       }
-      
       FontPainter fp = null;
       if (previewSign)
       {

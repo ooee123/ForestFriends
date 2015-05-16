@@ -51,17 +51,20 @@ uint16_t read_serial_driver::read_uint16_t()
 {
    uint16_t num = 0;
    char c;
-   c = serial->getchar();
-   //if (isdigit(c))
-   {
-      num = c - '0';
-   }
-   c = serial->getchar();
-   //if (isdigit(c))
-   {
-      num = (num << 8) | (c - '0');
-   }
-   return num;
+   #ifdef ASCII_SERIAL
+      c = serial->getchar();
+      {
+         num = c - '0';
+      }
+      c = serial->getchar();
+      {
+         num = (num << 8) | (c - '0');
+      }
+      return num;
+   #else
+      c = serial->getchar();
+      return (c << 8) | serial->getchar();
+   #endif
 }
 
 void read_serial_driver::read()
