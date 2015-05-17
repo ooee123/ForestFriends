@@ -51,10 +51,10 @@
 uint8_t* rcv0_buffer = NULL;
 
 /// This index is used to write into serial character receiver buffer 0.
-uint16_t rcv0_read_index;
+volatile uint16_t rcv0_read_index;
 
 /// This index is used to read from serial character receiver buffer 0. 
-uint16_t rcv0_write_index;
+volatile uint16_t rcv0_write_index;
 
 // If there's a UCSR0A register, there are 2 serial ports, so enable another buffer
 #ifdef UCSR1A
@@ -62,10 +62,10 @@ uint16_t rcv0_write_index;
 	uint8_t* rcv1_buffer = NULL;
 
 	/// This index is used to write into serial character receiver buffer 1.
-	uint16_t rcv1_read_index;
+	volatile uint16_t rcv1_read_index;
 
 	/// This index is used to read from serial character receiver buffer 1. 
-	uint16_t rcv1_write_index;
+	volatile uint16_t rcv1_write_index;
 #endif
 
 
@@ -255,7 +255,9 @@ ISR (RSI_CHAR_RECV_INT_0)
 
 	// Increment the write pointer
 	if (++rcv0_write_index >= RSINT_BUF_SIZE)
+   {
 		rcv0_write_index = 0;
+   }
 
 	// If the write pointer is now equal to the read pointer, that means we've just
 	// overwritten the oldest data. Increment the read pointer so that it doesn't seem

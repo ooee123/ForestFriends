@@ -73,63 +73,48 @@ frt_queue<uint32_t> queue_1 (20);
  *  @return This is a real-time microcontroller program which doesn't return. Ever.
  */
 
+encoder_driver* xEncoder = new encoder_driver(&DDRE, &PINE, &PORTE, PE4, PE5);
+encoder_driver* yEncoder = new encoder_driver(&DDRE, &PINE, &PORTE, PE6, PE7);
+encoder_driver* zEncoder = new encoder_driver(&DDRE, &PINE, &PORTE, PA1, PA0);
 // Enc 1 A SCL
-ISP(INT0_vect)
+ISR(INT0_vect)
 {
 }
 
 // Enc 1 B SDA
-ISP(INT1_vect)
+ISR(INT1_vect)
 {
 }
 
-// Enc 2 A PE4
-ISP(INT4_vect)
+// Enc X A PE4
+ISR(INT4_vect)
 {
+   xEncoder->updatePosition();
 }
 
-// Enc 2 B INT
-ISP(INT5_vect)
+// Enc X B INT
+ISR(INT5_vect)
 {
+   xEncoder->updatePosition();
 }
 
-// Enc 3 A PE6
-ISP(INT6_vect)
+// Enc Y A PE6
+ISR(INT6_vect)
 {
+   yEncoder->updatePosition();
 }
 
-// Enc 3 A PE7
-ISP(INT7_vect)
+// Enc Y B PE7
+ISR(INT7_vect)
 {
+   yEncoder->updatePosition();
 }
 
 int main (void)
 {
    /* Kevin's testing stuff. Test for pin output */
-   /*
-   EICRB = 0b10101010;
-   EIMSK = 0b11110011;
-
-   DDRA |= 0b00000001;
-   
-   DDRE = 0;
-   PORTE = ~0;
-   */
-   /*
-   for (;;)
-   {
-      PORTA = 0;
-      if ((PINE >> 7) & 1)
-      //if ((PINE >> 4) & 1)
-      {
-         PORTA |= (1 << 0);
-      }
-      else
-      {
-         PORTA &= ~(1 << 0);
-      }
-   }
-   */
+   EICRB = 0b01010101; // Set Int_4-7 to activate on pin toggle
+   EIMSK = 0b11110000; // Turn on Int_4-7
          
 	// Disable the watchdog timer unless it's needed later. This is important because
 	// sometimes the watchdog timer may have been left on...and it tends to stay on
@@ -145,35 +130,23 @@ int main (void)
    uint16_t desiredZ;
 
    sei();
-   /*
-   ser_port.putchar('t');
-   ser_port << ser_port.check_for_char();
-   ser_port.putchar(ser_port.getchar());
-   ser_port.putchar('s');
-   */
 
-
-   read_serial_driver* serial; // = new read_serial_driver(&ser_port, &desiredX, &desiredY, &desiredZ);
+   read_serial_driver* serial = new read_serial_driver(&ser_port, &desiredX, &desiredY, &desiredZ);
       
 	// task that controls motors
 	motor_driver* xAxis = new motor_driver (&DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1A1, &OCR1A);
-   encoder_driver* xEncoder = new encoder_driver(&DDRA, &PINA, &PORTA, PA5, PA4);
    xEncoder->setSerial(&ser_port);
 	new motor_task ("X", task_priority (1), 280, &ser_port, xAxis, xEncoder, &desiredX);
 
-   /*
 	motor_driver* yAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1B1, &OCR1B);
-   encoder_driver* yEncoder = new encoder_driver(&DDRA, &PINA, &PORTA, PA3, PA2);
    yEncoder->setSerial(&ser_port);
 	new motor_task ("Y", task_priority (1), 280, &ser_port, yAxis, yEncoder, &desiredY);
 	motor_driver* zAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC1, PC7, PC6, PB7, COM1C1, &OCR1C);
-   encoder_driver* zEncoder = new encoder_driver(&DDRA, &PINA, &PORTA, PA1, PA0);
    zEncoder->setSerial(&ser_port);
 	new motor_task ("Z", task_priority (1), 280, &ser_port, zAxis, zEncoder, &desiredZ);
-   */
    // task that reads incoming serial data
 	// Here's where the RTOS scheduler is started up. It should never exit as long as
 	// power is on and the microcontroller isn't rebooted
 
-	vTaskStartScheduler ();
+	//vTaskStartScheduler ();
 }
