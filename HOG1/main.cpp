@@ -35,7 +35,9 @@
 #include "frt_shared_data.h"                // Header for thread-safe shared data
 #include "shares.h"                         // Global ('extern') queue declarations
 #include "motor_task.h"  
+#include "encoder_driver.h"  
 #include "read_serial_driver.h"  
+#include "read_serial_task.h"  
 
 #include <util/delay.h>			     // Delay 
 
@@ -58,7 +60,9 @@ frt_text_queue print_ser_queue (32, NULL, 10);
  *  have been removed in this revision).
  */
 
-frt_queue<uint32_t> queue_1 (20);
+frt_queue<uint16_t> queue_x (20);
+frt_queue<uint16_t> queue_y (20);
+frt_queue<uint16_t> queue_z (20);
 
 /** This shared data item allows communication between the motor task and the task user.
  *  In this way, we can make a user interface which can update the motor operation in
@@ -128,25 +132,27 @@ int main (void)
    uint16_t desiredX;
    uint16_t desiredY;
    uint16_t desiredZ;
+   uint8_t state;
 
    sei();
 
-   read_serial_driver* serial = new read_serial_driver(&ser_port, &desiredX, &desiredY, &desiredZ);
       
 	// task that controls motors
 	motor_driver* xAxis = new motor_driver (&DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1A1, &OCR1A);
    xEncoder->setSerial(&ser_port);
 	new motor_task ("X", task_priority (1), 280, &ser_port, xAxis, xEncoder, &desiredX);
-
 	motor_driver* yAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1B1, &OCR1B);
    yEncoder->setSerial(&ser_port);
 	new motor_task ("Y", task_priority (1), 280, &ser_port, yAxis, yEncoder, &desiredY);
 	motor_driver* zAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC1, PC7, PC6, PB7, COM1C1, &OCR1C);
    zEncoder->setSerial(&ser_port);
 	new motor_task ("Z", task_priority (1), 280, &ser_port, zAxis, zEncoder, &desiredZ);
+
+   read_serial_driver* serial = new read_serial_driver(&ser_port);
+   new read_serial_task("S", task_priority (1), 280, &ser_port, serial, &desiredX, &desiredY, &desiredZ, xEncoder, yEncoder, zEncoder);
    // task that reads incoming serial data
 	// Here's where the RTOS scheduler is started up. It should never exit as long as
 	// power is on and the microcontroller isn't rebooted
 
-	//vTaskStartScheduler ();
+	vTaskStartScheduler ();
 }

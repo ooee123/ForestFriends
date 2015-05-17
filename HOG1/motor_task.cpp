@@ -19,6 +19,7 @@
 #include "frt_text_queue.h"                 // Header for text queue class
 #include "motor_driver.h"
 #include "motor_task.h"                 // Header for this task
+#include "frt_queue.h"
 #include <util/delay.h>
 #define CPR 1000
 
@@ -42,6 +43,7 @@ motor_task::motor_task (const char* a_name,
                          motor_driver* motor_in,
                          encoder_driver* encoder_in,
                          uint16_t* desired_in
+                         //,frt_queue<uint16_t>* queue
 								)
 	:
    frt_task (a_name, a_priority, a_stack_size, p_ser_dev)
@@ -85,36 +87,28 @@ void motor_task::run (void)
    OCR1A? "Generate interupts after num of clock ticks to it
    */
 
-	// pan motor
-	//motor_driver* yaw_motor = new motor_driver (p_serial, &DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1A1, &OCR1A);
-	// motor2 
-	//motor_driver* motor2 = new motor_driver (p_serial, &DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1B1, &OCR1B);
-	// motor3
-	//motor_driver* motor3 = new motor_driver (p_serial, &DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1A1, &OCR1A);
-	// tilt motor
-	
-	
-	//motor_driver* p_motor_2 = new my_motor_driver (p_serial, &DDRD, PB5, PD5, PD6, PD7, COM1A1, &PORTD, &OCR1A, true);
-	//sim motors (two motors using one control pin)
-	//motor_driver* sim_motors = new my_motor_driver (p_serial, &DDRC, PB7, PC0, PC1, PC2, COM1C1, &PORTC, &OCR1C, false);
-	
 	// power is turned off. The task continuously reads the shared variable, mode1 (which
 	// determines the mode of operation for a motor driver and reads the shared variable
 	// power_level1 which determines the duty cycle and direction of the motor.	
-	
-	// Enable global interrupts
 	
 	for (;;)
 	{	
 		runs++;
 
-      uint16_t pos; // = encoder->updatePosition();
-      //pos = p_serial->getchar();
-      //pos = (pos << 8) | p_serial->getchar();
-      *p_serial << pos;
-      *p_serial << "\n";
-      //motor->move((int16_t)pos);
-      //*desired = serial->read_uint16_t();
+/*
+      while (queue->not_empty())
+      {
+         state = queue.get();
+      }
+      if (state == HOME)
+      {
+         motor->move(-100);
+      }
+      else
+   */
+      {
+         motor->move((int16_t)encoder->getPosition());
+      }
       //*p_serial << *desired;
       //*p_serial << "\n";
       //motor->move((int16_t)*desired);

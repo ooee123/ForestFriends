@@ -96,6 +96,11 @@ uint32_t encoder_driver::updatePosition(void)
    return position;
 }
 
+uint16_t encoder_driver::getPosition(void)
+{
+   return position;
+}
+
 void encoder_driver::setSerial(emstream* p_serial_port)
 {
 	ptr_to_serial = p_serial_port;

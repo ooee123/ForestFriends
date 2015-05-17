@@ -48,6 +48,7 @@
 #include "semphr.h"                         // Header for FreeRTOS semaphores
 
 #include "shares.h"
+#include "rs232int.h"
 //-------------------------------------------------------------------------------------
 /** \brief This class should run the motor driver on an AVR processor. 
  *  \details my_motor_driver class holds the member functions in order to output a PWM signal 
@@ -65,9 +66,6 @@ class read_serial_driver
 	protected:
 		//instance/global variables
 		emstream* serial;
-      uint16_t* desiredX;
-      uint16_t* desiredY;
-      uint16_t* desiredZ;
 		
 	public:
 		// The constructor sets up the motor driver. The "= NULL" part is a
@@ -75,10 +73,11 @@ class read_serial_driver
 		// where this constructor is called, the compiler will just fill in "NULL".
 		// In this case that has the effect of turning off diagnostic printouts.
 		// This follows for the "= 0" part.
-      read_serial_driver(rs232 *serial_in, uint16_t* desiredX_in, uint16_t* desiredY_in, uint16_t* desiredZ_in);
+      read_serial_driver(rs232* serial_in);
 		
       void read();
       uint16_t read_uint16_t();
+      uint8_t read_uint8_t();
 
 		
 }; // end of class my_motor_driver

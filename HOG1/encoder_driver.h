@@ -87,7 +87,7 @@ class encoder_driver
 
       void setSerial(emstream*);
 
-		
+      uint16_t getPosition(void);		
 }; // end of class my_motor_driver
 
 #endif // _AVR_my_motor_driver_H_

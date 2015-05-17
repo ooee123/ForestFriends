@@ -39,19 +39,19 @@
  *  @param OCR the pwm control register 
  */
 //Initialize my_motor_driver
-read_serial_driver::read_serial_driver(rs232 *serial_in, uint16_t* desiredX_in, uint16_t* desiredY_in, uint16_t* desiredZ_in)
+read_serial_driver::read_serial_driver(rs232 *serial_in)
 {
    serial = serial_in;
-   desiredX = desiredX_in;
-   desiredY = desiredY_in;
-   desiredZ = desiredZ_in;
 }
 
 uint16_t read_serial_driver::read_uint16_t()
 {
    uint16_t num = 0;
    char c;
-   #ifdef ASCII_SERIAL
+   #ifdef BINARY_SERIAL
+      c = serial->getchar();
+      return (c << 8) | serial->getchar();
+   #else
       c = serial->getchar();
       {
          num = c - '0';
@@ -61,15 +61,14 @@ uint16_t read_serial_driver::read_uint16_t()
          num = (num << 8) | (c - '0');
       }
       return num;
-   #else
-      c = serial->getchar();
-      return (c << 8) | serial->getchar();
    #endif
 }
 
-void read_serial_driver::read()
+uint8_t read_serial_driver::read_uint8_t()
 {
-   *desiredX = read_uint16_t();
-   *desiredY = read_uint16_t();
-   *desiredZ = read_uint16_t();
+   #ifdef BINARY_SERIAL
+      return serial->getchar();
+   #else
+      return serial->getchar() - '0';
+   #endif
 }
