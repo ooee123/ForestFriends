@@ -70,13 +70,13 @@ var updateEverything = function (canvasNumber) {
          canvas.x = x
          canvas.y = y
          canvas.text = text;
-/*
          var contextTemp = canvas.getContext("2d")
          contextTemp.font = 'normal ' + document.getElementById("fontSize").value*22 + 'pt hwygoth'; 
          contextTemp.fillText(text, x*scale, y*scale);
       test = (width * scale - 20 - x * scale) - contextTemp.measureText(text).width
-      alert(test)
-*/
+      contextTemp.clearRect(0,0,canvas.width*scale, canvas.height*scale)
+   
+         if (test > 0) {
          var context = canvas.getContext("2d")
          context.clearRect(0, 0, canvas.width*scale, canvas.height*scale)
          context.rect(0, 0, width*scale, length*scale);
@@ -84,6 +84,11 @@ var updateEverything = function (canvasNumber) {
          canvas.height = length*scale;
          context.font = 'normal ' + document.getElementById("fontSize").value*22 + 'pt hwygoth'; // ** take a look at this
          context.fillText(text, x*scale, y*scale);
+         }
+         else {
+      alert(test)
+
+         }
       //alert((canvas.width - canvas.x * scale) - context.measureText(text).width + " " + canvas.width + " "  + canvas.x * scale + " " + context.measureText(text).width)
       /*
       if (test > 0) {
