@@ -28,6 +28,12 @@ var updateEverything = function (canvasNumber) {
       var y = document.getElementById("y" + canvasNumber).value;
       var text = document.getElementById("text" + canvasNumber).value.toUpperCase();
       var canvas = textBox[canvasNumber - 1]
+      if (dimension["length"] - 2 <= parseInt(document.getElementById("fontSize").value)) {
+         dimension["length"] = parseInt(document.getElementById("fontSize").value)+2;
+         document.getElementById("yCoord").value = dimension["length"] 
+         //updateRect()
+         alert("here")
+      }
       var width = dimension["width"]
       var length = dimension["length"]
       
@@ -35,15 +41,21 @@ var updateEverything = function (canvasNumber) {
          x = 1;
          document.getElementById("x" + canvasNumber).value = 1
       }
-      if (y != "" && y < 2) {
-         y = 2;
-         document.getElementById("y" + canvasNumber).value = 2
+      var height = parseInt(document.getElementById("fontSize").value);
+      if (y != "" && (y < 2 || height >= y)) {
+         if (height != 1) {
+            y = height + 1
+        } 
+         else {
+      //      y = 2;
+      
+      context.clearRect(0, 0, canvas.width*scale, canvas.height*scale)
+         }
       }
       else if (y != "" && y > length - 1) {
          y = length - 1;
-         document.getElementById("y" + canvasNumber).value = length - 1
       }
-
+      document.getElementById("y" + canvasNumber).value = y
       canvas.x = x
       canvas.y = y
       canvas.text = text;
@@ -68,14 +80,14 @@ var updateEverything = function (canvasNumber) {
 }
 
 var updateRect = function () {
-   
-   if (dimension["width"] < 3) {
-      document.getElementById("xCoord").value = 3
-      dimension["width"] = 3;
-  } 
-   if (dimension["length"] < 3) {
-      document.getElementById("yCoord").value = 3
-      dimension["length"] = 3;
+   if (dimension["width"] < 12) {
+      document.getElementById("xCoord").value = 12
+      dimension["width"] = 12;
+   } 
+
+   if (dimension["length"] < 12) {
+      document.getElementById("yCoord").value = 12
+      dimension["length"] = 12;
    }
    
    
@@ -158,7 +170,8 @@ var createTextBoxDiv = function () {
    xInput.min = "0"
    xInput.max = "48"
    xInput.id = "x" + textBox.length
-   xInput.addEventListener("keyup", input);
+   //xInput.addEventListener("keyup", input);
+   xInput.addEventListener("focusout", input);
    container.appendChild(xInput)
    
    var yInput = document.createElement("input");
@@ -166,7 +179,8 @@ var createTextBoxDiv = function () {
    yInput.min = "0"
    yInput.max = "24"
    yInput.id = "y" + textBox.length
-   yInput.addEventListener("keyup", input);
+   //yInput.addEventListener("keyup", input);
+   yInput.addEventListener("focusout", input);
    container.appendChild(yInput)
    
    var textInput = document.createElement("input");
@@ -262,9 +276,12 @@ var updateRectSample = function () {
 
 
 /* Assigning listeners to the length and width number fields */
-document.getElementById("yCoord").addEventListener("keyup", getDimension("length"))
-document.getElementById("xCoord").addEventListener("keyup", getDimension("width"))
-document.getElementById("fontSize").addEventListener("keyup", changeWHF)
+//document.getElementById("yCoord").addEventListener("keyup", getDimension("length"))
+//document.getElementById("xCoord").addEventListener("keyup", getDimension("width"))
+document.getElementById("yCoord").addEventListener("focusout", getDimension("length"))
+document.getElementById("xCoord").addEventListener("focusout", getDimension("width"))
+//document.getElementById("fontSize").addEventListener("keyup", changeWHF)
+document.getElementById("fontSize").addEventListener("focusout", changeWHF)
 document.getElementById("newTextBox").addEventListener("click", createCanvas)
 document.getElementById("sampleBoard").addEventListener("click", createCanvasSample)
 document.getElementById("newTextBoxSampleBoard").addEventListener("click", updateRectSample)
@@ -299,10 +316,13 @@ function saveTextAsFile() {
                                  type: 'text/plain'
                                  });
    var fileNameToSaveAs = document.getElementById("inputFileNameToSaveAs").value;
-   
+   if (fileNameToSaveAs == "") {
+      alert("Please Enter a Filename");
+      return;
+   }
    
    var downloadLink = document.createElement("a");
-   downloadLink.download = fileNameToSaveAs;
+   downloadLink.download = fileNameToSaveAs// + ".cpff";
    downloadLink.innerHTML = "Download File";
    
    if (checkRed()) {
