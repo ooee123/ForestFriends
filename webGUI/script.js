@@ -6,7 +6,6 @@ var context = canvas.getContext('2d');
 var textBox = []
 var scale = 20;
 
-
 var getDimension = function (varName) {
    return function () {
       dimension[varName] = document.getElementById(this.id).value
@@ -23,93 +22,48 @@ var changeWHF = function() {
    
 }
 
-var checkWidth = function() {
-   
-   var context = canvas.getContext("2d")
-   
-   var x = document.getElementById("x" + canvasNumber).value;
-   var width = dimension["width"]
-   var text = document.getElementById("text" + canvasNumber).value.toUpperCase();
-   
-   for (var i = 0 ; i < textBox.length; i++) {
-      
-      test = (width - x * scale) - context.measureText(text).width
-      if (test < 0) {
-         alert("too lng, cant save")
-         return false
-      }
-
-   }
-   return true
-   
-}
-
 var updateEverything = function (canvasNumber) {
    return function () {
       var x = document.getElementById("x" + canvasNumber).value;
       var y = document.getElementById("y" + canvasNumber).value;
       var text = document.getElementById("text" + canvasNumber).value.toUpperCase();
-		//alert(text);
       var canvas = textBox[canvasNumber - 1]
       var width = dimension["width"]
       var length = dimension["length"]
-
-      if (x < 1) {
+      
+      if (x != "" && x < 1) {
          x = 1;
          document.getElementById("x" + canvasNumber).value = 1
       }
-      if (y < 2) {
+      if (y != "" && y < 2) {
          y = 2;
          document.getElementById("y" + canvasNumber).value = 2
       }
-      if (y > length - 1) {
+      else if (y != "" && y > length - 1) {
          y = length - 1;
          document.getElementById("y" + canvasNumber).value = length - 1
       }
 
-         canvas.x = x
-         canvas.y = y
-         canvas.text = text;
-         var contextTemp = canvas.getContext("2d")
-         contextTemp.font = 'normal ' + document.getElementById("fontSize").value*22 + 'pt hwygoth'; 
-         contextTemp.fillText(text, x*scale, y*scale);
-      test = (width * scale - 20 - x * scale) - contextTemp.measureText(text).width
+      canvas.x = x
+      canvas.y = y
+      canvas.text = text;
+      var contextTemp = canvas.getContext("2d")
+      contextTemp.font = 'normal ' + document.getElementById("fontSize").value*22 + 'pt hwygoth'; 
+      contextTemp.fillText(text, x*scale, y*scale);
+      canvas.border = (width * scale - 20 - x * scale) - contextTemp.measureText(text).width
       contextTemp.clearRect(0,0,canvas.width*scale, canvas.height*scale)
-   
-         if (test > 0) {
-         var context = canvas.getContext("2d")
-         context.clearRect(0, 0, canvas.width*scale, canvas.height*scale)
-         context.rect(0, 0, width*scale, length*scale);
-         canvas.width = width*scale;
-         canvas.height = length*scale;
-         context.font = 'normal ' + document.getElementById("fontSize").value*22 + 'pt hwygoth'; // ** take a look at this
-         context.fillText(text, x*scale, y*scale);
-         }
-         else {
-      alert(test)
 
-         }
-      //alert((canvas.width - canvas.x * scale) - context.measureText(text).width + " " + canvas.width + " "  + canvas.x * scale + " " + context.measureText(text).width)
-      /*
-      if (test > 0) {
-         canvas.x = x
-         canvas.y = y
-         canvas.text = text;
-
-         var context = canvas.getContext("2d")
-
-         context.clearRect(0, 0, canvas.width*scale, canvas.height*scale)
-         context.rect(0, 0, width*scale, length*scale);
-         canvas.width = width*scale;
-         canvas.height = length*scale;
-         context.font = 'normal ' + document.getElementById("fontSize").value*22 + 'pt hwygoth'; // ** take a look at this
-         context.fillText(text, x*scale, y*scale);
+      var context = canvas.getContext("2d")
+      context.clearRect(0, 0, canvas.width*scale, canvas.height*scale)
+      context.rect(0, 0, width*scale, length*scale);
+      canvas.width = width*scale;
+      canvas.height = length*scale;
+      if (canvas.border < 0) {
+         // red
+         context.fillStyle = 'red'
       }
-      else {
-         alert("too lng")
-      }
-      */
-
+      context.font = 'normal ' + document.getElementById("fontSize").value*22 + 'pt hwygoth'; // ** take a look at this
+      context.fillText(text, x*scale, y*scale);
    }
 }
 
@@ -118,7 +72,7 @@ var updateRect = function () {
    if (dimension["width"] < 3) {
       document.getElementById("xCoord").value = 3
       dimension["width"] = 3;
-   }
+  } 
    if (dimension["length"] < 3) {
       document.getElementById("yCoord").value = 3
       dimension["length"] = 3;
@@ -319,6 +273,15 @@ document.getElementById("newTextBoxSampleBoard").addEventListener("click", updat
 updateRect()
 changeWHF()
 
+var checkRed = function () {
+   for (var i = 0; i < textBox.length; i++) {
+      if (textBox[i].border < 0) {
+         //alert("red")
+         return false;
+      }
+   }
+   return true;
+}
 
 function saveTextAsFile() {
    
@@ -342,24 +305,21 @@ function saveTextAsFile() {
    downloadLink.download = fileNameToSaveAs;
    downloadLink.innerHTML = "Download File";
    
-   if (window.webkitURL != null) {
-     // alert("er")
-      // Chrome allows the link to be clicked
-      // without actually adding it to the DOM.
-      downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
-   } else {
-      // Firefox requires the link to be added to the DOM
-      // before it can be clicked.
-      downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
-      downloadLink.onclick = destroyClickedElement;
-      downloadLink.style.display = "none";
-      document.body.appendChild(downloadLink);
+   if (checkRed()) {
+      if (window.webkitURL != null) {
+         // Chrome allows the link to be clicked
+         // without actually adding it to the DOM.
+         downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+      } else {
+         // Firefox requires the link to be added to the DOM
+         // before it can be clicked.
+         downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+         downloadLink.onclick = destroyClickedElement;
+         downloadLink.style.display = "none";
+         document.body.appendChild(downloadLink);
+      }
    }
    downloadLink.click();
-   //}
-   //else {
-   //alert("File cannot save, values are incorrect")
-   //}
 }
 
 /* Begin Parsing Methods */
