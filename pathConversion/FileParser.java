@@ -98,6 +98,7 @@ public class FileParser
          }
       }
       printer.close();
+      System.err.println("Done printing coords");
       fp.finishDrawing();
       System.exit(0);
    }

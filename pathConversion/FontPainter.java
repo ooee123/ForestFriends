@@ -67,6 +67,7 @@ public class FontPainter extends Component {
          drawLetters(imgGraphics);
          try {
             ImageIO.write(img, "jpg", new File("original.jpg"));
+            System.err.println("Done writing image");
          }
          catch (IOException e)
          {
