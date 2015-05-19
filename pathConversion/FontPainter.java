@@ -26,7 +26,7 @@ public class FontPainter extends Component {
    private int preferredHeight;
    private int strokeWidth;
    private static final boolean displayFrame = false;
-   private static final double DISPLAY_SCALE = 0.25;
+   private static final double DISPLAY_SCALE = 0.125;
 
    public FontPainter(int width, int height, int strokeWidth)
    {
