@@ -155,7 +155,7 @@ class VerifyDesign(tk.Frame):
       label.image = photo
       label.pack()
 
-      label = tk.Label(self, text="Design is..", font=LARGE_FONT)
+      #label = tk.Label(self, text="Design is..", font=LARGE_FONT)
       #label.pack(side=LEFT)
       button1 = tk.Button(self, text="correct", width = 12, height = 2, font=LARGE_FONT,
          command=lambda: controller.show_frame(VerifyParts))
@@ -185,12 +185,13 @@ class VerifyParts(tk.Frame):
       #label = tk.Label(self, text="Verify Parts", font=LARGE_FONT)
       #label.pack(pady=10,padx=10)
       
-
-      button1 = tk.Button(self, text="correct", font=LARGE_FONT, width = 12, height = 1,
+      #label = tk.Label(self, text="Design is..", font=LARGE_FONT)
+      #label.pack(side=LEFT)
+      button1 = tk.Button(self, text="correct", width = 12, height = 2, font=LARGE_FONT,
          command=lambda: controller.show_frame(Machine))
       button1.pack(side=LEFT)
 
-      button2 = tk.Button(self, text="incorrect", font=LARGE_FONT, width = 14, height = 1,
+      button2 = tk.Button(self, text="incorrect", width = 14, height = 2, font=LARGE_FONT,
          command=lambda: controller.show_frame(Reverify))
       button2.pack(side=LEFT)
 
