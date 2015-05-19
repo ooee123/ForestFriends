@@ -45,8 +45,9 @@ motor_task::motor_task (const char* a_name,
                          motor_driver* motor_in,
                          encoder_driver* encoder_in,
                          uint16_t* desired_in,
-                         volatile uint8_t* limitPORT_in,
-                         uint8_t limitPin_in,
+                         volatile uint8_t* limitDDR_in,
+                         volatile uint8_t* limitPIN_in,
+                         uint8_t limitPinNum_in,
                          State* state_in
 								)
 	:
@@ -55,9 +56,11 @@ motor_task::motor_task (const char* a_name,
    motor = motor_in;
    encoder = encoder_in;
    desired = desired_in;
-   limitPORT = limitPORT_in;
-   limitPin = limitPin_in;
+   limitPIN = limitPIN_in;
+   limitPinNum = limitPinNum_in;
    state = state_in;
+   // Set the limit switches bumpers
+   *limitDDR_in &= ~(1 << limitPinNum);
 	// Nothing is done in the body of this constructor. All the work is done in the
 	// call to the frt_task constructor on the line just above this one
 }
@@ -84,7 +87,7 @@ void motor_task::run (void)
 
       if (*state == HOME)
       {
-         if (!_bitValue(*limitPORT, limitPin))
+         if (!_bitValue(*limitPIN, limitPinNum))
          {
             motor->move(-CALIBRATE_SPEED);
          }
