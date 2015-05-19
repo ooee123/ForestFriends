@@ -41,7 +41,6 @@
 encoder_driver::encoder_driver(volatile uint8_t* DDR_en, volatile uint8_t* PIN_en, volatile uint8_t* PORT_EN, uint8_t Abit, uint8_t Bbit)
 {
 	
-   position = 0;
 	DDR_EN = DDR_en;
 	
 	PIN = PIN_en;
@@ -52,9 +51,7 @@ encoder_driver::encoder_driver(volatile uint8_t* DDR_en, volatile uint8_t* PIN_e
 	*DDR_EN &= ~((1 << INA) | (1 << INB)); // Input enable for Encoder Pin A and B
 
    *PORT_EN |= (1 << INA) | (1 << INB); // Activate pull up resister
-   prevA = (*PIN >> INA) & 0b01;
-   uint8_t prevB = (*PIN >> INB) & 0b01;
-   prevSum = prevA << 1 | prevB;
+   reset();
 }
 
 uint32_t encoder_driver::updatePosition(void)
@@ -99,6 +96,13 @@ uint32_t encoder_driver::updatePosition(void)
 uint16_t encoder_driver::getPosition(void)
 {
    return position;
+}
+
+void encoder_driver::reset(void)
+{
+   position = 0;
+   prevA = (*PIN >> INA) & 1;
+   prevSum = prevA << 1 | ((*PIN >> INB) & 1);
 }
 
 void encoder_driver::setSerial(emstream* p_serial_port)

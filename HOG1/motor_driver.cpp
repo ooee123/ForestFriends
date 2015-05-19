@@ -77,8 +77,6 @@ motor_driver::motor_driver (volatile uint8_t* DDR_en, volatile uint8_t* DDR_dir,
    // To activate 10 bit fast PWM mode on a 16 bit timer/counter
    //TCCR1A |= (1 << WGM10) | (1 << WGM11 ) (1 << COMTIMER);
 
-   
-	
 	// The CS11 bit sets the prescaler for this timer/counter to run the
 	// timer at F_CPU / 8
 	

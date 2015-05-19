@@ -17,13 +17,12 @@
  *    OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 //**************************************************************************************
 #include "frt_text_queue.h"                 // Header for text queue class
-#include "motor_driver.h"
-#include "motor_task.h"                 // Header for this task
-#include "frt_queue.h"
+#include "read_serial_driver.h"
+#include "read_serial_task.h"                 // Header for this task
 #include <util/delay.h>
+#include "state.h"
 #include "pinLayout.h"
 #define CPR 1000
-#include "state.h"
 
 
 //-------------------------------------------------------------------------------------
@@ -38,26 +37,32 @@
  *                   be used by this task to communicate (default: NULL)
  */
 
-motor_task::motor_task (const char* a_name, 
+read_serial_task::read_serial_task (
+                         const char* a_name, 
 								 unsigned portBASE_TYPE a_priority, 
 								 size_t a_stack_size,
 								 emstream* p_ser_dev,
-                         motor_driver* motor_in,
-                         encoder_driver* encoder_in,
-                         uint16_t* desired_in,
-                         volatile uint8_t* limitPORT_in,
-                         uint8_t limitPin_in,
+                         read_serial_driver* serial_in,
+                         uint16_t* desiredX_in,
+                         uint16_t* desiredY_in,
+                         uint16_t* desiredZ_in,
+                         encoder_driver* xEncoder_in,
+                         encoder_driver* yEncoder_in,
+                         encoder_driver* zEncoder_in,
                          State* state_in
 								)
 	:
    frt_task (a_name, a_priority, a_stack_size, p_ser_dev)
 {
-   motor = motor_in;
-   encoder = encoder_in;
-   desired = desired_in;
-   limitPORT = limitPORT_in;
-   limitPin = limitPin_in;
+   serial = serial_in;
+   desiredX = desiredX_in;
+   desiredY = desiredY_in;
+   desiredZ = desiredZ_in;
+   xEncoder = xEncoder_in;
+   yEncoder = yEncoder_in;
+   zEncoder = zEncoder_in;
    state = state_in;
+
 	// Nothing is done in the body of this constructor. All the work is done in the
 	// call to the frt_task constructor on the line just above this one
 }
@@ -70,33 +75,54 @@ motor_task::motor_task (const char* a_name,
  *  can control multiple motors.
  */
 
-void motor_task::run (void)
+bool read_serial_task::isWithinTolerance(uint16_t actual, uint16_t expected)
+{
+   return actual - expected > EPSILON && actual - expected < EPSILON;
+}
+
+void read_serial_task::run (void)
 {
   	portTickType previousTicks = xTaskGetTickCount ();
-
-	// power is turned off. The task continuously reads the shared variable, mode1 (which
-	// determines the mode of operation for a motor driver and reads the shared variable
-	// power_level1 which determines the duty cycle and direction of the motor.	
-	
 	for (;;)
 	{	
 		runs++;
-
+      
       if (*state == HOME)
       {
-         if (!_bitValue(*limitPORT, limitPin))
+         // If both limit switches are activated
+         if (getXLimitSwitch() && getYLimitSwitch())
          {
-            motor->move(-CALIBRATE_SPEED);
-         }
-         else
-         {
-            motor->brake();
+            // Then we're ready to proceed to normal operation
+            *state = NORMAL;
+            xEncoder->reset();
+            yEncoder->reset();
+            // And then take up the first coordinate
+            *desiredX = serial->read_uint16_t();
+            *desiredY = serial->read_uint16_t();
+            *desiredZ = serial->read_uint16_t();
          }
       }
-      else
+      else if (*state == NORMAL)
       {
-         motor->move(*desired - (int16_t)encoder->getPosition());
+         // Check if all axis are within tolerance
+         if (isWithinTolerance(xEncoder->getPosition(), *desiredX) &&
+             isWithinTolerance(yEncoder->getPosition(), *desiredY) &&
+             isWithinTolerance(zEncoder->getPosition(), *desiredZ))
+         {
+            // Notify Pi for next command
+            *p_serial << "A";
+            // Get the next command
+            // Update desired
+            *desiredX = serial->read_uint16_t();
+            *desiredY = serial->read_uint16_t();
+            *desiredZ = serial->read_uint16_t();
+            // If all points say 0, return home
+            if (*desiredX == 0 && *desiredY == 0 && *desiredZ == 0)
+            {
+               *state = HOME;
+            }
+         }
       }
-		delay_from_to (previousTicks, configMS_TO_TICKS (30));
+		delay_from_to (previousTicks, configMS_TO_TICKS (100));
 	}
 }

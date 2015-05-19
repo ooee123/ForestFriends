@@ -32,8 +32,8 @@
 //**************************************************************************************
 
 // This define prevents this .h file from being included multiple times in a .cpp file
-#ifndef _MOTOR_TASK_H_
-#define _MOTOR_TASK_H_
+#ifndef _READ_SERIAL_TASK_H_
+#define _READ_SERIAL_TASK_H_
 
 #include <stdlib.h>                         // Prototype declarations for I/O functions
 #include <avr/io.h>                         // Header for special function registers
@@ -54,6 +54,8 @@
 #include "read_serial_driver.h"
 #include "state.h"
 
+#define EPSILON 100
+#define NEXT_COMMAND 128
 
 //-------------------------------------------------------------------------------------
 /** \brief This task controls the direction and duty cycle of a motor driver. This task
@@ -62,24 +64,38 @@
  *  \c motor_driver.cpp.
  */
 
-class motor_task : public frt_task
+class read_serial_task : public frt_task
 {
 private:
-   motor_driver* motor;
-   encoder_driver* encoder;
-   uint16_t* desired;
    read_serial_driver* serial;
-   volatile uint8_t* limitPORT;
-   uint8_t limitPin;
+   uint16_t* desiredX;
+   uint16_t* desiredY;
+   uint16_t* desiredZ;
+   encoder_driver* xEncoder;
+   encoder_driver* yEncoder;
+   encoder_driver* zEncoder;
    State* state;
-	// No private variables or methods for this class
+
+   bool isWithinTolerance(uint16_t actual, uint16_t expected);
 
 protected:
 	// No protected variables or methods for this class
 
 public:
-	// This constructor creates a task for controlling motor 1.
-	motor_task (const char*, unsigned portBASE_TYPE, size_t, emstream*, motor_driver*, encoder_driver*, uint16_t *desired_in, volatile uint8_t* limitPORT_in, uint8_t limitPin_in, State* state_in);
+   read_serial_task (
+                         const char* a_name, 
+								 unsigned portBASE_TYPE a_priority, 
+								 size_t a_stack_size,
+								 emstream* p_ser_dev,
+                         read_serial_driver* serial_in,
+                         uint16_t* desiredX_in,
+                         uint16_t* desiredY_in,
+                         uint16_t* desiredZ_in,
+                         encoder_driver* xEncoder_in,
+                         encoder_driver* yEncoder_in,
+                         encoder_driver* zEncoder_in,
+                         State* state_in
+								);
 
 	// This method is called by the RTOS once to run the task loop for ever and ever.
 	void run (void);
