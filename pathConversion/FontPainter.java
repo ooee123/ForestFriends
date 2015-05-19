@@ -28,12 +28,14 @@ public class FontPainter extends Component {
    private int preferredWidth;
    private int preferredHeight;
    private int strokeWidth;
-   private static final boolean displayFrame = true;
+   private static final boolean displayFrame = false;
 
    public FontPainter(int width, int height, int strokeWidth)
    {
       preferredWidth = width;
       preferredHeight = height;
+      this.strokeWidth = strokeWidth;
+      letters = new ArrayList<Paths>();
       if (displayFrame)
       {
          JFrame frame = new JFrame("Font");
@@ -41,8 +43,6 @@ public class FontPainter extends Component {
          frame.pack();
          frame.setVisible(true);
       }
-      this.strokeWidth = strokeWidth;
-      letters = new ArrayList<Paths>();
       if (saveImage)
       {
          img = new BufferedImage(preferredWidth, preferredHeight, BufferedImage.TYPE_BYTE_BINARY);
@@ -52,14 +52,11 @@ public class FontPainter extends Component {
       }
    }
 
-   public void paint(Graphics g2)
+   public void paint(Graphics g)
    {
-      Graphics2D g = (Graphics2D) g2;
-      drawLetters(g);
-      if (saveImage)
+      if (displayFrame)
       {
-         drawLetters(imgGraphics);
-         finishDrawing();
+         drawLetters((Graphics2D)g);
       }
    }
 
@@ -67,6 +64,7 @@ public class FontPainter extends Component {
    {
       if (saveImage)
       {
+         drawLetters(imgGraphics);
          try {
             ImageIO.write(img, "jpg", new File("original.jpg"));
          }

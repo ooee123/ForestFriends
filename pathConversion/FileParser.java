@@ -25,9 +25,6 @@ public class FileParser
    private static int width = 12;
    private static int height = 12;
    private static final int SAFE_ZONE_BORDER_WIDTH = Letter.INCH;
-   private static final boolean useComs = false;
-   private static final boolean printToFile = true;
-   private static final boolean previewSign = true;
 
    public static void main(String args[])
    {
@@ -61,27 +58,15 @@ public class FileParser
          height = file.nextInt();
          fontHeight = file.nextInt();
       }
-      FontPainter fp = null;
-      if (previewSign)
-      {
-         fp = new FontPainter(width * Letter.INCH, height * Letter.INCH, strokeWidth);
-      }
+      FontPainter fp = new FontPainter(width * Letter.INCH, height * Letter.INCH, strokeWidth);
       /* Serial Coms and Printing */
-      SerialComs coms = null;
       PrintWriter printer = null;
-      if (useComs)
-      {
-         coms = new SerialComs();
+      try {
+         printer = new PrintWriter("coordinates.txt");
       }
-      if (printToFile)
+      catch (FileNotFoundException e)
       {
-         try {
-            printer = new PrintWriter("coordinates.txt");
-         }
-         catch (FileNotFoundException e)
-         {
-            System.err.println(e.getMessage());
-         }
+         System.err.println(e.getMessage());
       }
       PathConverter verter = new PathConverter(fontHeight, strokeWidth);
 
@@ -101,41 +86,19 @@ public class FileParser
             y += fontHeight * Letter.INCH;
          }
          String text = file.nextLine();
-         List<Paths> paths = null;
-         paths = verter.convertToPaths(x, y, text); 
+         List<Paths> paths = verter.convertToPaths(x, y, text); 
          for (Paths p : paths) {
-            if (previewSign)
-            {
-               fp.addLetter(p);
-            }
-            if (useComs)
-            {
-               coms.write(p);
-            }
-            if (printToFile)
-            {
-               printPaths(p, printer);
-            }
+            fp.addLetter(p);
+            printPaths(p, printer);
          }
          allPaths.addAll(paths);
-         if (previewSign)
+         if (!isFromFile)
          {
             fp.repaint();
-            fp.finishDrawing();
          }
       }
-      if (useComs)
-      {
-         coms.close();
-      }
-      if (printToFile)
-      {
-         printer.close();
-      }
-      if (previewSign)
-      {
-         fp.finishDrawing();
-      }
+      printer.close();
+      fp.finishDrawing();
       System.exit(0);
    }
 
