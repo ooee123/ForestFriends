@@ -6,7 +6,7 @@ import shutil
 from PIL import Image, ImageTk
 import os
 
-LARGE_FONT= ("Verdana", 12)
+LARGE_FONT= LARGE_FONT
 
 frames = {}
 
@@ -45,7 +45,7 @@ class Start(tk.Frame):
       #label = tk.Label(self, text="Start Page", font=LARGE_FONT)
       #label.pack(pady=10,padx=10)
 
-      button = tk.Button(self, height=15, width=24, bg="red", text="Start...", font=("Verdana", 15),
+      button = tk.Button(self, height=15, width=24, bg="red", text="Start...", font=LARGE_FONT,
          command=lambda: controller.show_frame(ImportFile))
       #button.grid(row = 2, column = 2, sticky= W)
       button.pack()
@@ -64,12 +64,12 @@ class ImportFile(tk.Frame):
       #label = tk.Label(self, text="Import File", font=LARGE_FONT)
       #label.pack(pady=10,padx=10)
 
-      button = tk.Button(self, text="Import File",width = 18, height = 4,font=("Verdana", 15),
+      button = tk.Button(self, text="Import File",width = 20, height = 4,font=LARGE_FONT,
          command=self.openFile)
          #command=lambda: controller.show_frame(VerifyDesign))
       button.pack()
 
-      button2 = tk.Button(self, text="End",width = 18, height = 3,font=("Verdana", 15),
+      button2 = tk.Button(self, text="End",width = 20, height = 3,font=LARGE_FONT,
          command=lambda: controller.show_frame(Start))
       button2.pack()
 
@@ -137,7 +137,7 @@ class badFileSyntax(tk.Frame):
       label = tk.Label(self, text="Input file design is incorrect, please try again.", font=LARGE_FONT)
       label.pack(pady=10,padx=10)
 
-      button2 = tk.Button(self, text="End",width = 18, height = 3,font=("Verdana", 15),
+      button2 = tk.Button(self, text="End",width = 18, height = 3,font=LARGE_FONT,
          command=lambda: controller.show_frame(Start))
       button2.pack()
 
