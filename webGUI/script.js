@@ -6,7 +6,6 @@ var context = canvas.getContext('2d');
 var textBox = []
 var scale = 20;
 
-
 var getDimension = function (varName) {
    return function () {
       dimension[varName] = document.getElementById(this.id).value
@@ -23,105 +22,72 @@ var changeWHF = function() {
    
 }
 
-var checkWidth = function() {
-   
-   var context = canvas.getContext("2d")
-   
-   var x = document.getElementById("x" + canvasNumber).value;
-   var width = dimension["width"]
-   var text = document.getElementById("text" + canvasNumber).value.toUpperCase();
-   
-   for (var i = 0 ; i < textBox.length; i++) {
-      
-      test = (width - x * scale) - context.measureText(text).width
-      if (test < 0) {
-         alert("too lng, cant save")
-         return false
-      }
-
-   }
-   return true
-   
-}
-
 var updateEverything = function (canvasNumber) {
    return function () {
       var x = document.getElementById("x" + canvasNumber).value;
       var y = document.getElementById("y" + canvasNumber).value;
       var text = document.getElementById("text" + canvasNumber).value.toUpperCase();
-		//alert(text);
       var canvas = textBox[canvasNumber - 1]
+      if (dimension["length"] - 2 <= parseInt(document.getElementById("fontSize").value)) {
+         dimension["length"] = parseInt(document.getElementById("fontSize").value)+2;
+         document.getElementById("yCoord").value = dimension["length"] 
+         //updateRect()
+         alert("here")
+      }
       var width = dimension["width"]
       var length = dimension["length"]
-
-      if (x < 1) {
+      
+      if (x != "" && x < 1) {
          x = 1;
          document.getElementById("x" + canvasNumber).value = 1
       }
-      if (y < 2) {
-         y = 2;
-         document.getElementById("y" + canvasNumber).value = 2
-      }
-      if (y > length - 1) {
-         y = length - 1;
-         document.getElementById("y" + canvasNumber).value = length - 1
-      }
-
-         canvas.x = x
-         canvas.y = y
-         canvas.text = text;
-         var contextTemp = canvas.getContext("2d")
-         contextTemp.font = 'normal ' + document.getElementById("fontSize").value*22 + 'pt hwygoth'; 
-         contextTemp.fillText(text, x*scale, y*scale);
-      test = (width * scale - 20 - x * scale) - contextTemp.measureText(text).width
-      contextTemp.clearRect(0,0,canvas.width*scale, canvas.height*scale)
-   
-         if (test > 0) {
-         var context = canvas.getContext("2d")
-         context.clearRect(0, 0, canvas.width*scale, canvas.height*scale)
-         context.rect(0, 0, width*scale, length*scale);
-         canvas.width = width*scale;
-         canvas.height = length*scale;
-         context.font = 'normal ' + document.getElementById("fontSize").value*22 + 'pt hwygoth'; // ** take a look at this
-         context.fillText(text, x*scale, y*scale);
-         }
+      var height = parseInt(document.getElementById("fontSize").value);
+      if (y != "" && (y < 2 || height >= y)) {
+         if (height != 1) {
+            y = height + 1
+        } 
          else {
-      alert(test)
-
+      //      y = 2;
+      
+      context.clearRect(0, 0, canvas.width*scale, canvas.height*scale)
          }
-      //alert((canvas.width - canvas.x * scale) - context.measureText(text).width + " " + canvas.width + " "  + canvas.x * scale + " " + context.measureText(text).width)
-      /*
-      if (test > 0) {
-         canvas.x = x
-         canvas.y = y
-         canvas.text = text;
-
-         var context = canvas.getContext("2d")
-
-         context.clearRect(0, 0, canvas.width*scale, canvas.height*scale)
-         context.rect(0, 0, width*scale, length*scale);
-         canvas.width = width*scale;
-         canvas.height = length*scale;
-         context.font = 'normal ' + document.getElementById("fontSize").value*22 + 'pt hwygoth'; // ** take a look at this
-         context.fillText(text, x*scale, y*scale);
       }
-      else {
-         alert("too lng")
+      else if (y != "" && y > length - 1) {
+         y = length - 1;
       }
-      */
+      document.getElementById("y" + canvasNumber).value = y
+      canvas.x = x
+      canvas.y = y
+      canvas.text = text;
+      var contextTemp = canvas.getContext("2d")
+      contextTemp.font = 'normal ' + document.getElementById("fontSize").value*22 + 'pt hwygoth'; 
+      contextTemp.fillText(text, x*scale, y*scale);
+      canvas.border = (width * scale - 20 - x * scale) - contextTemp.measureText(text).width
+      contextTemp.clearRect(0,0,canvas.width*scale, canvas.height*scale)
 
+      var context = canvas.getContext("2d")
+      context.clearRect(0, 0, canvas.width*scale, canvas.height*scale)
+      context.rect(0, 0, width*scale, length*scale);
+      canvas.width = width*scale;
+      canvas.height = length*scale;
+      if (canvas.border < 0) {
+         // red
+         context.fillStyle = 'red'
+      }
+      context.font = 'normal ' + document.getElementById("fontSize").value*22 + 'pt hwygoth'; // ** take a look at this
+      context.fillText(text, x*scale, y*scale);
    }
 }
 
 var updateRect = function () {
-   
-   if (dimension["width"] < 3) {
-      document.getElementById("xCoord").value = 3
-      dimension["width"] = 3;
-   }
-   if (dimension["length"] < 3) {
-      document.getElementById("yCoord").value = 3
-      dimension["length"] = 3;
+   if (dimension["width"] < 12) {
+      document.getElementById("xCoord").value = 12
+      dimension["width"] = 12;
+   } 
+
+   if (dimension["length"] < 12) {
+      document.getElementById("yCoord").value = 12
+      dimension["length"] = 12;
    }
    
    
@@ -204,7 +170,8 @@ var createTextBoxDiv = function () {
    xInput.min = "0"
    xInput.max = "48"
    xInput.id = "x" + textBox.length
-   xInput.addEventListener("keyup", input);
+   //xInput.addEventListener("keyup", input);
+   xInput.addEventListener("focusout", input);
    container.appendChild(xInput)
    
    var yInput = document.createElement("input");
@@ -212,7 +179,8 @@ var createTextBoxDiv = function () {
    yInput.min = "0"
    yInput.max = "24"
    yInput.id = "y" + textBox.length
-   yInput.addEventListener("keyup", input);
+   //yInput.addEventListener("keyup", input);
+   yInput.addEventListener("focusout", input);
    container.appendChild(yInput)
    
    var textInput = document.createElement("input");
@@ -308,9 +276,12 @@ var updateRectSample = function () {
 
 
 /* Assigning listeners to the length and width number fields */
-document.getElementById("yCoord").addEventListener("keyup", getDimension("length"))
-document.getElementById("xCoord").addEventListener("keyup", getDimension("width"))
-document.getElementById("fontSize").addEventListener("keyup", changeWHF)
+//document.getElementById("yCoord").addEventListener("keyup", getDimension("length"))
+//document.getElementById("xCoord").addEventListener("keyup", getDimension("width"))
+document.getElementById("yCoord").addEventListener("focusout", getDimension("length"))
+document.getElementById("xCoord").addEventListener("focusout", getDimension("width"))
+//document.getElementById("fontSize").addEventListener("keyup", changeWHF)
+document.getElementById("fontSize").addEventListener("focusout", changeWHF)
 document.getElementById("newTextBox").addEventListener("click", createCanvas)
 document.getElementById("sampleBoard").addEventListener("click", createCanvasSample)
 document.getElementById("newTextBoxSampleBoard").addEventListener("click", updateRectSample)
@@ -319,6 +290,15 @@ document.getElementById("newTextBoxSampleBoard").addEventListener("click", updat
 updateRect()
 changeWHF()
 
+var checkRed = function () {
+   for (var i = 0; i < textBox.length; i++) {
+      if (textBox[i].border < 0) {
+         //alert("red")
+         return false;
+      }
+   }
+   return true;
+}
 
 function saveTextAsFile() {
    
@@ -336,30 +316,30 @@ function saveTextAsFile() {
                                  type: 'text/plain'
                                  });
    var fileNameToSaveAs = document.getElementById("inputFileNameToSaveAs").value;
-   
+   if (fileNameToSaveAs == "") {
+      alert("Please Enter a Filename");
+      return;
+   }
    
    var downloadLink = document.createElement("a");
-   downloadLink.download = fileNameToSaveAs;
+   downloadLink.download = fileNameToSaveAs// + ".cpff";
    downloadLink.innerHTML = "Download File";
    
-   if (window.webkitURL != null) {
-     // alert("er")
-      // Chrome allows the link to be clicked
-      // without actually adding it to the DOM.
-      downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
-   } else {
-      // Firefox requires the link to be added to the DOM
-      // before it can be clicked.
-      downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
-      downloadLink.onclick = destroyClickedElement;
-      downloadLink.style.display = "none";
-      document.body.appendChild(downloadLink);
+   if (checkRed()) {
+      if (window.webkitURL != null) {
+         // Chrome allows the link to be clicked
+         // without actually adding it to the DOM.
+         downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+      } else {
+         // Firefox requires the link to be added to the DOM
+         // before it can be clicked.
+         downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+         downloadLink.onclick = destroyClickedElement;
+         downloadLink.style.display = "none";
+         document.body.appendChild(downloadLink);
+      }
    }
    downloadLink.click();
-   //}
-   //else {
-   //alert("File cannot save, values are incorrect")
-   //}
 }
 
 /* Begin Parsing Methods */
