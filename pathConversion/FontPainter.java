@@ -20,21 +20,19 @@ public class FontPainter extends Component {
 
    private final boolean showGreen = false;
    private java.util.List<Paths> letters;
-   private int currentX;
-   private int currentY;
-   private static final boolean saveImage = true;
    private BufferedImage img;
    private Graphics2D imgGraphics;
    private int preferredWidth;
    private int preferredHeight;
    private int strokeWidth;
    private static final boolean displayFrame = false;
+   private static final double DISPLAY_SCALE = 0.25;
 
    public FontPainter(int width, int height, int strokeWidth)
    {
-      preferredWidth = width;
-      preferredHeight = height;
-      this.strokeWidth = strokeWidth;
+      preferredWidth = (int)Math.round(width * DISPLAY_SCALE);
+      preferredHeight = (int)Math.round(height * DISPLAY_SCALE);
+      this.strokeWidth = (int)Math.round(strokeWidth * DISPLAY_SCALE);
       letters = new ArrayList<Paths>();
       if (displayFrame)
       {
@@ -43,13 +41,10 @@ public class FontPainter extends Component {
          frame.pack();
          frame.setVisible(true);
       }
-      if (saveImage)
-      {
-         img = new BufferedImage(preferredWidth, preferredHeight, BufferedImage.TYPE_BYTE_BINARY);
-         imgGraphics = img.createGraphics();
-         imgGraphics.setColor(Color.WHITE);
-         imgGraphics.fillRect(0, 0, preferredWidth, preferredHeight);
-      }
+      img = new BufferedImage(preferredWidth, preferredHeight, BufferedImage.TYPE_BYTE_BINARY);
+      imgGraphics = img.createGraphics();
+      imgGraphics.setColor(Color.WHITE);
+      imgGraphics.fillRect(0, 0, preferredWidth, preferredHeight);
    }
 
    public void paint(Graphics g)
@@ -62,34 +57,19 @@ public class FontPainter extends Component {
 
    public void finishDrawing()
    {
-      if (saveImage)
+      drawLetters(imgGraphics);
+      try {
+         ImageIO.write(img, "jpg", new File("original.jpg"));
+         System.err.println("Done writing image");
+      }
+      catch (IOException e)
       {
-         drawLetters(imgGraphics);
-         try {
-            ImageIO.write(img, "jpg", new File("original.jpg"));
-            System.err.println("Done writing image");
-         }
-         catch (IOException e)
-         {
-            System.err.println(e.getMessage());
-         }
+         System.err.println(e.getMessage());
       }
    }
 
    public Dimension getPreferredSize() {
       return new Dimension(preferredWidth, preferredHeight);
-   }
-
-   public void moveOffset(int deltaX, int deltaY)
-   {
-      currentX += deltaX;
-      currentY += deltaY;
-   }
-   
-   public void setOffset(int x, int y)
-   {
-      currentX = x;
-      currentY = y;
    }
 
    public void addLetter(Paths paths)
@@ -103,12 +83,12 @@ public class FontPainter extends Component {
       g.setStroke(new BasicStroke(strokeWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
       for (Paths paths : letters)
       {
-         int prevX = paths.get(0).getX();
-         int prevY = paths.get(0).getY();
+         int prevX = (int)Math.round(paths.get(0).getX() * DISPLAY_SCALE);
+         int prevY = (int)Math.round(paths.get(0).getY() * DISPLAY_SCALE);
          for (Path p : paths)
          {
-            int px = p.getX();
-            int py = p.getY();
+            int px = (int)Math.round(p.getX() * DISPLAY_SCALE);
+            int py = (int)Math.round(p.getY() * DISPLAY_SCALE);
             if (p.type == Path.MovementType.LINE)
             {
                g.setColor(Color.BLACK);
@@ -121,7 +101,6 @@ public class FontPainter extends Component {
             }
             prevX = px;
             prevY = py;
-            System.out.printf("(%d, %d, %d)\n", prevX, prevY, p.type.ordinal());
          }
       }
    }

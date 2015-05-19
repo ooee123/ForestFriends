@@ -46,6 +46,7 @@ motor_task::motor_task (const char* a_name,
                          encoder_driver* encoder_in,
                          uint16_t* desired_in,
                          volatile uint8_t* limitDDR_in,
+                         volatile uint8_t* limitPORT_in,
                          volatile uint8_t* limitPIN_in,
                          uint8_t limitPinNum_in,
                          State* state_in
@@ -59,8 +60,10 @@ motor_task::motor_task (const char* a_name,
    limitPIN = limitPIN_in;
    limitPinNum = limitPinNum_in;
    state = state_in;
-   // Set the limit switches bumpers
+   // Set the limit switches bumpers to input
    *limitDDR_in &= ~(1 << limitPinNum);
+   // Activate Pull-Up Resistor
+   *limitPORT_in |= 1 << limitPinNum;
 	// Nothing is done in the body of this constructor. All the work is done in the
 	// call to the frt_task constructor on the line just above this one
 }
@@ -87,8 +90,9 @@ void motor_task::run (void)
 
       if (*state == HOME)
       {
-         if (!_bitValue(*limitPIN, limitPinNum))
+         if (_bitValue(*limitPIN, limitPinNum))
          {
+            *p_serial << "MOTOR LIMIT";
             motor->move(-CALIBRATE_SPEED);
          }
          else

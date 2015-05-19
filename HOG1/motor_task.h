@@ -79,7 +79,7 @@ protected:
 
 public:
 	// This constructor creates a task for controlling motor 1.
-	motor_task (const char*, unsigned portBASE_TYPE, size_t, emstream*, motor_driver*, encoder_driver*, uint16_t *desired_in, volatile uint8_t* limitDDR_in, volatile uint8_t* limitPIN_in, uint8_t limitPinNum_in, State* state_in);
+	motor_task (const char*, unsigned portBASE_TYPE, size_t, emstream*, motor_driver*, encoder_driver*, uint16_t *desired_in, volatile uint8_t* limitDDR_in, volatile uint8_t* limitPORT_in, volatile uint8_t* limitPIN_in, uint8_t limitPinNum_in, State* state_in);
 
 	// This method is called by the RTOS once to run the task loop for ever and ever.
 	void run (void);

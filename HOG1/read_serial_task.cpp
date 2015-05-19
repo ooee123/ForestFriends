@@ -92,6 +92,7 @@ void read_serial_task::run (void)
          // If both limit switches are activated
          if (getXLimitSwitch() && getYLimitSwitch())
          {
+            *p_serial << "LIMIT";
             // Then we're ready to proceed to normal operation
             *state = NORMAL;
             xEncoder->reset();
