@@ -128,7 +128,7 @@ class ImportFile(tk.Frame):
    def javaExec(self):
       # Up to redoing depending on path
       #os.chdir("../pathConversion/")
-      retCode = subprocess.call(["java", "-cp", "../pathConversion/rxtx-2.1-7-bins-r2/*:../pathConversion/.", "FileParser", "../piGUI/file.txt"])
+      #retCode = subprocess.call(["java", "-cp", "../pathConversion/rxtx-2.1-7-bins-r2/*:../pathConversion/.", "FileParser", "../piGUI/file.txt"])
       print("DONE!")
 
 class badFileSyntax(tk.Frame):
@@ -187,11 +187,11 @@ class VerifyParts(tk.Frame):
       
       #label = tk.Label(self, text="Design is..", font=LARGE_FONT)
       #label.pack(side=LEFT)
-      button1 = tk.Button(self, text="correct", width = 12, height = 2, font=LARGE_FONT,
+      button1 = tk.Button(self, text="correct", width = 12, height = 1, font=LARGE_FONT,
          command=lambda: controller.show_frame(Machine))
       button1.pack(side=LEFT)
 
-      button2 = tk.Button(self, text="incorrect", width = 14, height = 2, font=LARGE_FONT,
+      button2 = tk.Button(self, text="incorrect", width = 14, height = 1, font=LARGE_FONT,
          command=lambda: controller.show_frame(Reverify))
       button2.pack(side=LEFT)
 
@@ -199,15 +199,15 @@ class VerifyParts(tk.Frame):
       data = open("file.txt", "r")
       line = data.readline()
       label1 = tk.Label(self, text=("Width of Board: " + line), font=LARGE_FONT)
-      label1.pack(pady=0,padx=5)
+      label1.pack(pady=1,padx=5)
       print "read line %s" % (line)
       line = data.readline()
       label2 = tk.Label(self, text=("Height of Board: " + line), font=LARGE_FONT)
-      label2.pack(pady=0,padx=5)
+      label2.pack(pady=1,padx=5)
       print "read line %s" % (line)
       line = data.readline()
       label3 = tk.Label(self, text=("Letter height: " + line), font=LARGE_FONT)
-      label3.pack(pady=0,padx=5)
+      label3.pack(pady=1,padx=5)
       print "read line %s" % (line)
       data.close()
 
