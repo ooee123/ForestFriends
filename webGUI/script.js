@@ -9,7 +9,7 @@ var scale = 20;
 var getDimension = function (varName) {
    return function () {
       dimension[varName] = document.getElementById(this.id).value
-      updateRect();
+      updateRect(0);
    }
 
 }
@@ -31,8 +31,8 @@ var updateEverything = function (canvasNumber) {
       if (dimension["length"] - 2 <= parseInt(document.getElementById("fontSize").value)) {
          dimension["length"] = parseInt(document.getElementById("fontSize").value)+2;
          document.getElementById("yCoord").value = dimension["length"] 
-         //updateRect()
-         alert("here")
+         updateRect(canvasNumber)
+         //alert("here " + dimension["length"])
       }
       var width = dimension["width"]
       var length = dimension["length"]
@@ -73,13 +73,14 @@ var updateEverything = function (canvasNumber) {
       if (canvas.border < 0) {
          // red
          context.fillStyle = 'red'
+         alert("Your text is not within a 1 inch border. \nPlease adjust your text to be within 1 inch.")
       }
       context.font = 'normal ' + document.getElementById("fontSize").value*22 + 'pt hwygoth'; // ** take a look at this
       context.fillText(text, x*scale, y*scale);
    }
 }
 
-var updateRect = function () {
+var updateRect = function (number) {
    if (dimension["width"] < 12) {
       document.getElementById("xCoord").value = 12
       dimension["width"] = 12;
@@ -112,7 +113,9 @@ var updateRect = function () {
    context.lineWidth = 1;
    context.strokeStyle = 'black';
    context.stroke();
-   changeWHF();
+   if (!number) {
+      changeWHF();
+   }
 };
 
 var createCanvas = function () {
@@ -270,7 +273,7 @@ var updateRectSample = function () {
    document.getElementById("yCoord").value = 16
    document.getElementById("fontSize").value = 1
    changeWHF();
-   updateRect();
+   updateRect(0);
 };
 
 
@@ -287,13 +290,14 @@ document.getElementById("sampleBoard").addEventListener("click", createCanvasSam
 document.getElementById("newTextBoxSampleBoard").addEventListener("click", updateRectSample)
 
 
-updateRect()
+updateRect(0)
 changeWHF()
 
 var checkRed = function () {
    for (var i = 0; i < textBox.length; i++) {
       if (textBox[i].border < 0) {
          //alert("red")
+         alert("Please make sure your text is within a 1 inch border.\n")
          return false;
       }
    }
@@ -378,7 +382,7 @@ document.getElementById('upload').onchange = function(){
       document.getElementById("yCoord").value = dimension["length"] = lines[0];
       document.getElementById("xCoord").value = dimension["width"] = lines[1];
       document.getElementById("fontSize").value = lines[2];
-      updateRect();
+      updateRect(0);
       var texts = [];
       
       for(var line = 3; line + 3 < lines.length; line = line + 3){
