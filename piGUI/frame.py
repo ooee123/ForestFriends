@@ -194,6 +194,7 @@ class VerifyParts(tk.Frame):
       button2 = tk.Button(self, text="incorrect", width = 14, height = 1, font=LARGE_FONT,
          command=lambda: controller.show_frame(Reverify))
       button2.pack(side=LEFT)
+      readFile(self)
 
    def readFile(self):
       data = open("file.txt", "r")
