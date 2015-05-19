@@ -73,6 +73,7 @@ var updateEverything = function (canvasNumber) {
       if (canvas.border < 0) {
          // red
          context.fillStyle = 'red'
+         alert("Your text is not within a 1 inch border. \nPlease adjust your text to be within 1 inch.")
       }
       context.font = 'normal ' + document.getElementById("fontSize").value*22 + 'pt hwygoth'; // ** take a look at this
       context.fillText(text, x*scale, y*scale);
@@ -114,7 +115,6 @@ var updateRect = function (number) {
    context.stroke();
    if (!number) {
       changeWHF();
-      
    }
 };
 
@@ -297,6 +297,7 @@ var checkRed = function () {
    for (var i = 0; i < textBox.length; i++) {
       if (textBox[i].border < 0) {
          //alert("red")
+         alert("Please make sure your text is within a 1 inch border.\n")
          return false;
       }
    }
