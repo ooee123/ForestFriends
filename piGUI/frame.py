@@ -6,7 +6,7 @@ import shutil
 from PIL import Image, ImageTk
 import os
 
-LARGE_FONT= LARGE_FONT
+LARGE_FONT= ("Verdana", 15)
 
 frames = {}
 
@@ -64,12 +64,12 @@ class ImportFile(tk.Frame):
       #label = tk.Label(self, text="Import File", font=LARGE_FONT)
       #label.pack(pady=10,padx=10)
 
-      button = tk.Button(self, text="Import File",width = 20, height = 4,font=LARGE_FONT,
+      button = tk.Button(self, text="Import File",width = 22, height = 4,font=LARGE_FONT,
          command=self.openFile)
          #command=lambda: controller.show_frame(VerifyDesign))
       button.pack()
 
-      button2 = tk.Button(self, text="End",width = 20, height = 3,font=LARGE_FONT,
+      button2 = tk.Button(self, text="End",width = 22, height = 3,font=LARGE_FONT,
          command=lambda: controller.show_frame(Start))
       button2.pack()
 
@@ -155,13 +155,13 @@ class VerifyDesign(tk.Frame):
       label.image = photo
       label.pack()
 
-      button1 = tk.Button(self, text="Design is correct", width = 13, height = 2, font=("Verdana", 12),
+      button1 = tk.Button(self, text="Design is correct", width = 12, height = 2, font=LARGE_FONT,
          command=lambda: controller.show_frame(VerifyParts))
-      button1.pack(side=LEFT)
+      button1.pack()
 
-      button2 = tk.Button(self, text="Design is not correct", width = 13, height = 2, font=("Verdana", 12),
+      button2 = tk.Button(self, text="Design is not correct", width = 14, height = 2, font=LARGE_FONT,
          command=lambda: controller.show_frame(Redesign))
-      button2.pack(side=LEFT)
+      button2.pack()
 
 
 class Redesign(tk.Frame):
@@ -171,7 +171,7 @@ class Redesign(tk.Frame):
       label = tk.Label(self, text="Please redesign and start over", font=LARGE_FONT)
       label.pack(pady=10,padx=10)
 
-      button1 = tk.Button(self, text="end", width = 10, height = 2, font=("verdana", 15),
+      button1 = tk.Button(self, text="end", width = 10, height = 2, font=LARGE_FONT,
          command=lambda: controller.show_frame(Start))
       button1.pack()
 
@@ -184,11 +184,11 @@ class VerifyParts(tk.Frame):
       #label.pack(pady=10,padx=10)
       
 
-      button1 = tk.Button(self, text="Parts are correct", font=("verdana", 15),
+      button1 = tk.Button(self, text="Parts are correct", font=LARGE_FONT, width = 24, height = 2,
          command=lambda: controller.show_frame(Machine))
       button1.pack()
 
-      button2 = tk.Button(self, text="Parts are not correct", font=("verdana", 15),
+      button2 = tk.Button(self, text="Parts are not correct", font=LARGE_FONT, width = 24, height = 2,
          command=lambda: controller.show_frame(Reverify))
       button2.pack()
 
@@ -196,15 +196,15 @@ class VerifyParts(tk.Frame):
       data = open("file.txt", "r")
       line = data.readline()
       label1 = tk.Label(self, text=("Width of Board: " + line), font=LARGE_FONT)
-      label1.pack(pady=3,padx=10)
+      label1.pack(pady=3,padx=5)
       print "read line %s" % (line)
       line = data.readline()
       label2 = tk.Label(self, text=("Height of Board: " + line), font=LARGE_FONT)
-      label2.pack(pady=3,padx=10)
+      label2.pack(pady=3,padx=5)
       print "read line %s" % (line)
       line = data.readline()
       label3 = tk.Label(self, text=("Letter height: " + line), font=LARGE_FONT)
-      label3.pack(pady=3,padx=10)
+      label3.pack(pady=3,padx=5)
       print "read line %s" % (line)
       data.close()
 
@@ -215,7 +215,7 @@ class Reverify(tk.Frame):
       label = tk.Label(self, text="Please adjust your parts and start over", font=LARGE_FONT)
       label.pack(pady=10,padx=10)
 
-      button1 = tk.Button(self, text="End", font=("verdana", 15),
+      button1 = tk.Button(self, text="End", font=LARGE_FONT,
          command=lambda: controller.show_frame(Start))
       button1.pack()
 
@@ -226,15 +226,15 @@ class Machine(tk.Frame):
       label = tk.Label(self, text="Machining will start when you are ready!", font=LARGE_FONT)
       label.pack(pady=10,padx=10)
 
-      button1 = tk.Button(self, text="Start Machining", font=("verdana", 15),
+      button1 = tk.Button(self, text="Start Machining", font=LARGE_FONT,
          command=lambda: controller.show_frame(Machine))
       button1.pack()
 
-      button2 = tk.Button(self, text="End", font=("verdana", 15),
+      button2 = tk.Button(self, text="End", font=LARGE_FONT,
          command=lambda: controller.show_frame(Start))
       button2.pack()
 
-      button3 = tk.Button(self, text="Quit", fg="red",  font=("verdana", 15), command = self.quit)
+      button3 = tk.Button(self, text="Quit", fg="red",  font=LARGE_FONT, command = self.quit)
       button3.pack()
 
 app = GUI()
