@@ -45,11 +45,12 @@ var updateEverything = function (canvasNumber) {
       if (y != "" && (y < 2 || height >= y)) {
          if (height != 1) {
             y = height + 1
-        } 
+         } 
          else {
-      //      y = 2;
-      
-      context.clearRect(0, 0, canvas.width*scale, canvas.height*scale)
+            y = 2;
+          //alert("here " + y)
+            document.getElementById("y" + canvasNumber).value = y
+            context.clearRect(0, 0, canvas.width*scale, canvas.height*scale)
          }
       }
       else if (y != "" && y > length - 1) {
