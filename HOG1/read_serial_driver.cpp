@@ -46,20 +46,15 @@ read_serial_driver::read_serial_driver(rs232 *serial_in)
 
 uint16_t read_serial_driver::read_uint16_t()
 {
-   uint16_t num = 0;
+   uint16_t num;
    char c;
    #ifdef BINARY_SERIAL
       c = serial->getchar();
       return (c << 8) | serial->getchar();
    #else
-      c = serial->getchar();
-      {
-         num = c - '0';
-      }
-      c = serial->getchar();
-      {
-         num = (num << 8) | (c - '0');
-      }
+      num = serial->getchar() - '0';
+      num = num * 10 + serial->getchar() - '0';
+      num = num * 10 + serial->getchar() - '0';
       return num;
    #endif
 }

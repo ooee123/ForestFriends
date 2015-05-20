@@ -90,13 +90,14 @@ void motor_task::run (void)
 
       if (*state == HOME)
       {
+         // If the switches are NOT pressed
          if (_bitValue(*limitPIN, limitPinNum))
          {
-            *p_serial << "MOTOR LIMIT";
             motor->move(-CALIBRATE_SPEED);
          }
          else
          {
+            *p_serial << "Press";
             motor->brake();
          }
       }

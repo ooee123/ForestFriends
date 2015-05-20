@@ -23,15 +23,15 @@
 #define Z_ENCODER_PINA PE1
 #define Z_ENCODER_PINB PE0
 
-#define X_LIMIT_PORT    PORTA
+#define X_LIMIT_PIN    PINA
 #define X_LIMIT_PIN_NUM PA7
 
-#define Y_LIMIT_PORT    PORTA
+#define Y_LIMIT_PIN    PINA
 #define Y_LIMIT_PIN_NUM PA6
 
-#define _bitValue(X, Y) ((X << Y) & 1)
-#define getXLimitSwitch() _bitValue(X_LIMIT_PORT, X_LIMIT_PIN_NUM)
-#define getYLimitSwitch() _bitValue(X_LIMIT_PORT, X_LIMIT_PIN_NUM)
+#define _bitValue(X, Y) (((X) >> (Y)) & 1)
+#define getXLimitSwitch() _bitValue(X_LIMIT_PIN, X_LIMIT_PIN_NUM)
+#define getYLimitSwitch() _bitValue(Y_LIMIT_PIN, Y_LIMIT_PIN_NUM)
 
 #define CALIBRATE_SPEED 10
 

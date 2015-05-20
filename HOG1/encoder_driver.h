@@ -71,7 +71,7 @@ class encoder_driver
 		
 		uint8_t INA; 
 		uint8_t INB; 
-      uint32_t position;
+      volatile uint16_t position;
       uint8_t prevA;
       uint8_t prevSum;
 		
@@ -83,11 +83,11 @@ class encoder_driver
 		// This follows for the "= 0" part.
       encoder_driver(volatile uint8_t* DDR_en, volatile uint8_t* PIN_en, volatile uint8_t* PORT_EN, uint8_t Abit, uint8_t Bbit);
 		
-      uint32_t updatePosition(void);
+      void updatePosition(void);
 
       void setSerial(emstream*);
 
-      uint16_t getPosition(void);		
+      volatile uint16_t getPosition(void);		
 
       void reset(void);
 }; // end of class my_motor_driver

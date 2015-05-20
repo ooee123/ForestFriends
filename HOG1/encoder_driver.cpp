@@ -54,7 +54,7 @@ encoder_driver::encoder_driver(volatile uint8_t* DDR_en, volatile uint8_t* PIN_e
    reset();
 }
 
-uint32_t encoder_driver::updatePosition(void)
+void encoder_driver::updatePosition(void)
 {
    uint8_t newA = (*PIN >> INA) & 0x1;
    uint8_t newB = (*PIN >> INB) & 0x1;
@@ -90,10 +90,9 @@ uint32_t encoder_driver::updatePosition(void)
    }
    if (position % 4 == 0)
       *ptr_to_serial << position;
-   return position;
 }
 
-uint16_t encoder_driver::getPosition(void)
+volatile uint16_t encoder_driver::getPosition(void)
 {
    return position;
 }

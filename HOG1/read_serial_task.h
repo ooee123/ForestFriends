@@ -54,7 +54,7 @@
 #include "read_serial_driver.h"
 #include "state.h"
 
-#define EPSILON 100
+#define EPSILON 60
 #define NEXT_COMMAND 128
 
 //-------------------------------------------------------------------------------------

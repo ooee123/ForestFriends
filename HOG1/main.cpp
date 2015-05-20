@@ -139,35 +139,22 @@ int main (void)
    State state = HOME;
 
 	// task that controls motors
-   /*
 	motor_driver* xAxis = new motor_driver (&DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1A1, &OCR1A);
    xEncoder->setSerial(&ser_port);
 	new motor_task ("X", task_priority (2), 280, &ser_port, xAxis, xEncoder, &desiredX, &DDRA, &PORTA, &PINA, PA7, &state);
 	motor_driver* yAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1B1, &OCR1B);
    yEncoder->setSerial(&ser_port);
 	new motor_task ("Y", task_priority (2), 280, &ser_port, yAxis, yEncoder, &desiredY, &DDRA, &PORTA, &PINA, PA6, &state);
+   /*
 	motor_driver* zAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC1, PC7, PC6, PB7, COM1C1, &OCR1C);
    zEncoder->setSerial(&ser_port);
 	new motor_task ("Z", task_priority (2), 280, &ser_port, zAxis, zEncoder, &desiredZ, &DDRA, &PORTA, &PINA, PA5, &state);
+   */
    read_serial_driver* serial = new read_serial_driver(&ser_port);
    new read_serial_task("S", task_priority (1), 280, &ser_port, serial, &desiredX, &desiredY, &desiredZ, xEncoder, yEncoder, zEncoder, &state);
-   */
    // task that reads incoming serial data
 	// Here's where the RTOS scheduler is started up. It should never exit as long as
 	// power is on and the microcontroller isn't rebooted
-
-   ser_port << "\nSTART\n";
-   DDRA |= (1 << 0);
-   PORTA |= (1 << 0);
-   DDRF = 0;
-   PORTB = 0b11111111;
-   for (;;)
-   {
-      if ((PINA << 7) & 1)
-      {
-         ser_port << "G";
-      }
-   }
 
    /*
    // While both limit switches are not activated

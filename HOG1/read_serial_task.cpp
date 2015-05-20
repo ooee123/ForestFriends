@@ -77,7 +77,7 @@ read_serial_task::read_serial_task (
 
 bool read_serial_task::isWithinTolerance(uint16_t actual, uint16_t expected)
 {
-   return actual - expected > EPSILON && actual - expected < EPSILON;
+   return abs(actual - expected) <= EPSILON;
 }
 
 void read_serial_task::run (void)
@@ -90,7 +90,7 @@ void read_serial_task::run (void)
       if (*state == HOME)
       {
          // If both limit switches are activated
-         if (getXLimitSwitch() && getYLimitSwitch())
+         if (!getXLimitSwitch() && !getYLimitSwitch())
          {
             *p_serial << "LIMIT";
             // Then we're ready to proceed to normal operation
@@ -101,6 +101,7 @@ void read_serial_task::run (void)
             *desiredX = serial->read_uint16_t();
             *desiredY = serial->read_uint16_t();
             *desiredZ = serial->read_uint16_t();
+            *p_serial << "Got data HOME";
          }
       }
       else if (*state == NORMAL)
@@ -108,15 +109,17 @@ void read_serial_task::run (void)
          // Check if all axis are within tolerance
          if (isWithinTolerance(xEncoder->getPosition(), *desiredX) &&
              isWithinTolerance(yEncoder->getPosition(), *desiredY) &&
-             isWithinTolerance(zEncoder->getPosition(), *desiredZ))
+             1)
+             //isWithinTolerance(zEncoder->getPosition(), *desiredZ))
          {
             // Notify Pi for next command
-            *p_serial << "A";
+            *p_serial << "Z";
             // Get the next command
             // Update desired
             *desiredX = serial->read_uint16_t();
             *desiredY = serial->read_uint16_t();
             *desiredZ = serial->read_uint16_t();
+            *p_serial << "Got data NORMAL";
             // If all points say 0, return home
             if (*desiredX == 0 && *desiredY == 0 && *desiredZ == 0)
             {
