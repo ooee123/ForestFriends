@@ -276,9 +276,6 @@ class Finish(tk.Frame):
       button1 = tk.Button(self, text="Machine more boards", font=LARGE_FONT,
          command=lambda: controller.show_frame(Start))
       button1.pack(fill=X)
-      button2 = tk.Button(self, text="Shutdown Machine", font=LARGE_FONT,
-         command=lambda: controller.show_frame(Start))
-      button2.pack(fill=X)
 
 app = GUI()
 app.title("Forest Friends")
