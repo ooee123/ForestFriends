@@ -45,9 +45,9 @@ class Start(tk.Frame):
       #label = tk.Label(self, text="Start Page", font=LARGE_FONT)
       #label.pack(pady=10,padx=10)
 
-      button = tk.Button(self, bg="red", text="Start...", font=LARGE_FONT,
+      button = tk.Button(self, bg="red", text="Start...", font=LARGE_FONT, height = 7,
          command=lambda: controller.show_frame(ImportFile))
-      button.pack(fill=BOTH)
+      button.pack(fill=X)
 
       #button2 = tk.Button(self, text="End",
       #   command=lambda: controller.show_frame(Start))
@@ -279,8 +279,6 @@ class Finish(tk.Frame):
       button2 = tk.Button(self, text="Shutdown Machine", font=LARGE_FONT,
          command=lambda: controller.show_frame(Start))
       button2.pack(fill=X)
-      button3 = tk.Button(self, text="Quit", fg="red",  font=LARGE_FONT, command = self.quit)
-      button3.pack(fill=X)
 
 app = GUI()
 app.title("Forest Friends")
