@@ -23,7 +23,7 @@ class GUI(tk.Tk):
       container.grid_columnconfigure(0, weight=1)
 
 
-      for F in (Start, ImportFile, badFileSyntax, VerifyDesign, Redesign, VerifyParts, Reverify, Machine):
+      for F in (Start, ImportFile, badFileSyntax, VerifyDesign, Redesign, VerifyParts, Reverify, Machine, Machining, Cancel, Finish):
          frame = F(container, self)
          frames[F] = frame
          frame.grid(row=0, column=0, sticky="nsew")
@@ -45,10 +45,9 @@ class Start(tk.Frame):
       #label = tk.Label(self, text="Start Page", font=LARGE_FONT)
       #label.pack(pady=10,padx=10)
 
-      button = tk.Button(self, height=15, width=24, bg="red", text="Start...", font=LARGE_FONT,
+      button = tk.Button(self, bg="red", text="Start...", font=LARGE_FONT, height = 7,
          command=lambda: controller.show_frame(ImportFile))
-      #button.grid(row = 2, column = 2, sticky= W)
-      button.pack()
+      button.pack(fill=X)
 
       #button2 = tk.Button(self, text="End",
       #   command=lambda: controller.show_frame(Start))
@@ -64,14 +63,14 @@ class ImportFile(tk.Frame):
       #label = tk.Label(self, text="Import File", font=LARGE_FONT)
       #label.pack(pady=10,padx=10)
 
-      button = tk.Button(self, text="Import File",width = 22, height = 4,font=LARGE_FONT,
+      button = tk.Button(self, text="Import File", height = 4,font=LARGE_FONT,
          command=self.openFile)
          #command=lambda: controller.show_frame(VerifyDesign))
-      button.pack()
+      button.pack(fill=X)
 
-      button2 = tk.Button(self, text="End",width = 22, height = 3,font=LARGE_FONT,
+      button2 = tk.Button(self, text="End", height = 3,font=LARGE_FONT,
          command=lambda: controller.show_frame(Start))
-      button2.pack()
+      button2.pack(fill=X)
 
    def openFile(self):
       print("importing file")
@@ -115,7 +114,6 @@ class ImportFile(tk.Frame):
       for i in range(3):
          if NOT (data.readline().isnumeric()):
             return false
-
       for line in data:
          if NOT (data.readline().isnumeric()):
             return false
@@ -134,12 +132,14 @@ class ImportFile(tk.Frame):
 class badFileSyntax(tk.Frame):
    def __init__(self, parent, controller):
       tk.Frame.__init__(self, parent)
-      label = tk.Label(self, text="Input file design is incorrect, please try again.", font=LARGE_FONT)
-      label.pack(pady=10,padx=10)
+      label = tk.Label(self, text="Input file design is incorrect,", font=LARGE_FONT)
+      label.pack(pady=1,padx=10)
+      label = tk.Label(self, text="please try again.", font=LARGE_FONT)
+      label.pack(pady=1,padx=10)
 
-      button2 = tk.Button(self, text="End",width = 18, height = 3,font=LARGE_FONT,
+      button2 = tk.Button(self, text="End", height = 3,font=LARGE_FONT,
          command=lambda: controller.show_frame(Start))
-      button2.pack()
+      button2.pack(fill=X, anchor=S)
 
 class VerifyDesign(tk.Frame):
 
@@ -157,25 +157,27 @@ class VerifyDesign(tk.Frame):
 
       #label = tk.Label(self, text="Design is..", font=LARGE_FONT)
       #label.pack(side=LEFT)
-      button1 = tk.Button(self, text="correct", width = 12, height = 2, font=LARGE_FONT,
+      button1 = tk.Button(self, text="Correct Design", width = 12, font=LARGE_FONT,
          command=lambda: controller.show_frame(VerifyParts))
-      button1.pack(side=LEFT)
+      button1.pack(side=LEFT, anchor=S)
 
-      button2 = tk.Button(self, text="incorrect", width = 14, height = 2, font=LARGE_FONT,
+      button2 = tk.Button(self, text="Incorrect Design", width = 14, font=LARGE_FONT,
          command=lambda: controller.show_frame(Redesign))
-      button2.pack(side=LEFT)
+      button2.pack(side=LEFT, anchor=S)
 
 
 class Redesign(tk.Frame):
 
    def __init__(self, parent, controller):
       tk.Frame.__init__(self, parent)
-      label = tk.Label(self, text="Please redesign and start over", font=LARGE_FONT)
-      label.pack(pady=10,padx=10)
+      label = tk.Label(self, text="Please redesign", font=LARGE_FONT)
+      label.pack(pady=2, fill=X)
+      label = tk.Label(self, text="and start over", font=LARGE_FONT)
+      label.pack(pady=2, fill=X)
 
-      button1 = tk.Button(self, text="end", width = 10, height = 2, font=LARGE_FONT,
+      button1 = tk.Button(self, text="end", height = 2, font=LARGE_FONT,
          command=lambda: controller.show_frame(Start))
-      button1.pack()
+      button1.pack(fill=X, anchor=S)
 
 
 class VerifyParts(tk.Frame):
@@ -187,27 +189,27 @@ class VerifyParts(tk.Frame):
       
       #label = tk.Label(self, text="Design is..", font=LARGE_FONT)
       #label.pack(side=LEFT)
-      button1 = tk.Button(self, text="correct", width = 12, height = 1, font=LARGE_FONT,
+      button1 = tk.Button(self, text="Correct Parts", width = 12, height = 1, font=LARGE_FONT,
          command=lambda: controller.show_frame(Machine))
-      button1.pack(side=LEFT)
+      button1.pack(anchor=S, fill=X)
 
-      button2 = tk.Button(self, text="incorrect", width = 14, height = 1, font=LARGE_FONT,
+      button2 = tk.Button(self, text="Incorrect Parts", width = 14, height = 1, font=LARGE_FONT,
          command=lambda: controller.show_frame(Reverify))
-      button2.pack(side=LEFT)
+      button2.pack(anchor=S, fill=X)
 
    def readFile(self):
       data = open("file.txt", "r")
       line = data.readline()
       label1 = tk.Label(self, text=("Width of Board: " + line), font=LARGE_FONT)
-      label1.pack(pady=1,padx=5)
+      label1.pack(anchor=S)
       print "read line %s" % (line)
       line = data.readline()
       label2 = tk.Label(self, text=("Height of Board: " + line), font=LARGE_FONT)
-      label2.pack(pady=1,padx=5)
+      label2.pack(anchor=S)
       print "read line %s" % (line)
       line = data.readline()
       label3 = tk.Label(self, text=("Letter height: " + line), font=LARGE_FONT)
-      label3.pack(pady=1,padx=5)
+      label3.pack(anchor=S)
       print "read line %s" % (line)
       data.close()
 
@@ -215,32 +217,78 @@ class Reverify(tk.Frame):
 
    def __init__(self, parent, controller):
       tk.Frame.__init__(self, parent)
-      label = tk.Label(self, text="Please adjust your parts and start over", font=LARGE_FONT)
-      label.pack(pady=10,padx=10)
+      label = tk.Label(self, text="Please adjust parts", font=LARGE_FONT)
+      label.pack(pady=2,padx=10)
+      label = tk.Label(self, text="and start over", font=LARGE_FONT)
+      label.pack(pady=2,padx=10)
 
       button1 = tk.Button(self, text="End", font=LARGE_FONT,
          command=lambda: controller.show_frame(Start))
-      button1.pack()
+      button1.pack(anchor=S, fill=X)
 
 class Machine(tk.Frame):
 
    def __init__(self, parent, controller):
       tk.Frame.__init__(self, parent)
-      label = tk.Label(self, text="Machining will start when you are ready!", font=LARGE_FONT)
-      label.pack(pady=10,padx=10)
+      label = tk.Label(self, text="Machining will start", font=LARGE_FONT)
+      label.pack(pady=2,padx=10)
+      label = tk.Label(self, text="when you are ready!", font=LARGE_FONT)
+      label.pack(pady=2,padx=10)
 
       button1 = tk.Button(self, text="Start Machining", font=LARGE_FONT,
-         command=lambda: controller.show_frame(Machine))
-      button1.pack()
+         command=lambda: controller.show_frame(Machining))
+      button1.pack(anchor=S, fill=X)
 
       button2 = tk.Button(self, text="End", font=LARGE_FONT,
          command=lambda: controller.show_frame(Start))
-      button2.pack()
+      button2.pack(anchor=S, fill=X)
 
-      button3 = tk.Button(self, text="Quit", fg="red",  font=LARGE_FONT, command = self.quit)
-      button3.pack()
+      #button3 = tk.Button(self, text="Quit", fg="red",  font=LARGE_FONT, command = self.quit)
+      #button3.pack(fill=X)
+
+class Machining(tk.Frame):
+
+   def __init__(self, parent, controller):
+      tk.Frame.__init__(self, parent)
+      label = tk.Label(self, text="In progress...", font=LARGE_FONT)
+      label.pack(pady=10,padx=10)
+
+      button1 = tk.Button(self, text="Cancel Machining", font=LARGE_FONT,
+         command=lambda: controller.show_frame(Cancel))
+      button1.pack(fill=X)
+
+         
+      button2 = tk.Button(self, text="Finish Machining", font=LARGE_FONT,
+         command=lambda: controller.show_frame(Finish))
+      button2.pack(fill=X)
+
+class Cancel(tk.Frame):
+
+   def __init__(self, parent, controller):
+      tk.Frame.__init__(self, parent)
+      label = tk.Label(self, text="Cancled", font=LARGE_FONT)
+      label.pack(pady=10,padx=10)
+
+      button1 = tk.Button(self, text="Return to Start", font=LARGE_FONT,
+         command=lambda: controller.show_frame(Start))
+      button1.pack(fill=X)
+
+class Finish(tk.Frame):
+
+   def __init__(self, parent, controller):
+      tk.Frame.__init__(self, parent)
+      label = tk.Label(self, text="Machining is finished.", font=LARGE_FONT)
+      label.pack(anchor=S)
+
+      button1 = tk.Button(self, text="Machine more boards", font=LARGE_FONT,
+         command=lambda: controller.show_frame(Start))
+      button1.pack(anchor=S)
 
 app = GUI()
-app.title("Forest Friends")
-app.geometry("315x240")
+app.overrideredirect(True)
+#app.title("Forest Friends")
+#app.geometry("315x240")
+app.geometry("{0}x{1}+0+0".format(app.winfo_screenwidth(), app.winfo_screenheight()))
+app.focus_set()
+app.bind("<Escape>", lambda e: app.quit())
 app.mainloop()
