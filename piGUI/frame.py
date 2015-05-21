@@ -45,7 +45,7 @@ class Start(tk.Frame):
       #label = tk.Label(self, text="Start Page", font=LARGE_FONT)
       #label.pack(pady=10,padx=10)
 
-      button = tk.Button(self, bg="red", text="Start...", font=LARGE_FONT, height = 7,
+      button = tk.Button(self, bg="red", text="Start...", font=LARGE_FONT,height = 10, 
          command=lambda: controller.show_frame(ImportFile))
       button.pack(fill=BOTH)
 
