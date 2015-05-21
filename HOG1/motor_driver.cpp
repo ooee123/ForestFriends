@@ -24,6 +24,7 @@
 
 #include "rs232int.h"                       // Include header for serial port class
 #include "motor_driver.h"                // Include header for the A/D class
+#include "pinLayout.h"
 #define STOP_CONST 25
 
 //---------------------		//p_motor_1->set_power(control1);----------------------------------------------------------------
@@ -56,13 +57,21 @@ motor_driver::motor_driver (volatile uint8_t* DDR_en, volatile uint8_t* DDR_dir,
 	OCR = OCRtimer;
 	PWM = PWMbit;
 	
+   /*
+   _setBit(*DDR_EN, EN);
+   _setBit(*DDR_DIR, INA);
+   _setBit(*DDR_DIR, INB);
+   _setBit(*DDR_PWM, PWM);
+   _setBit(*PORT_EN, EN);
+   _setBit(*PORT_DIR, INA);
+   _setBit(*PORT_DIR, INB);
+*/
 	*DDR_EN |= (1 << EN); // Output enable motors 1 and 2
 	*DDR_DIR |= (1 << INA) | (1 << INB); // Output enable motors 1 and 2
 	*DDR_PWM |= (1 << PWM); // Turn on PWM for motors 1 and 2 as outputs
 
 	*PORT_EN |= (1 << EN); // Initialize mode for motor
 	*PORT_DIR |= (1 << INA) | (1 << INB);
-
 	
 	// To set 10-bit fast PWM mode we must set bits WGM30 and WGM32, which are in two
 	// different registers (ugh). We use COM3B1 and Com3B0 to set up the PWM so that

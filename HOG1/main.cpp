@@ -42,6 +42,9 @@
 #include <util/delay.h>			     // Delay 
 #include "pinLayout.h"
 #include "state.h"
+#include "z_motor_task.h"
+
+//#define Z_AXIS
 
 // Declare the queues which are used by tasks to communicate with each other here. 
 // Each queue must also be declared 'extern' in a header file which will be read 
@@ -80,9 +83,12 @@ frt_queue<uint16_t> queue_z (20);
  *  @return This is a real-time microcontroller program which doesn't return. Ever.
  */
 
-encoder_driver* xEncoder = new encoder_driver(&DDRE, &PINE, &PORTE, PE4, PE5);
-encoder_driver* yEncoder = new encoder_driver(&DDRE, &PINE, &PORTE, PE6, PE7);
-encoder_driver* zEncoder = new encoder_driver(&DDRE, &PINE, &PORTE, PA1, PA0);
+//encoder_driver* xEncoder = new encoder_driver(&DDRE, &PINE, &PORTE, PE4, PE5);
+//encoder_driver* yEncoder = new encoder_driver(&DDRE, &PINE, &PORTE, PE6, PE7);
+//encoder_driver* zEncoder = new encoder_driver(&DDRE, &PINE, &PORTE, PA1, PA0);
+encoder_driver* xEncoder = new encoder_driver(&X_ENCODER_DDR, &X_ENCODER_PIN, &X_ENCODER_PORT, X_ENCODER_PINA, X_ENCODER_PINB);
+encoder_driver* yEncoder = new encoder_driver(&Y_ENCODER_DDR, &Y_ENCODER_PIN, &Y_ENCODER_PORT, Y_ENCODER_PINA, Y_ENCODER_PINB);
+encoder_driver* zEncoder = new encoder_driver(&Z_ENCODER_DDR, &Z_ENCODER_PIN, &Z_ENCODER_PORT, Z_ENCODER_PINA, Z_ENCODER_PINB);
 // Enc 1 A SCL
 ISR(INT0_vect)
 {
@@ -136,52 +142,25 @@ int main (void)
    uint16_t desiredX = 0;
    uint16_t desiredY = 0;
    uint16_t desiredZ = 0;
-   State state = HOME;
+   volatile State state = HOME;
 
 	// task that controls motors
 	motor_driver* xAxis = new motor_driver (&DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1A1, &OCR1A);
    xEncoder->setSerial(&ser_port);
-	new motor_task ("X", task_priority (2), 280, &ser_port, xAxis, xEncoder, &desiredX, &DDRA, &PORTA, &PINA, PA7, &state);
+	new motor_task ("X", task_priority (2), 280, &ser_port, xAxis, xEncoder, &desiredX, &X_LIMIT_DDR, &X_LIMIT_PORT, &X_LIMIT_PIN, X_ZERO_LIMIT_PIN_NUM, &state);
 	motor_driver* yAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1B1, &OCR1B);
    yEncoder->setSerial(&ser_port);
-	new motor_task ("Y", task_priority (2), 280, &ser_port, yAxis, yEncoder, &desiredY, &DDRA, &PORTA, &PINA, PA6, &state);
-   /*
-	motor_driver* zAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC1, PC7, PC6, PB7, COM1C1, &OCR1C);
-   zEncoder->setSerial(&ser_port);
-	new motor_task ("Z", task_priority (2), 280, &ser_port, zAxis, zEncoder, &desiredZ, &DDRA, &PORTA, &PINA, PA5, &state);
-   */
+	new motor_task ("Y", task_priority (2), 280, &ser_port, yAxis, yEncoder, &desiredY, &Y_LIMIT_DDR, &Y_LIMIT_PORT, &Y_LIMIT_PIN, Y_ZERO_LIMIT_PIN_NUM, &state);
+   #ifdef Z_AXIS
+      motor_driver* zAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC1, PC7, PC6, PB7, COM1C1, &OCR1C);
+      zEncoder->setSerial(&ser_port);
+      new z_motor_task ("Z", task_priority (2), 280, &ser_port, zAxis, zEncoder, &desiredZ, &Z_LIMIT_DDR, &Z_LIMIT_PORT, &Z_LIMIT_PIN, Z_ZERO_LIMIT_PIN_NUM, &state);
+   #endif
    read_serial_driver* serial = new read_serial_driver(&ser_port);
    new read_serial_task("S", task_priority (1), 280, &ser_port, serial, &desiredX, &desiredY, &desiredZ, xEncoder, yEncoder, zEncoder, &state);
    // task that reads incoming serial data
 	// Here's where the RTOS scheduler is started up. It should never exit as long as
 	// power is on and the microcontroller isn't rebooted
 
-   /*
-   // While both limit switches are not activated
-   while (!getXLimitSwitch() && !getYLimitSwitch())
-   {
-      //Calibrate here
-      // Adjust X Axis
-      if (!getXLimitSwitch())
-      {
-         xAxis->move(-CALIBRATE_SPEED);
-      }
-      else
-      {
-         xAxis->brake();
-      }
-      // Adjust Y Axis
-      if (getYLimitSwitch())
-      {
-         yAxis->move(-CALIBRATE_SPEED);
-      }
-      else
-      {
-         yAxis->brake();
-      }
-   }
-   xEncoder->reset();
-   yEncoder->reset();
-   */
 	vTaskStartScheduler ();
 }

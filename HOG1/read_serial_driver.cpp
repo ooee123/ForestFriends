@@ -26,6 +26,7 @@
 #include "rs232int.h"                       // Include header for serial port class
 #include "read_serial_driver.h"                // Include header for the A/D class
 #define STOP_CONST 25
+//#define BINARY_SERIAL
 
 //---------------------		//p_motor_1->set_power(control1);----------------------------------------------------------------
 /** \brief This constructor initializes the motor driver. 
@@ -47,10 +48,9 @@ read_serial_driver::read_serial_driver(rs232 *serial_in)
 uint16_t read_serial_driver::read_uint16_t()
 {
    uint16_t num;
-   char c;
    #ifdef BINARY_SERIAL
-      c = serial->getchar();
-      return (c << 8) | serial->getchar();
+      num = serial->getchar();
+      return (num << 8) | serial->getchar();
    #else
       num = serial->getchar() - '0';
       num = num * 10 + serial->getchar() - '0';
