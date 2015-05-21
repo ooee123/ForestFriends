@@ -47,7 +47,7 @@ class Start(tk.Frame):
 
       button = tk.Button(self, bg="red", text="Start...", font=LARGE_FONT, height = 7,
          command=lambda: controller.show_frame(ImportFile))
-      button.pack(fill=X)
+      button.pack(fill=BOTH)
 
       #button2 = tk.Button(self, text="End",
       #   command=lambda: controller.show_frame(Start))
@@ -65,12 +65,12 @@ class ImportFile(tk.Frame):
       #label = tk.Label(self, text="Import File", font=LARGE_FONT)
       #label.pack(pady=10,padx=10)
 
-      button = tk.Button(self, text="Import File", height = 4,font=LARGE_FONT,
+      button = tk.Button(self, text="Import File", height = 5,font=LARGE_FONT,
          command=self.openFile)
          #command=lambda: controller.show_frame(VerifyDesign))
       button.pack(fill=X)
 
-      button2 = tk.Button(self, text="End", height = 3,font=LARGE_FONT,
+      button2 = tk.Button(self, text="End", height = 5,font=LARGE_FONT,
          command=restartFrame)
          #command=lambda: controller.show_frame(Start))
       button2.pack(fill=X)
