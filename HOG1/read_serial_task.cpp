@@ -103,7 +103,9 @@ void read_serial_task::run (void)
          #endif
          )
          {
+         #ifdef DEBUG
             *p_serial << "LIMIT";
+         #endif
             // Then we're ready to proceed to normal operation
             *state = NORMAL;
             xEncoder->reset();
@@ -112,11 +114,13 @@ void read_serial_task::run (void)
             *desiredX = serial->read_uint16_t();
             *desiredY = serial->read_uint16_t();
             *desiredZ = serial->read_uint16_t();
+         #ifdef DEBUG
             *p_serial << "Got data HOME";
             *p_serial << "X:";
             *p_serial << *desiredX;
             *p_serial << "Y:";
             *p_serial << *desiredY;
+         #endif
          }
       }
       else if (*state == NORMAL)
@@ -136,12 +140,12 @@ void read_serial_task::run (void)
             *desiredX = serial->read_uint16_t();
             *desiredY = serial->read_uint16_t();
             *desiredZ = serial->read_uint16_t();
-            //*p_serial << "Got data NORMAL";
             // If all points say 0, return home
             if (*desiredX == 0 && *desiredY == 0 && *desiredZ == 0)
             {
                *state = HOME;
             }
+            #ifdef DEBUG
             else
             {
                *p_serial << "X:";
@@ -149,6 +153,7 @@ void read_serial_task::run (void)
                *p_serial << "Y:";
                *p_serial << *desiredY;
             }
+            #endif
          }
       }
 		delay_from_to (previousTicks, configMS_TO_TICKS (100));

@@ -89,14 +89,28 @@ frt_queue<uint16_t> queue_z (20);
 encoder_driver* xEncoder = new encoder_driver(&X_ENCODER_DDR, &X_ENCODER_PIN, &X_ENCODER_PORT, X_ENCODER_PINA, X_ENCODER_PINB);
 encoder_driver* yEncoder = new encoder_driver(&Y_ENCODER_DDR, &Y_ENCODER_PIN, &Y_ENCODER_PORT, Y_ENCODER_PINA, Y_ENCODER_PINB);
 encoder_driver* zEncoder = new encoder_driver(&Z_ENCODER_DDR, &Z_ENCODER_PIN, &Z_ENCODER_PORT, Z_ENCODER_PINA, Z_ENCODER_PINB);
-// Enc 1 A SCL
+uint16_t desiredX = 0;
+uint16_t desiredY = 0;
+uint16_t desiredZ = 0;
+volatile State state = HOME;
+// X Current Switch SCL
 ISR(INT0_vect)
 {
+   state = HOME;
+   desiredX = 0;
+   desiredY = 0;
+   desiredZ = 0;
+   _clearBit(SOLID_STATE_PORT, SOLID_STATE_PIN_NUM);
 }
 
-// Enc 1 B SDA
+// Y Current Switch SDA
 ISR(INT1_vect)
 {
+   state = HOME;
+   desiredX = 0;
+   desiredY = 0;
+   desiredZ = 0;
+   _clearBit(SOLID_STATE_PORT, SOLID_STATE_PIN_NUM);
 }
 
 // Enc X A PE4
@@ -139,10 +153,6 @@ int main (void)
 	// the task scheduler has been started by the function vTaskStartScheduler()
 	rs232 ser_port (9600, 0);
 
-   uint16_t desiredX = 0;
-   uint16_t desiredY = 0;
-   uint16_t desiredZ = 0;
-   volatile State state = HOME;
 
 	// task that controls motors
 	motor_driver* xAxis = new motor_driver (&DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1A1, &OCR1A);

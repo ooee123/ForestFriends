@@ -1,5 +1,5 @@
 //*************************************************************************************
-/** \file my_motor_driver.cpp
+/** \file motor_driver.cpp
  
  *  License:
  *    This file is copyright 2012 by JR Ridgely and released under the Lesser GNU 
@@ -25,6 +25,8 @@
 #include "rs232int.h"                       // Include header for serial port class
 #include "motor_driver.h"                // Include header for the A/D class
 #include "pinLayout.h"
+#include "constants.h"
+
 #define STOP_CONST 25
 
 //---------------------		//p_motor_1->set_power(control1);----------------------------------------------------------------
@@ -108,42 +110,34 @@ void motor_driver::setSerial(emstream* stream)
 
 void motor_driver::set_power (double power)
 {	
-	//if(motorType == true)
-	if(true)
-	{
-		if (power == 0)
-		{
-			*OCR = 0;
-		}
-		
-		// Counter clockwise
-		else if (power < 0)
-		{
-			*PORT_DIR &= ~(1 << INA);
-			*PORT_DIR |= (1 << INB) | (1 << EN);
-			
-			*OCR = uint16_t(1.0*abs(power));
-		}
-		
-		// Clockwise
-		else if(power > 0)
-		{
-			*PORT_DIR |= (1 << INA) | (1 << EN);
-			*PORT_DIR &= ~(1 << INB);
-			
-			*OCR = uint16_t(1.0*abs(power));
-			
-		}	
-		// freewheeling
-		else
-		{
-			*OCR = 0;
-		}
-	}
-	else
-	{
-		*OCR = uint16_t(1.0*abs(power));
-	}
+   if (power == 0)
+   {
+      *OCR = 0;
+   }
+   
+   // Counter clockwise
+   else if (power < 0)
+   {
+      *PORT_DIR &= ~(1 << INA);
+      *PORT_DIR |= (1 << INB) | (1 << EN);
+      
+      *OCR = uint16_t(1.0*abs(power));
+   }
+   
+   // Clockwise
+   else if(power > 0)
+   {
+      *PORT_DIR |= (1 << INA) | (1 << EN);
+      *PORT_DIR &= ~(1 << INB);
+      
+      *OCR = uint16_t(1.0*abs(power));
+      
+   }	
+   // freewheeling
+   else
+   {
+      *OCR = 0;
+   }
 }
 
 //-------------------------------------------------------------------------------------
@@ -189,17 +183,12 @@ void motor_driver::move(int16_t delta)
 	{
 		set_power(-PI(delta)); // go counterclockwise
 	}
-	
-	//position_error.put(encoder_desired.get() - encoder_position.get());
-	
 }
 
 double motor_driver::PI(uint16_t error)
 {
 	//Porportional error variables
-	double pGain = 0.005;
-	pGain = 2.000;
-	double pTerm = 95 + pGain*abs(error);
+	double pTerm = PCONSTANT + PGAIN * abs(error);
 	
    /* Integral part
 	//Integral error variables

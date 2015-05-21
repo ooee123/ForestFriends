@@ -107,8 +107,9 @@ public class FileParser
    {
       for (Path p: paths)
       {
-         System.err.print(String.format("(%d, %d, %d)\n", p.getX(), p.getY(), p.type.ordinal()));
-         printer.print(String.format("(%d, %d, %d)\n", p.getX(), p.getY(), p.type.ordinal()));
+         String toPrint = String.format("%d, %d, %d\n", p.getX(), p.getY(), p.type.ordinal());
+         System.err.print(toPrint);
+         printer.print(toPrint);
       }
    }
 
