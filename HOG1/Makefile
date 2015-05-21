@@ -30,7 +30,7 @@ TARGET = main
 
 # A list of the source (.c, .cc, .cpp) files in the project, including $(TARGET). Files
 # in library subdirectories do not go in this list; they're automatically in LIB_OBJS
-ADDITIONAL_FILES = encoder_task.cpp encoder_driver.cpp read_serial_driver.cpp read_serial_task.cpp
+ADDITIONAL_FILES = encoder_task.cpp encoder_driver.cpp read_serial_driver.cpp read_serial_task.cpp z_motor_task.cpp
 SRC = $(TARGET).cpp motor_task.cpp motor_driver.cpp $(ADDITIONAL_FILES)
 # Clock frequency of the CPU, in Hz. This number should be an unsigned long integer.
 # For example, 16 MHz would be represented as 16000000UL. 
@@ -169,6 +169,7 @@ CPP_WARNINGS = -Wall -Wextra -Wshadow -Wpointer-arith -Wcast-align -Wsign-compar
                -Wmissing-declarations -Wunused
 
 C_FLAGS = -D GCC_MEGA_AVR -D F_CPU=$(F_CPU) -D _GNU_SOURCE \
+          -D Z_AXIS \
           -fsigned-char -funsigned-bitfields -fpack-struct -fshort-enums \
           -std=gnu99 -g $(OPTIM) -mmcu=$(MCU) $(OTHERS) $(C_WARNINGS) \
           $(patsubst %,-I%,$(LIB_DIRS))

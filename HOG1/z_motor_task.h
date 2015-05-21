@@ -32,8 +32,8 @@
 //**************************************************************************************
 
 // This define prevents this .h file from being included multiple times in a .cpp file
-#ifndef _MOTOR_TASK_H_
-#define _MOTOR_TASK_H_
+#ifndef _Z_MOTOR_TASK_H_
+#define _Z_MOTOR_TASK_H_
 
 #include <stdlib.h>                         // Prototype declarations for I/O functions
 #include <avr/io.h>                         // Header for special function registers
@@ -54,6 +54,13 @@
 #include "read_serial_driver.h"
 #include "state.h"
 
+#define START 0
+#define LINE 1
+#define MOVE 2
+
+#define JIG_HEIGHT 0
+#define ROUTING_DEPTH 0
+#define Z_AXIS_TOLERANCE 20
 
 //-------------------------------------------------------------------------------------
 /** \brief This task controls the direction and duty cycle of a motor driver. This task
@@ -62,7 +69,7 @@
  *  \c motor_driver.cpp.
  */
 
-class motor_task : public frt_task
+class z_motor_task : public frt_task
 {
 private:
    motor_driver* motor;
@@ -72,6 +79,8 @@ private:
    volatile uint8_t* limitPIN;
    uint8_t limitPinNum;
    volatile State* state;
+   uint16_t offset;
+   bool jigCheck;
 	// No private variables or methods for this class
 
 protected:
@@ -79,7 +88,7 @@ protected:
 
 public:
 	// This constructor creates a task for controlling motor 1.
-	motor_task (const char*, unsigned portBASE_TYPE, size_t, emstream*, motor_driver*, encoder_driver*, uint16_t *desired_in, volatile uint8_t* limitDDR_in, volatile uint8_t* limitPORT_in, volatile uint8_t* limitPIN_in, uint8_t limitPinNum_in, volatile State* state_in);
+	z_motor_task (const char*, unsigned portBASE_TYPE, size_t, emstream*, motor_driver*, encoder_driver*, uint16_t *desired_in, volatile uint8_t* limitDDR_in, volatile uint8_t* limitPORT_in, volatile uint8_t* limitPIN_in, uint8_t limitPinNum_in, volatile State* state_in);
 
 	// This method is called by the RTOS once to run the task loop for ever and ever.
 	void run (void);

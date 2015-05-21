@@ -92,7 +92,7 @@ void encoder_driver::updatePosition(void)
       *ptr_to_serial << position;
 }
 
-volatile uint16_t encoder_driver::getPosition(void)
+uint16_t encoder_driver::getPosition(void)
 {
    return position;
 }

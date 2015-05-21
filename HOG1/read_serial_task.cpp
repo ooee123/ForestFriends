@@ -49,7 +49,7 @@ read_serial_task::read_serial_task (
                          encoder_driver* xEncoder_in,
                          encoder_driver* yEncoder_in,
                          encoder_driver* zEncoder_in,
-                         State* state_in
+                         volatile State* state_in
 								)
 	:
    frt_task (a_name, a_priority, a_stack_size, p_ser_dev)
@@ -86,11 +86,22 @@ void read_serial_task::run (void)
 	for (;;)
 	{	
 		runs++;
-      
+      // Check for all limit switches, make sure they're not violated 
+      if (!getXMaxLimitSwitch() || !getYMaxLimitSwitch() || !getZMaxLimitSwitch())
+      {
+         *state = HOME;
+         *p_serial << "*ERROR*\n";
+         *p_serial << "MAX SWITCH ACTIVATED\n";
+         *p_serial << "*ERROR*\n";
+      }
       if (*state == HOME)
       {
          // If both limit switches are activated
-         if (!getXLimitSwitch() && !getYLimitSwitch())
+         if (!getXLimitSwitch() && !getYLimitSwitch()
+         #ifdef Z_AXIS
+            && !getZLimitSwitch()
+         #endif
+         )
          {
             *p_serial << "LIMIT";
             // Then we're ready to proceed to normal operation
@@ -102,15 +113,21 @@ void read_serial_task::run (void)
             *desiredY = serial->read_uint16_t();
             *desiredZ = serial->read_uint16_t();
             *p_serial << "Got data HOME";
+            *p_serial << "X:";
+            *p_serial << *desiredX;
+            *p_serial << "Y:";
+            *p_serial << *desiredY;
          }
       }
       else if (*state == NORMAL)
       {
          // Check if all axis are within tolerance
          if (isWithinTolerance(xEncoder->getPosition(), *desiredX) &&
-             isWithinTolerance(yEncoder->getPosition(), *desiredY) &&
-             1)
-             //isWithinTolerance(zEncoder->getPosition(), *desiredZ))
+             isWithinTolerance(yEncoder->getPosition(), *desiredY)
+             #ifdef Z_AXIS
+                && isWithinTolerance(zEncoder->getPosition(), *desiredZ)
+             #endif
+                )
          {
             // Notify Pi for next command
             *p_serial << "Z";
@@ -119,11 +136,18 @@ void read_serial_task::run (void)
             *desiredX = serial->read_uint16_t();
             *desiredY = serial->read_uint16_t();
             *desiredZ = serial->read_uint16_t();
-            *p_serial << "Got data NORMAL";
+            //*p_serial << "Got data NORMAL";
             // If all points say 0, return home
             if (*desiredX == 0 && *desiredY == 0 && *desiredZ == 0)
             {
                *state = HOME;
+            }
+            else
+            {
+               *p_serial << "X:";
+               *p_serial << *desiredX;
+               *p_serial << "Y:";
+               *p_serial << *desiredY;
             }
          }
       }

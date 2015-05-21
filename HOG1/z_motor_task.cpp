@@ -18,7 +18,7 @@
 //**************************************************************************************
 #include "frt_text_queue.h"                 // Header for text queue class
 #include "motor_driver.h"
-#include "motor_task.h"                 // Header for this task
+#include "z_motor_task.h"                 // Header for this task
 #include "frt_queue.h"
 #include <util/delay.h>
 #include "pinLayout.h"
@@ -38,7 +38,7 @@
  *                   be used by this task to communicate (default: NULL)
  */
 
-motor_task::motor_task (const char* a_name, 
+z_motor_task::z_motor_task (const char* a_name, 
 								 unsigned portBASE_TYPE a_priority, 
 								 size_t a_stack_size,
 								 emstream* p_ser_dev,
@@ -60,6 +60,7 @@ motor_task::motor_task (const char* a_name,
    limitPIN = limitPIN_in;
    limitPinNum = limitPinNum_in;
    state = state_in;
+   jigCheck = false;
    // Set the limit switches bumpers to input
    *limitDDR_in &= ~(1 << limitPinNum);
    // Activate Pull-Up Resistor
@@ -76,7 +77,7 @@ motor_task::motor_task (const char* a_name,
  *  can control multiple motors.
  */
 
-void motor_task::run (void)
+void z_motor_task::run (void)
 {
   	portTickType previousTicks = xTaskGetTickCount ();
 
@@ -97,13 +98,30 @@ void motor_task::run (void)
          }
          else
          {
+            if (!jigCheck)
+            {
+               offset = -((int16_t)encoder->getPosition());
+               jigCheck = true;
+            }
             motor->brake();
          }
       }
       else
       {
-         motor->move(*desired - (int16_t)encoder->getPosition());
+         int16_t desiredHeight;
+         if (*desired == START || *desired == MOVE)
+         {
+            desiredHeight = offset;
+         }
+         else if (*desired == LINE)
+         {
+            desiredHeight = offset + JIG_HEIGHT + ROUTING_DEPTH;
+         }
+         while (abs(desiredHeight - (int16_t)encoder->getPosition()) <= Z_AXIS_TOLERANCE)
+         {
+            motor->move(desiredHeight - (int16_t)encoder->getPosition());
+         }
       }
-		delay_from_to (previousTicks, configMS_TO_TICKS (30));
-	}
+      delay_from_to (previousTicks, configMS_TO_TICKS (30));
+   }
 }
