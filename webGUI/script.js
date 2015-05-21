@@ -324,7 +324,9 @@ function saveTextAsFile() {
    
    for (var i = 0; i < textBox.length; i++) {
       var c = textBox[i]
-      textToWrite += (c.x + "\n" + c.y + "\n" + c.text + "\n" /*+ c.font + "\n"*/)
+      if (c.x && c.y && c.text) {
+         textToWrite += (c.x + "\n" + c.y + "\n" + c.text + "\n" /*+ c.font + "\n"*/)
+      }
    }
    
    var textFileAsBlob = new Blob([textToWrite], {
