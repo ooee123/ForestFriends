@@ -48,7 +48,6 @@ var updateEverything = function (canvasNumber) {
          } 
          else {
             y = 2;
-          //alert("here " + y)
             document.getElementById("y" + canvasNumber).value = y
             context.clearRect(0, 0, canvas.width*scale, canvas.height*scale)
          }
@@ -57,9 +56,14 @@ var updateEverything = function (canvasNumber) {
          y = length - 1;
       }
       document.getElementById("y" + canvasNumber).value = y
+
+      // check text for arrows
+      text = checkArrow(text)
+
       canvas.x = x
       canvas.y = y
       canvas.text = text;
+
       var contextTemp = canvas.getContext("2d")
       contextTemp.font = 'normal ' + document.getElementById("fontSize").value*22 + 'pt hwygoth'; 
       contextTemp.fillText(text, x*scale, y*scale);
@@ -81,6 +85,12 @@ var updateEverything = function (canvasNumber) {
    }
 }
 
+var checkArrow = function(string) {
+   string = string.replace("^", "↑")
+   string = string.replace(">", "→")
+   string = string.replace("<", "←")
+   return string
+}
 var updateRect = function (number) {
    if (dimension["width"] < 12) {
       document.getElementById("xCoord").value = 12
