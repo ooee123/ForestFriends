@@ -54,6 +54,8 @@ class Start(tk.Frame):
       #button2.pack()
 
 
+def restartFrame():
+   os.execv("/usr/bin/python", ["python", "frame.py"])
 
 class ImportFile(tk.Frame):
       
@@ -69,8 +71,10 @@ class ImportFile(tk.Frame):
       button.pack(fill=X)
 
       button2 = tk.Button(self, text="End", height = 3,font=LARGE_FONT,
-         command=lambda: controller.show_frame(Start))
+         command=restartFrame)
+         #command=lambda: controller.show_frame(Start))
       button2.pack(fill=X)
+
 
    def openFile(self):
       print("importing file")
@@ -138,7 +142,8 @@ class badFileSyntax(tk.Frame):
       label.pack(pady=1,padx=10)
 
       button2 = tk.Button(self, text="End", height = 3,font=LARGE_FONT,
-         command=lambda: controller.show_frame(Start))
+         command=restartFrame)
+         #command=lambda: controller.show_frame(Start))
       button2.pack(fill=X, anchor=S)
 
 class VerifyDesign(tk.Frame):
@@ -175,8 +180,9 @@ class Redesign(tk.Frame):
       label = tk.Label(self, text="and start over", font=LARGE_FONT)
       label.pack(pady=2, fill=X)
 
-      button1 = tk.Button(self, text="end", height = 2, font=LARGE_FONT,
-         command=lambda: controller.show_frame(Start))
+      button1 = tk.Button(self, text="End", height = 2, font=LARGE_FONT,
+         command=restartFrame)
+         #command=lambda: controller.show_frame(Start))
       button1.pack(fill=X, anchor=S)
 
 
@@ -223,7 +229,8 @@ class Reverify(tk.Frame):
       label.pack(pady=2,padx=10)
 
       button1 = tk.Button(self, text="End", font=LARGE_FONT,
-         command=lambda: controller.show_frame(Start))
+         command=restartFrame)
+         #command=lambda: controller.show_frame(Start))
       button1.pack(anchor=S, fill=X)
 
 class Machine(tk.Frame):
@@ -240,7 +247,8 @@ class Machine(tk.Frame):
       button1.pack(anchor=S, fill=X)
 
       button2 = tk.Button(self, text="End", font=LARGE_FONT,
-         command=lambda: controller.show_frame(Start))
+         command=restartFrame)
+         #`command=lambda: controller.show_frame(Start))
       button2.pack(anchor=S, fill=X)
 
       #button3 = tk.Button(self, text="Quit", fg="red",  font=LARGE_FONT, command = self.quit)
@@ -250,17 +258,21 @@ class Machining(tk.Frame):
 
    def __init__(self, parent, controller):
       tk.Frame.__init__(self, parent)
+
       label = tk.Label(self, text="In progress...", font=LARGE_FONT)
       label.pack(pady=10,padx=10)
 
-      button1 = tk.Button(self, text="Cancel Machining", font=LARGE_FONT,
-         command=lambda: controller.show_frame(Cancel))
-      button1.pack(fill=X)
+      #button1 = tk.Button(self, text="Cancel Machining", font=LARGE_FONT,
+         #command=lambda: controller.show_frame(Cancel))
+         #command=cancelFlag)
+      #button1.pack(fill=X)
 
          
       button2 = tk.Button(self, text="Finish Machining", font=LARGE_FONT,
          command=lambda: controller.show_frame(Finish))
       button2.pack(fill=X)
+
+   
 
 class Cancel(tk.Frame):
 
@@ -270,8 +282,11 @@ class Cancel(tk.Frame):
       label.pack(pady=10,padx=10)
 
       button1 = tk.Button(self, text="Return to Start", font=LARGE_FONT,
-         command=lambda: controller.show_frame(Start))
+         command=restartFrame)
+         #command=lambda: controller.show_frame(Start))
       button1.pack(fill=X)
+
+   
 
 class Finish(tk.Frame):
 
@@ -281,14 +296,15 @@ class Finish(tk.Frame):
       label.pack(anchor=S)
 
       button1 = tk.Button(self, text="Machine more boards", font=LARGE_FONT,
-         command=lambda: controller.show_frame(Start))
+         #command=lambda: controller.show_frame(Start))
+         command=restartFrame)
       button1.pack(anchor=S)
 
 app = GUI()
 app.overrideredirect(True)
-#app.title("Forest Friends")
-#app.geometry("315x240")
-app.geometry("{0}x{1}+0+0".format(app.winfo_screenwidth(), app.winfo_screenheight()))
-app.focus_set()
-app.bind("<Escape>", lambda e: app.quit())
+app.title("Forest Friends")
+app.geometry("315x240")
+#app.geometry("{0}x{1}+0+0".format(app.winfo_screenwidth(), app.winfo_screenheight()))
+#app.focus_set()
+#app.bind("<Escape>", lambda e: app.quit())
 app.mainloop()
