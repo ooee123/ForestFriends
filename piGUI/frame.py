@@ -45,7 +45,7 @@ class Start(tk.Frame):
       #label = tk.Label(self, text="Start Page", font=LARGE_FONT)
       #label.pack(pady=10,padx=10)
 
-      button = tk.Button(self, bg="red", text="Start...", font=LARGE_FONT, height = 7,
+      button = tk.Button(self, bg="red", text="Start...", font=LARGE_FONT,height = 10, 
          command=lambda: controller.show_frame(ImportFile))
       button.pack(fill=BOTH)
 
@@ -303,7 +303,7 @@ class Finish(tk.Frame):
 app = GUI()
 app.overrideredirect(True)
 app.title("Forest Friends")
-app.geometry("315x240")
+app.geometry("320x240")
 #app.geometry("{0}x{1}+0+0".format(app.winfo_screenwidth(), app.winfo_screenheight()))
 #app.focus_set()
 #app.bind("<Escape>", lambda e: app.quit())
