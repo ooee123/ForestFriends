@@ -105,7 +105,16 @@ void motor_task::run (void)
       }
       else
       {
-         motor->move(*desired - (int16_t)encoder->getPosition());
+         //*p_serial << "MOTOR";
+         if (!isWithinTolerance(*desired, (int16_t)encoder->getPosition()))
+         {
+            *p_serial << *desired - (int16_t)encoder->getPosition();
+            motor->move(*desired - (int16_t)encoder->getPosition());
+         }
+         else
+         {
+            motor->brake();
+         }
       }
 		delay_from_to (previousTicks, configMS_TO_TICKS (30));
 	}

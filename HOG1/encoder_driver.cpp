@@ -25,6 +25,7 @@
 #include "rs232int.h"                       // Include header for serial port class
 #include "encoder_driver.h"                // Include header for the A/D class
 #define STOP_CONST 25
+#define DEBUG
 
 //---------------------		//p_motor_1->set_power(control1);----------------------------------------------------------------
 /** \brief This constructor initializes the motor driver. 
@@ -88,8 +89,13 @@ void encoder_driver::updatePosition(void)
       prevA = newA;
       prevSum = sum;
    }
+   #ifdef DEBUG
    if (position % 4 == 0)
+   {
       *ptr_to_serial << position;
+      *ptr_to_serial << "\n";
+   }
+   #endif
 }
 
 uint16_t encoder_driver::getPosition(void)

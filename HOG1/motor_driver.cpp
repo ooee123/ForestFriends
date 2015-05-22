@@ -199,7 +199,7 @@ double motor_driver::PI(uint16_t error)
 	double iGain = 0.0;
 	
 	
-	if(error <= 60)
+	if(error <= TOLERANCE)
 	{
 	  iState = 0;
 	}

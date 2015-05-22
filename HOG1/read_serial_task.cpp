@@ -78,10 +78,12 @@ read_serial_task::read_serial_task (
  *  can control multiple motors.
  */
 
+/*
 bool read_serial_task::isWithinTolerance(uint16_t actual, uint16_t expected)
 {
    return abs(actual - expected) <= TOLERANCE;
 }
+*/
 
 void read_serial_task::run (void)
 {
