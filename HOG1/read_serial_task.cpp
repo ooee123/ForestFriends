@@ -22,7 +22,10 @@
 #include <util/delay.h>
 #include "state.h"
 #include "pinLayout.h"
+#include "constants.h"
 #define CPR 1000
+#define DEBUG
+//#define Z_AXIS
 
 
 //-------------------------------------------------------------------------------------
@@ -77,7 +80,7 @@ read_serial_task::read_serial_task (
 
 bool read_serial_task::isWithinTolerance(uint16_t actual, uint16_t expected)
 {
-   return abs(actual - expected) <= EPSILON;
+   return abs(actual - expected) <= TOLERANCE;
 }
 
 void read_serial_task::run (void)
@@ -87,7 +90,8 @@ void read_serial_task::run (void)
 	{	
 		runs++;
       // Check for all limit switches, make sure they're not violated 
-      if (!getXMaxLimitSwitch() || !getYMaxLimitSwitch() || !getZMaxLimitSwitch())
+      //if (!getXMaxLimitSwitch() || !getYMaxLimitSwitch() || !getZMaxLimitSwitch())
+      if (false)
       {
          *state = HOME;
          *p_serial << "*ERROR*\n";
@@ -107,6 +111,7 @@ void read_serial_task::run (void)
             *p_serial << "LIMIT";
          #endif
             // Then we're ready to proceed to normal operation
+            *p_serial << AT_HOME; 
             *state = NORMAL;
             xEncoder->reset();
             yEncoder->reset();
@@ -114,6 +119,10 @@ void read_serial_task::run (void)
             *desiredX = serial->read_uint16_t();
             *desiredY = serial->read_uint16_t();
             *desiredZ = serial->read_uint16_t();
+            if (*desiredX == 0 && *desiredY == 0 && *desiredZ == 0)
+            {
+               *state = HOME;
+            }
          #ifdef DEBUG
             *p_serial << "Got data HOME";
             *p_serial << "X:";
@@ -134,7 +143,7 @@ void read_serial_task::run (void)
                 )
          {
             // Notify Pi for next command
-            *p_serial << "Z";
+            *p_serial << NEXT_COMMAND;
             // Get the next command
             // Update desired
             *desiredX = serial->read_uint16_t();

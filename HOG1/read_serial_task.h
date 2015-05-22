@@ -54,8 +54,6 @@
 #include "read_serial_driver.h"
 #include "state.h"
 
-#define EPSILON 60
-#define NEXT_COMMAND 128
 
 //-------------------------------------------------------------------------------------
 /** \brief This task controls the direction and duty cycle of a motor driver. This task

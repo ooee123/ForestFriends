@@ -22,6 +22,7 @@
 #include "frt_queue.h"
 #include <util/delay.h>
 #include "pinLayout.h"
+#include "constants.h"
 #define CPR 1000
 #include "state.h"
 
@@ -49,7 +50,8 @@ z_motor_task::z_motor_task (const char* a_name,
                          volatile uint8_t* limitPORT_in,
                          volatile uint8_t* limitPIN_in,
                          uint8_t limitPinNum_in,
-                         volatile State* state_in
+                         volatile State* state_in,
+                         bool* zReady_in
 								)
 	:
    frt_task (a_name, a_priority, a_stack_size, p_ser_dev)
@@ -61,6 +63,7 @@ z_motor_task::z_motor_task (const char* a_name,
    limitPinNum = limitPinNum_in;
    state = state_in;
    jigCheck = false;
+   zReady = zReady_in;
    // Set the limit switches bumpers to input
    *limitDDR_in &= ~(1 << limitPinNum);
    // Activate Pull-Up Resistor
@@ -87,6 +90,7 @@ void z_motor_task::run (void)
 	
 	for (;;)
 	{	
+      encoder->updatePosition();
 		runs++;
 
       if (*state == HOME)
@@ -102,6 +106,8 @@ void z_motor_task::run (void)
             {
                offset = -((int16_t)encoder->getPosition());
                jigCheck = true;
+               *p_serial << "Offset: ";
+               *p_serial << offset;
             }
             motor->brake();
          }
@@ -119,9 +125,11 @@ void z_motor_task::run (void)
          }
          while (abs(desiredHeight - (int16_t)encoder->getPosition()) <= Z_AXIS_TOLERANCE)
          {
+            *zReady = false;
             motor->move(desiredHeight - (int16_t)encoder->getPosition());
          }
+         *zReady = true;
       }
-      delay_from_to (previousTicks, configMS_TO_TICKS (30));
+      delay_from_to (previousTicks, configMS_TO_TICKS (10));
    }
 }

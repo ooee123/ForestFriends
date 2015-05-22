@@ -22,6 +22,7 @@
 #include "frt_queue.h"
 #include <util/delay.h>
 #include "pinLayout.h"
+#include "constants.h"
 #define CPR 1000
 #include "state.h"
 
@@ -49,7 +50,8 @@ motor_task::motor_task (const char* a_name,
                          volatile uint8_t* limitPORT_in,
                          volatile uint8_t* limitPIN_in,
                          uint8_t limitPinNum_in,
-                         volatile State* state_in
+                         volatile State* state_in,
+                         bool* zReady_in
 								)
 	:
    frt_task (a_name, a_priority, a_stack_size, p_ser_dev)
@@ -60,6 +62,7 @@ motor_task::motor_task (const char* a_name,
    limitPIN = limitPIN_in;
    limitPinNum = limitPinNum_in;
    state = state_in;
+   zReady = zReady_in;
    // Set the limit switches bumpers to input
    *limitDDR_in &= ~(1 << limitPinNum);
    // Activate Pull-Up Resistor

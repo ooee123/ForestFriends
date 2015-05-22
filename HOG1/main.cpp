@@ -92,7 +92,7 @@ encoder_driver* zEncoder = new encoder_driver(&Z_ENCODER_DDR, &Z_ENCODER_PIN, &Z
 uint16_t desiredX = 0;
 uint16_t desiredY = 0;
 uint16_t desiredZ = 0;
-volatile State state = HOME;
+volatile State state = NORMAL;
 // X Current Switch SCL
 ISR(INT0_vect)
 {
@@ -147,6 +147,7 @@ int main (void)
    sei();
    EICRB = 0b01010101; // Set Int_4-7 to activate on pin toggle
    EIMSK = 0b11110000; // Turn on Int_4-7
+   bool zReady = false;
 	// Configure a serial port which can be used by a task to print debugging infor-
 	// mation, or to allow user interaction, or for whatever use is appropriate.  The
 	// serial port will be used by the user interface task after setup is complete and
@@ -157,14 +158,14 @@ int main (void)
 	// task that controls motors
 	motor_driver* xAxis = new motor_driver (&DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1A1, &OCR1A);
    xEncoder->setSerial(&ser_port);
-	new motor_task ("X", task_priority (2), 280, &ser_port, xAxis, xEncoder, &desiredX, &X_LIMIT_DDR, &X_LIMIT_PORT, &X_LIMIT_PIN, X_ZERO_LIMIT_PIN_NUM, &state);
+	new motor_task ("X", task_priority (2), 280, &ser_port, xAxis, xEncoder, &desiredX, &X_LIMIT_DDR, &X_LIMIT_PORT, &X_LIMIT_PIN, X_ZERO_LIMIT_PIN_NUM, &state, &zReady);
 	motor_driver* yAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1B1, &OCR1B);
    yEncoder->setSerial(&ser_port);
-	new motor_task ("Y", task_priority (2), 280, &ser_port, yAxis, yEncoder, &desiredY, &Y_LIMIT_DDR, &Y_LIMIT_PORT, &Y_LIMIT_PIN, Y_ZERO_LIMIT_PIN_NUM, &state);
+	new motor_task ("Y", task_priority (2), 280, &ser_port, yAxis, yEncoder, &desiredY, &Y_LIMIT_DDR, &Y_LIMIT_PORT, &Y_LIMIT_PIN, Y_ZERO_LIMIT_PIN_NUM, &state, &zReady);
    #ifdef Z_AXIS
       motor_driver* zAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC1, PC7, PC6, PB7, COM1C1, &OCR1C);
       zEncoder->setSerial(&ser_port);
-      new z_motor_task ("Z", task_priority (2), 280, &ser_port, zAxis, zEncoder, &desiredZ, &Z_LIMIT_DDR, &Z_LIMIT_PORT, &Z_LIMIT_PIN, Z_ZERO_LIMIT_PIN_NUM, &state);
+      new z_motor_task ("Z", task_priority (2), 280, &ser_port, zAxis, zEncoder, &desiredZ, &Z_LIMIT_DDR, &Z_LIMIT_PORT, &Z_LIMIT_PIN, Z_ZERO_LIMIT_PIN_NUM, &state, &zReady);
    #endif
    read_serial_driver* serial = new read_serial_driver(&ser_port);
    new read_serial_task("S", task_priority (1), 280, &ser_port, serial, &desiredX, &desiredY, &desiredZ, xEncoder, yEncoder, zEncoder, &state);

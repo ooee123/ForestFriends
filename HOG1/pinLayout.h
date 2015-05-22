@@ -13,11 +13,11 @@
 #define Y_ENCODER_PINA PE6
 #define Y_ENCODER_PINB PE7
 
-#define Z_ENCODER_DDR  DDRE
-#define Z_ENCODER_PIN  PINE
-#define Z_ENCODER_PORT PORTE
-#define Z_ENCODER_PINA PE1
-#define Z_ENCODER_PINB PE0
+#define Z_ENCODER_DDR  DDRF
+#define Z_ENCODER_PIN  PINF
+#define Z_ENCODER_PORT PORTF
+#define Z_ENCODER_PINA PF7
+#define Z_ENCODER_PINB PF6
 
 #define X_LIMIT_DDR          DDRA
 #define X_LIMIT_PORT         PORTA
@@ -31,8 +31,8 @@
 #define Y_ZERO_LIMIT_PIN_NUM PA6
 #define Y_MAX_LIMIT_PIN_NUM  PA0
 
-#define Y_LIMIT_DDR          DDRA
-#define Y_LIMIT_PORT         PORTA
+#define Z_LIMIT_DDR          DDRA
+#define Z_LIMIT_PORT         PORTA
 #define Z_LIMIT_PIN          PINA
 #define Z_ZERO_LIMIT_PIN_NUM PA5
 #define Z_MAX_LIMIT_PIN_NUM  PA0
@@ -58,6 +58,5 @@
 #define getYMaxLimitSwitch() _getBit(Y_LIMIT_PIN, Y_MAX_LIMIT_PIN_NUM)
 #define getZMaxLimitSwitch() _getBit(Z_LIMIT_PIN, Z_MAX_LIMIT_PIN_NUM)
 
-#define CALIBRATE_SPEED 10
 
 #endif

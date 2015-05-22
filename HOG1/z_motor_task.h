@@ -54,14 +54,6 @@
 #include "read_serial_driver.h"
 #include "state.h"
 
-#define START 0
-#define LINE 1
-#define MOVE 2
-
-#define JIG_HEIGHT 0
-#define ROUTING_DEPTH 0
-#define Z_AXIS_TOLERANCE 20
-
 //-------------------------------------------------------------------------------------
 /** \brief This task controls the direction and duty cycle of a motor driver. This task
  *  controls a motor driver on the ME405 board.
@@ -81,6 +73,7 @@ private:
    volatile State* state;
    uint16_t offset;
    bool jigCheck;
+   bool* zReady;
 	// No private variables or methods for this class
 
 protected:
@@ -88,7 +81,7 @@ protected:
 
 public:
 	// This constructor creates a task for controlling motor 1.
-	z_motor_task (const char*, unsigned portBASE_TYPE, size_t, emstream*, motor_driver*, encoder_driver*, uint16_t *desired_in, volatile uint8_t* limitDDR_in, volatile uint8_t* limitPORT_in, volatile uint8_t* limitPIN_in, uint8_t limitPinNum_in, volatile State* state_in);
+	z_motor_task (const char*, unsigned portBASE_TYPE, size_t, emstream*, motor_driver*, encoder_driver*, uint16_t *desired_in, volatile uint8_t* limitDDR_in, volatile uint8_t* limitPORT_in, volatile uint8_t* limitPIN_in, uint8_t limitPinNum_in, volatile State* state_in, bool* zReady_in);
 
 	// This method is called by the RTOS once to run the task loop for ever and ever.
 	void run (void);
