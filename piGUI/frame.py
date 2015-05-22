@@ -1,6 +1,7 @@
 import subprocess
 from Tkinter import *
 import Tkinter as tk
+#import tkFileDialog
 from tkFileDialog import askopenfilename
 import shutil
 from PIL import Image, ImageTk
@@ -78,6 +79,9 @@ class ImportFile(tk.Frame):
 
    def openFile(self):
       print("importing file")
+      #filename = tkinter.filedialog.askopenfilename(parenimaget=self.root)
+      #filename = askopenfilename().overridedirect(1)
+      self.lower()
       filename = askopenfilename()
       print(filename)
       shutil.copyfile(filename, "file.txt") 
@@ -133,7 +137,7 @@ class ImportFile(tk.Frame):
       #retCode = subprocess.call(["java", "-cp", "../pathConversion/rxtx-2.1-7-bins-r2/*:../pathConversion/.", "FileParser", "../piGUI/file.txt"])
       print("DONE!")
 
-class badFileSyntax(tk.Frame):
+class badFileSyntax(tk.Frame):   
    def __init__(self, parent, controller):
       tk.Frame.__init__(self, parent)
       label = tk.Label(self, text="Input file design is incorrect,", font=LARGE_FONT)
@@ -303,8 +307,8 @@ class Finish(tk.Frame):
 app = GUI()
 app.overrideredirect(True)
 app.title("Forest Friends")
-app.geometry("320x240")
-#app.geometry("{0}x{1}+0+0".format(app.winfo_screenwidth(), app.winfo_screenheight()))
-#app.focus_set()
-#app.bind("<Escape>", lambda e: app.quit())
+#app.geometry("320x240")
+app.geometry("{0}x{1}+0+0".format(app.winfo_screenwidth(), app.winfo_screenheight()))
+app.focus_set()
+app.bind("<Escape>", lambda e: app.quit())
 app.mainloop()
