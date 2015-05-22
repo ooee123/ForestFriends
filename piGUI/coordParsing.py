@@ -30,6 +30,16 @@ def main():
    
 # reads from file and returns x, y, z
 
+   # Go home, you're drunk.
+   print ("program begins")
+   toHOG(toBinary(0), toBinary(0), toBinary(0))
+   print("first")
+   found = port.read(1)
+   print found
+   while found.find('#') < 0:
+      found = port.read(1)
+      print found
+   print "start coord"
    # while wait
    # poll once from serial port for info arrival
    # return home when [cancel is clicked]/[finsihed] toHOG(0,0,0)
@@ -51,8 +61,9 @@ def main():
    # Go home, you're drunk.
    toHOG(toBinary(0), toBinary(0), toBinary(0))
    print("done")
-   #while True:
-   #   print port.read(1)
+   while port.read(1).find('#') < 0:
+      pass
+   print "done done"
 
    return
 
