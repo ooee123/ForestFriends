@@ -70,7 +70,6 @@ void encoder_task::run (void)
 	
 	for (;;)
 	{	
-		p_serial->puts("Encoder");
 		runs++;
 		
 		delay_from_to (previousTicks, configMS_TO_TICKS (10));
