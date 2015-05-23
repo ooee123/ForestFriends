@@ -326,6 +326,7 @@ var checkRed = function () {
 function saveTextAsFile() {
    
    var textToWrite = "";
+   textToWrite += document.getElementById("thickness").value + "\n"
    textToWrite += document.getElementById("yCoord").value + "\n"
    textToWrite += document.getElementById("xCoord").value + "\n"
    textToWrite += document.getElementById("fontSize").value + "\n"
@@ -395,9 +396,10 @@ document.getElementById('upload').onchange = function(){
          lines[n] = cleanString(lines[n])
       }
       
-      document.getElementById("yCoord").value = dimension["length"] = lines[0];
-      document.getElementById("xCoord").value = dimension["width"] = lines[1];
-      document.getElementById("fontSize").value = lines[2];
+      document.getElementById("thickness").value = lines[0];
+      document.getElementById("yCoord").value = dimension["length"] = lines[1];
+      document.getElementById("xCoord").value = dimension["width"] = lines[2];
+      document.getElementById("fontSize").value = lines[3];
       updateRect(0);
       var texts = [];
       
