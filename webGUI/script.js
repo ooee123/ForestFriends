@@ -54,7 +54,6 @@ var updateEverything = function (canvasNumber) {
          else {
             y = 2;
             document.getElementById("y" + canvasNumber).value = y
-            context.clearRect(0, 0, canvas.width*scale, canvas.height*scale)
          }
       }
       else if (y != "" && y > length - 1) {
@@ -156,13 +155,13 @@ var createCanvas = function () {
    var textBoxElem = document.getElementById('textbox')
    if (textBox.length == 1) {
       var label = document.createElement('input')
-      label.type = "text"
+      //label.type = "text"
       label.value = "X Coordinate (in)"
       label.readOnly = "true"
       textBoxElem.appendChild(label)
       
       var ylabel = document.createElement('input')
-      ylabel.type = "text"
+      //ylabel.type = "text"
       ylabel.value = "Y Coordinate (in)"
       ylabel.readOnly = "true"
       textBoxElem.appendChild(ylabel)
