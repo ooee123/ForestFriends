@@ -21,6 +21,7 @@ import java.io.*;
 public class FileParser
 {
    private static int strokeWidth = Letter.INCH * 1 / 8;
+   private static int thickness = 1;
    private static int fontHeight = 1;
    private static int width = 12;
    private static int height = 12;
@@ -54,9 +55,11 @@ public class FileParser
 
       if (isFromFile)
       {
+         thickness = file.nextInt();
          width = file.nextInt();
          height = file.nextInt();
          fontHeight = file.nextInt();
+         System.out.println(thickness + " " + width + " " + height + " " + fontHeight);
       }
       FontPainter fp = new FontPainter(width * Letter.INCH, height * Letter.INCH, strokeWidth);
       /* Serial Coms and Printing */
