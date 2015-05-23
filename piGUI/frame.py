@@ -324,7 +324,7 @@ class Finish(tk.Frame):
 
 app = GUI()
 #app.lower()
-app.overrideredirect(True)
+#app.overrideredirect(True)
 app.title("Forest Friends")
 app.geometry("320x240")
 #app.geometry("{0}x{1}+0+0".format(app.winfo_screenwidth(), app.winfo_screenheight()))
