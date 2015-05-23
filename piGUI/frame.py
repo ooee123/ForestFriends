@@ -135,7 +135,8 @@ class ImportFile(tk.Frame):
    def javaExec(self):
       # Up to redoing depending on path
       #os.chdir("../pathConversion/")
-      retCode = subprocess.call(["java", "-cp", "../pathConversion/rxtx-2.1-7-bins-r2/*:../pathConversion/.", "FileParser", "../piGUI/file.txt"])
+      #retCode = subprocess.call(["java", "-cp", "../pathConversion/rxtx-2.1-7-bins-r2/*:../pathConversion/.", "FileParser", "../piGUI/file.txt"])
+      retCode = subprocess.call("java -cp ../pathConversion/rxtx-2.1-7-bins-r2/*:../pathConversion/ FileParser ../piGUI/file.txt", shell=True)
       print("DONE!")
 
 class badFileSyntax(tk.Frame):   
@@ -213,7 +214,7 @@ class VerifyParts(tk.Frame):
       line = data.readline()
       label1 = tk.Label(self, text=("Width of Board: " + line), font=LARGE_FONT)
       label1.pack(anchor=S)
-      print "read line %s" % (line)
+      #print "read line %s" % (line)
       line = data.readline()
       label2 = tk.Label(self, text=("Height of Board: " + line), font=LARGE_FONT)
       label2.pack(anchor=S)
@@ -221,12 +222,13 @@ class VerifyParts(tk.Frame):
       #line = data.readline()
       #label3 = tk.Label(self, text=("Board Thickness: " + line), font=LARGE_FONT)
       #label3.pack(anchor=S)
-      print "read line %s" % (line)
+      #print "read line %s" % (line)
       line = data.readline()
       label4 = tk.Label(self, text=("Letter Height: " + line), font=LARGE_FONT)
       #label4 = tk.Label(self, text=("Router Bit Size: " + line), font=LARGE_FONT)
       label4.pack(anchor=S)
-      print "read line %s" % (line)
+      #print "read line %s" % (line)
+      print "data read"
       data.close()
 
 class Reverify(tk.Frame):
