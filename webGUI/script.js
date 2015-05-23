@@ -37,12 +37,12 @@ var updateEverything = function (canvasNumber) {
       var width = dimension["width"]
       var length = dimension["length"]
       
-      if (x != "" && x < 1) {
+      if (x == "" || x < 1) {
          x = 1;
          document.getElementById("x" + canvasNumber).value = 1
       }
       var height = parseInt(document.getElementById("fontSize").value);
-      if (y != "" && (y < 2 || height >= y)) {
+      if (y == "" || (y < 2 || height >= y)) {
          if (height != 1) {
             y = height + 1
          } 
