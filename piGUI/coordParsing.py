@@ -1,8 +1,8 @@
 import serial
 import os
 
-#port = serial.Serial("/dev/ttyUSB0", baudrate=9600, timeout=2)
-port = serial.Serial("/dev/tty.usbserial-A6026OUJ", baudrate=9600)
+port = serial.Serial("/dev/ttyUSB0", baudrate=9600, timeout=2)
+#port = serial.Serial("/dev/tty.usbserial-A6026OUJ", baudrate=9600)
 
 filename = "coordinates.txt"
 
