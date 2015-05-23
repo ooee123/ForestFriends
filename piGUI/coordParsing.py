@@ -49,14 +49,14 @@ def main():
    
       # send data to HOG
       toHOG(coord[0], coord[1], coord[2])
-      foundZ = port.read(1)
-      print "1 " + foundZ
-      while foundZ.find('Z') < 0:
-         foundZ = port.read(1)
-         print "2 " +foundZ
+      found = port.read(1)
+      print "1 " + found
+      while found.find('@') < 0:
+         found = port.read(1)
+         print "2 " +found
          # wait until something in buffer
          
-      print "3 " +foundZ
+      print "3 " +found
 
    # Go home, you're drunk.
    toHOG(toBinary(0), toBinary(0), toBinary(0))
