@@ -104,7 +104,6 @@ void read_serial_task::run (void)
       }
       if (*state == HOME)
       {
-         PORTA |= 1;
          // If both limit switches are activated
          if (!getXLimitSwitch() && !getYLimitSwitch()
          #ifdef Z_AXIS
@@ -156,7 +155,6 @@ void read_serial_task::run (void)
       }
       else if (*state == NORMAL)
       {
-         PORTA &= ~1;
          // Check if all axis are within tolerance
          if (isWithinTolerance(xEncoder->getPosition(), *desiredX, TOLERANCE) &&
              isWithinTolerance(yEncoder->getPosition(), *desiredY, TOLERANCE)

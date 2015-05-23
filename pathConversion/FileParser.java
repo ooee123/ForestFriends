@@ -87,6 +87,16 @@ public class FileParser
          }
          String text = file.nextLine();
          List<Paths> paths = verter.convertToPaths(x, y, text); 
+         try
+         {
+            checkPathsWithinBounds(paths, width * Letter.INCH, height * Letter.INCH, strokeWidth);
+         }
+         catch (BorderException e)
+         {
+            System.err.println("Paths not within bounds!");
+            System.err.println(e);
+            //System.exit(1);
+         }
          for (Paths p : paths) {
             fp.addLetter(p);
             printPaths(p, printer);
@@ -113,7 +123,7 @@ public class FileParser
       }
    }
 
-   private boolean checkPathsWithinBounds(List<Paths> paths, int width, int height, int strokeWeight) throws BorderException
+   private static boolean checkPathsWithinBounds(List<Paths> paths, int width, int height, int strokeWeight) throws BorderException
    {
       int minWidth = strokeWeight / 2 + SAFE_ZONE_BORDER_WIDTH;
       int minHeight = strokeWeight / 2 + SAFE_ZONE_BORDER_WIDTH;
@@ -125,7 +135,7 @@ public class FileParser
          {
             if (path.getX() < minWidth || path.getX() > maxWidth || path.getY() < minHeight || path.getY() > maxHeight)
             {
-               throw new BorderException("Letter '" + p.getLetter() + "' is out of bounds");
+               throw new BorderException("Letter '" + p.getLetter() + "' is out of bounds of coordinates: " + path.getX() + ", " + path.getY());
             }
          }
       }

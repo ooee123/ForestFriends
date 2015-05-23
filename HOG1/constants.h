@@ -38,7 +38,7 @@
 
 #define TOLERANCE (INCH / 16)
 #define isWithinTolerance(x, y, t) (abs((x) - (y)) <= t)
-#define NEXT_COMMAND "Z"
+#define NEXT_COMMAND "@"
 #define AT_HOME "#"
 
 #endif

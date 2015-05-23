@@ -108,6 +108,7 @@ void z_motor_task::run (void)
       {
          while (abs(*desired - (int16_t)encoder->getPosition()) > Z_AXIS_TOLERANCE)
          {
+            _setBit(PORTA, PA0);
             *zReady = false;
             encoder->updatePosition();
             motor->move(*desired - (int16_t)encoder->getPosition());
@@ -119,6 +120,7 @@ void z_motor_task::run (void)
             #endif
          }
          *zReady = true;
+         _clearBit(PORTA, PA0);
       }
       delay_from_to (previousTicks, configMS_TO_TICKS (100));
    }
