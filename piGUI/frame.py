@@ -170,11 +170,11 @@ class VerifyDesign(tk.Frame):
 
       #label = tk.Label(self, text="Design is..", font=LARGE_FONT)
       #label.pack(side=LEFT)
-      button1 = tk.Button(self, text="Correct Design", width = 12, font=CONFIRM_FONT,
+      button1 = tk.Button(self, text="Correct", width = 12, font=CONFIRM_FONT,
          command=lambda: controller.show_frame(VerifyParts))
       button1.pack(side=LEFT, anchor=S)
 
-      button2 = tk.Button(self, text="Incorrect Design", width = 14, font=CONFIRM_FONT,
+      button2 = tk.Button(self, text="Incorrect", width = 14, font=CONFIRM_FONT,
          command=lambda: controller.show_frame(Redesign))
       button2.pack(side=LEFT, anchor=S)
 
@@ -203,11 +203,11 @@ class VerifyParts(tk.Frame):
       
       #label = tk.Label(self, text="Design is..", font=LARGE_FONT)
       #label.pack(side=LEFT)
-      button1 = tk.Button(self, text="Correct Parts", width = 12, height = 1, font=CONFIRM_FONT,
+      button1 = tk.Button(self, text="Correct", width = 12, height = 1, font=CONFIRM_FONT,
          command=lambda: controller.show_frame(Machine))
       button1.pack(anchor=S, fill=X)
 
-      button2 = tk.Button(self, text="Incorrect Parts", width = 14, height = 1, font=CONFIRM_FONT,
+      button2 = tk.Button(self, text="Incorrect", width = 14, height = 1, font=CONFIRM_FONT,
          command=lambda: controller.show_frame(Reverify))
       button2.pack(anchor=S, fill=X)
 
@@ -273,8 +273,8 @@ class Machine(tk.Frame):
 
    def loadCoordPars(self) :
       self.cont.show_frame(Machining)
-      coordParsing.coordParsing(thick)
-      #coordParsing.test(thick)
+      #coordParsing.coordParsing(thick)
+      coordParsing.test(thick)
 
 class Machining(tk.Frame):
 
@@ -324,7 +324,7 @@ class Finish(tk.Frame):
 
 app = GUI()
 #app.lower()
-#app.overrideredirect(True)
+app.overrideredirect(True)
 app.title("Forest Friends")
 app.geometry("320x240")
 #app.geometry("{0}x{1}+0+0".format(app.winfo_screenwidth(), app.winfo_screenheight()))
