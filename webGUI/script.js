@@ -28,6 +28,10 @@ var updateEverything = function (canvasNumber) {
       var y = document.getElementById("y" + canvasNumber).value;
       var text = document.getElementById("text" + canvasNumber).value.toUpperCase();
       var canvas = textBox[canvasNumber - 1]
+      if (document.getElementById("fontSize").value > 6) {
+         document.getElementById("fontSize").value = 6
+         fontSize = 6
+      }
       if (dimension["length"] - 2 <= parseInt(document.getElementById("fontSize").value)) {
          dimension["length"] = parseInt(document.getElementById("fontSize").value)+2;
          document.getElementById("yCoord").value = dimension["length"] 
@@ -36,6 +40,7 @@ var updateEverything = function (canvasNumber) {
       }
       var width = dimension["width"]
       var length = dimension["length"]
+
       
       if (x == "" || x < 1) {
          x = 1;
@@ -296,8 +301,6 @@ var updateRectSample = function () {
 
 
 /* Assigning listeners to the length and width number fields */
-//document.getElementById("yCoord").addEventListener("keyup", getDimension("length"))
-//document.getElementById("xCoord").addEventListener("keyup", getDimension("width"))
 document.getElementById("yCoord").addEventListener("focusout", getDimension("length"))
 document.getElementById("xCoord").addEventListener("focusout", getDimension("width"))
 //document.getElementById("fontSize").addEventListener("keyup", changeWHF)
@@ -373,12 +376,6 @@ var Text = function(x, y, text) {
    this.text = text
 }
 
-var Dimension = function(width, height, letterHeight) {
-   this.width = width
-   this.height = height
-   this.letterHeight = height
-}
-
 var cleanString = function(s) {
    //var regex = /(<([^>]+)>)/ig
    //return s.replace(regex, "")
@@ -399,7 +396,6 @@ document.getElementById('upload').onchange = function(){
          lines[n] = cleanString(lines[n])
       }
       
-      //var dimensions = new Dimension(lines[0], lines[1], lines[2]);
       document.getElementById("yCoord").value = dimension["length"] = lines[0];
       document.getElementById("xCoord").value = dimension["width"] = lines[1];
       document.getElementById("fontSize").value = lines[2];
