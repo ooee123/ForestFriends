@@ -13,11 +13,11 @@
 #define Y_ENCODER_PINA PE6
 #define Y_ENCODER_PINB PE7
 
-#define Z_ENCODER_DDR  DDRF
-#define Z_ENCODER_PIN  PINF
-#define Z_ENCODER_PORT PORTF
-#define Z_ENCODER_PINA PF7
-#define Z_ENCODER_PINB PF6
+#define Z_ENCODER_DDR  DDRD
+#define Z_ENCODER_PIN  PIND
+#define Z_ENCODER_PORT PORTD
+#define Z_ENCODER_PINA PD4
+#define Z_ENCODER_PINB PD5
 
 #define X_LIMIT_DDR          DDRA
 #define X_LIMIT_PORT         PORTA
@@ -37,12 +37,12 @@
 #define Z_ZERO_LIMIT_PIN_NUM PA5
 #define Z_MAX_LIMIT_PIN_NUM  PA0
 
-#define CURRENT_DDR
-#define CURRENT_PORT
-#define CURRENT_PIN
-#define X_CURRENT_PIN_NUM
-#define Y_CURRENT_PIN_NUM
-#define Z_CURRENT_PIN_NUM
+#define CURRENT_DDR          DDRA
+#define CURRENT_PORT         PORTA
+#define CURRENT_PIN          PINA
+#define X_CURRENT_PIN_NUM    PA0
+#define Y_CURRENT_PIN_NUM    PA0
+#define Z_CURRENT_PIN_NUM    PA0
 
 #define SOLID_STATE_DDR      DDRA
 #define SOLID_STATE_PORT     PORTA

@@ -62,7 +62,6 @@ z_motor_task::z_motor_task (const char* a_name,
    limitPIN = limitPIN_in;
    limitPinNum = limitPinNum_in;
    state = state_in;
-   jigCheck = false;
    zReady = zReady_in;
    // Set the limit switches bumpers to input
    *limitDDR_in &= ~(1 << limitPinNum);
@@ -89,7 +88,7 @@ void z_motor_task::run (void)
 	// power_level1 which determines the duty cycle and direction of the motor.	
 	
 	for (;;)
-	{	
+	{
       encoder->updatePosition();
 		runs++;
 
@@ -102,34 +101,25 @@ void z_motor_task::run (void)
          }
          else
          {
-            if (!jigCheck)
-            {
-               offset = -((int16_t)encoder->getPosition());
-               jigCheck = true;
-               *p_serial << "Offset: ";
-               *p_serial << offset;
-            }
             motor->brake();
          }
       }
       else
       {
-         int16_t desiredHeight;
-         if (*desired == START || *desired == MOVE)
-         {
-            desiredHeight = offset;
-         }
-         else if (*desired == LINE)
-         {
-            desiredHeight = offset + JIG_HEIGHT + ROUTING_DEPTH;
-         }
-         while (abs(desiredHeight - (int16_t)encoder->getPosition()) <= Z_AXIS_TOLERANCE)
+         while (abs(*desired - (int16_t)encoder->getPosition()) > Z_AXIS_TOLERANCE)
          {
             *zReady = false;
-            motor->move(desiredHeight - (int16_t)encoder->getPosition());
+            encoder->updatePosition();
+            motor->move(*desired - (int16_t)encoder->getPosition());
+            #ifdef DEBUG
+               *p_serial << get_name();
+               *p_serial << " MOVING:";
+               *p_serial << *desired - (int16_t)encoder->getPosition();
+               *p_serial << "\n";
+            #endif
          }
          *zReady = true;
       }
-      delay_from_to (previousTicks, configMS_TO_TICKS (10));
+      delay_from_to (previousTicks, configMS_TO_TICKS (100));
    }
 }

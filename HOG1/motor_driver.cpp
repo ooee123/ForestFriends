@@ -188,6 +188,7 @@ void motor_driver::move(int16_t delta)
 double motor_driver::PI(uint16_t error)
 {
 	//Porportional error variables
+   double term;
 	double pTerm = PCONSTANT + PGAIN * abs(error);
 	
    /* Integral part
@@ -220,8 +221,16 @@ double motor_driver::PI(uint16_t error)
 	  iTerm = iGain * iState;
 	}
    End Integral */
-
-	return pTerm;
+   term = pTerm;
+   if (term > PID_MAX)
+   {
+      term = PID_MAX;
+   }
+   else if (term < PID_MIN)
+   {
+      term = PID_MIN;
+   }
+	return term;
 }
 
 
