@@ -82,6 +82,11 @@ class motor_driver
 		uint8_t PWM;
 		
 		bool motor_trans;
+
+      double pGain;
+      double pConstant;
+      uint16_t powerMax;
+      uint16_t powerMin;
 		
 	public:
 		// The constructor sets up the motor driver. The "= NULL" part is a
@@ -89,7 +94,7 @@ class motor_driver
 		// where this constructor is called, the compiler will just fill in "NULL".
 		// In this case that has the effect of turning off diagnostic printouts.
 		// This follows for the "= 0" part.
-		motor_driver (volatile uint8_t* DDR_en, volatile uint8_t* DDR_dir, volatile uint8_t* DDR_pwm, volatile uint8_t* PORT_en, volatile uint8_t* PORT_dir, uint8_t ENbit, uint8_t INAbit, uint8_t INBbit, uint8_t PWMbit,uint8_t COMtimer, volatile uint16_t* OCRbit);
+		motor_driver (volatile uint8_t* DDR_en, volatile uint8_t* DDR_dir, volatile uint8_t* DDR_pwm, volatile uint8_t* PORT_en, volatile uint8_t* PORT_dir, uint8_t ENbit, uint8_t INAbit, uint8_t INBbit, uint8_t PWMbit,uint8_t COMtimer, volatile uint16_t* OCRbit, uint16_t pConstant_in, double pGain_in, uint16_t powerMin_in, uint16_t powerMax_in);
 		
 		// The set_power function first obtains 
    		// a reading from the power variables. 
