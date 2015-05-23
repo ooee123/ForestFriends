@@ -91,31 +91,48 @@ void motor_task::run (void)
 	{	
 		runs++;
 
-      if (*state == HOME)
+      if (*zReady)
       {
-         // If the switches are NOT pressed
-         if (_getBit(*limitPIN, limitPinNum))
+         if (*state == HOME)
          {
-            motor->move(-CALIBRATE_SPEED);
+            // If the switches are NOT pressed
+            if (_getBit(*limitPIN, limitPinNum))
+            {
+               motor->move(-CALIBRATE_SPEED);
+            }
+            else
+            {
+               motor->brake();
+            }
          }
          else
          {
-            motor->brake();
+            if (!isWithinTolerance(*desired, (int16_t)encoder->getPosition(), TOLERANCE))
+            {
+               motor->move(*desired - (int16_t)encoder->getPosition());
+               #ifdef DEBUG
+                  *p_serial << get_name();
+                  *p_serial << " MOVING";
+                  *p_serial << *desired - (int16_t)encoder->getPosition();
+                  *p_serial << "\n";
+               #endif
+            }
+            else
+            {
+            /*
+               #ifdef DEBUG
+                  *p_serial << get_name();
+                  *p_serial << " D: ";
+                  *p_serial << *desired;
+                  *p_serial << " A: ";
+                  *p_serial << encoder->getPosition();
+                  *p_serial << "\n";
+               #endif
+            */
+               motor->brake();
+            }
          }
       }
-      else
-      {
-         //*p_serial << "MOTOR";
-         if (!isWithinTolerance(*desired, (int16_t)encoder->getPosition()))
-         {
-            *p_serial << *desired - (int16_t)encoder->getPosition();
-            motor->move(*desired - (int16_t)encoder->getPosition());
-         }
-         else
-         {
-            motor->brake();
-         }
-      }
-		delay_from_to (previousTicks, configMS_TO_TICKS (30));
-	}
+      delay_from_to (previousTicks, configMS_TO_TICKS (30));
+   }
 }

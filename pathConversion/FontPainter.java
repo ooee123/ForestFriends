@@ -41,9 +41,11 @@ public class FontPainter extends Component {
          frame.pack();
          frame.setVisible(true);
       }
-      img = new BufferedImage(preferredWidth, preferredHeight, BufferedImage.TYPE_BYTE_BINARY);
+      //img = new BufferedImage(preferredWidth, preferredHeight, BufferedImage.TYPE_BYTE_BINARY);
+      img = new BufferedImage(preferredWidth, preferredHeight, BufferedImage.TYPE_INT_RGB);
       imgGraphics = img.createGraphics();
-      imgGraphics.setColor(Color.WHITE);
+      //imgGraphics.setColor(Color.WHITE);
+      imgGraphics.setColor(new Color(222, 184, 135));
       imgGraphics.fillRect(0, 0, preferredWidth, preferredHeight);
    }
 

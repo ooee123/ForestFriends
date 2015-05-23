@@ -32,6 +32,7 @@ TARGET = main
 # in library subdirectories do not go in this list; they're automatically in LIB_OBJS
 ADDITIONAL_FILES = encoder_task.cpp encoder_driver.cpp read_serial_driver.cpp read_serial_task.cpp z_motor_task.cpp
 SRC = $(TARGET).cpp motor_task.cpp motor_driver.cpp $(ADDITIONAL_FILES)
+HEADER_FILES = constants.h pinLayout.h
 # Clock frequency of the CPU, in Hz. This number should be an unsigned long integer.
 # For example, 16 MHz would be represented as 16000000UL. 
 F_CPU = 16000000UL
@@ -42,7 +43,7 @@ F_CPU = 16000000UL
 # -DTRANSITION_TRACE   For printing state transition traces on a serial device
 # -DTASK_PROFILE       For doing profiling, measurement of how long tasks take to run
 # -DUSE_HEX_DUMPS      Include functions for printing hex-formatted memory dumps
-OTHERS = -DSERIAL_DEBUG
+OTHERS = -DSERIAL_DEBUG -DDEBUG -DZ_AXIS
 
 # If the code -DTASK_SETUP_AND_LOOP is specified, ME405/FreeRTOS tasks classes will be
 # required to provide methods setup() and loop(). Otherwise, they must only provide a
@@ -201,31 +202,43 @@ LIB_OBJS = $(patsubst %.cpp, %.o, $(filter %.cpp, $(LIB_SRC))) \
 # Inference rules show how to process each kind of file. 
 
 # How to compile a .c file into a .o file
-.c.o:
+.c.o: $(HEADER_FILES)
 	@echo $<
 	@avr-gcc -c $(C_FLAGS) $< -o $@
 
 # How to compile a .cc file into a .o file
-.cc.o:
+.cc.o: $(HEADER_FILES)
 	@echo $<
 	@avr-gcc -c $(CPP_FLAGS) $< -o $@
 
 # How to compile a .cpp file into a .o file
-.cpp.o:
+.cpp.o: $(HEADER_FILES)
 	@echo $<
 	@avr-gcc -c $(CPP_FLAGS) $< -o $@
-
 #--------------------------------------------------------------------------------------
 # Make the main target of this project.  This target is invoked when the user types 
 # 'make' as opposed to 'make <target>.'  This must be the first target in Makefile.
 
-all:  $(TARGET).hex
+all:  $(TARGET).hex $(HEADER_FILES)
+
+
+motor_driver.o: motor_driver.cpp $(HEADER_FILES)
+	@echo $<
+	@avr-gcc -c $(CPP_FLAGS) $< -o $@
+
+motor_task.o: motor_task.cpp $(HEADER_FILES)
+	@echo $<
+	@avr-gcc -c $(CPP_FLAGS) $< -o $@
+
+read_serial_task.o: read_serial_task.cpp $(HEADER_FILES)
+	@echo $<
+	@avr-gcc -c $(CPP_FLAGS) $< -o $@
 
 #--------------------------------------------------------------------------------------
 # This rule creates a .hex format downloadable file. A raw binary file which can be 
 # used by some bootloaders can be created; a listing file is also created. 
 
-$(TARGET).hex:  $(TARGET).elf
+$(TARGET).hex:  $(TARGET).elf $(HEADER_FILES)
 	@avr-objdump -h -S $(TARGET).elf > $(TARGET).lst
 	@avr-objcopy -j .text -j .data -O ihex $(TARGET).elf $(TARGET).hex
 	@avr-size $(TARGET).elf
@@ -234,7 +247,7 @@ $(TARGET).hex:  $(TARGET).elf
 # This rule controls the linking of the target program from object files. The target 
 # is saved as an ELF debuggable binary.
 
-$(TARGET).elf:  library $(OBJS)
+$(TARGET).elf:  library $(OBJS) $(HEADER_FILES)
 	avr-gcc $(OBJS) $(LIB_NAME) -g -mmcu=$(MCU) -o $(TARGET).elf
 
 #--------------------------------------------------------------------------------------

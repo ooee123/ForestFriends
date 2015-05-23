@@ -73,6 +73,8 @@ private:
    encoder_driver* yEncoder;
    encoder_driver* zEncoder;
    volatile State* state;
+   bool* zReady;
+   uint16_t boardOffset;
 
    bool isWithinTolerance(uint16_t actual, uint16_t expected);
 
@@ -92,7 +94,9 @@ public:
                          encoder_driver* xEncoder_in,
                          encoder_driver* yEncoder_in,
                          encoder_driver* zEncoder_in,
-                         volatile State* state_in
+                         volatile State* state_in,
+                         bool* zReady_in,
+                         uint16_t boardOffset_in
 								);
 
 	// This method is called by the RTOS once to run the task loop for ever and ever.

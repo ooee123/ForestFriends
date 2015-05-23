@@ -42,7 +42,7 @@
  */
 	//motor_driver* p_motor_1 = new my_motor_driver (p_serial, &DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1B1, &OCR1B);
 //Initialize my_motor_driver
-motor_driver::motor_driver (volatile uint8_t* DDR_en, volatile uint8_t* DDR_dir, volatile uint8_t* DDR_pwm, volatile uint8_t* PORT_en, volatile uint8_t* PORT_dir, uint8_t ENbit, uint8_t INAbit, uint8_t INBbit, uint8_t PWMbit, uint8_t COMtimer, volatile uint16_t* OCRtimer)
+motor_driver::motor_driver (volatile uint8_t* DDR_en, volatile uint8_t* DDR_dir, volatile uint8_t* DDR_pwm, volatile uint8_t* PORT_en, volatile uint8_t* PORT_dir, uint8_t ENbit, uint8_t INAbit, uint8_t INBbit, uint8_t PWMbit, uint8_t COMtimer, volatile uint16_t* OCRtimer, uint16_t pConstant_in, double pGain_in, uint16_t powerMin_in, uint16_t powerMax_in)
 {
 	DDR_DIR = DDR_dir;
 	DDR_EN = DDR_en;
@@ -58,6 +58,11 @@ motor_driver::motor_driver (volatile uint8_t* DDR_en, volatile uint8_t* DDR_dir,
 	EN = ENbit;
 	OCR = OCRtimer;
 	PWM = PWMbit;
+
+   pConstant = pConstant_in;
+   pGain = pGain_in;
+   powerMin = powerMin_in;
+   powerMax = powerMax_in;
 	
    /*
    _setBit(*DDR_EN, EN);
@@ -188,7 +193,8 @@ void motor_driver::move(int16_t delta)
 double motor_driver::PI(uint16_t error)
 {
 	//Porportional error variables
-	double pTerm = PCONSTANT + PGAIN * abs(error);
+   double term;
+	double pTerm = pConstant + pGain * abs(error);
 	
    /* Integral part
 	//Integral error variables
@@ -220,8 +226,14 @@ double motor_driver::PI(uint16_t error)
 	  iTerm = iGain * iState;
 	}
    End Integral */
-
-	return pTerm;
+   term = pTerm;
+   if (term > powerMax)
+   {
+      term = powerMax;
+   }
+   else if (term < powerMin)
+   {
+      term = powerMin;
+   }
+	return term;
 }
-
-

@@ -72,7 +72,6 @@ private:
    uint8_t limitPinNum;
    volatile State* state;
    uint16_t offset;
-   bool jigCheck;
    bool* zReady;
 	// No private variables or methods for this class
 
