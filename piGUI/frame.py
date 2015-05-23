@@ -135,7 +135,7 @@ class ImportFile(tk.Frame):
    def javaExec(self):
       # Up to redoing depending on path
       #os.chdir("../pathConversion/")
-      #retCode = subprocess.call(["java", "-cp", "../pathConversion/rxtx-2.1-7-bins-r2/*:../pathConversion/.", "FileParser", "../piGUI/file.txt"])
+      retCode = subprocess.call(["java", "-cp", "../pathConversion/rxtx-2.1-7-bins-r2/*:../pathConversion/.", "FileParser", "../piGUI/file.txt"])
       print("DONE!")
 
 class badFileSyntax(tk.Frame):   
@@ -211,16 +211,21 @@ class VerifyParts(tk.Frame):
    def readFile(self):
       data = open("file.txt", "r")
       line = data.readline()
-      label1 = tk.Label(self, text=("Width of Board: " + line), font=LARGE_FONT)
-      label1.pack(anchor=S)
+      label1 = tk.label(self, text=("Width of Board: " + line), font=large_font)
+      label1.pack(anchor=s)
       print "read line %s" % (line)
       line = data.readline()
       label2 = tk.Label(self, text=("Height of Board: " + line), font=LARGE_FONT)
       label2.pack(anchor=S)
+      #print "read line %s" % (line)
+      #line = data.readline()
+      #label3 = tk.Label(self, text=("Board Thickness: " + line), font=LARGE_FONT)
+      #label3.pack(anchor=S)
       print "read line %s" % (line)
       line = data.readline()
-      label3 = tk.Label(self, text=("Letter height: " + line), font=LARGE_FONT)
-      label3.pack(anchor=S)
+      label4 = tk.Label(self, text=("Letter Height: " + line), font=LARGE_FONT)
+      #label4 = tk.Label(self, text=("Router Bit Size: " + line), font=LARGE_FONT)
+      label4.pack(anchor=S)
       print "read line %s" % (line)
       data.close()
 
@@ -241,6 +246,7 @@ class Reverify(tk.Frame):
 class Machine(tk.Frame):
 
    def __init__(self, parent, controller):
+      self.cont = controller
       tk.Frame.__init__(self, parent)
       label = tk.Label(self, text="Machining will start", font=LARGE_FONT)
       label.pack(pady=2,padx=10)
@@ -248,7 +254,7 @@ class Machine(tk.Frame):
       label.pack(pady=2,padx=10)
 
       button1 = tk.Button(self, text="Start Machining", font=LARGE_FONT,
-         command=lambda: controller.show_frame(Machining))
+         command=self.loadCoordPars)
       button1.pack(anchor=S, fill=X)
 
       button2 = tk.Button(self, text="End", font=LARGE_FONT,
@@ -258,6 +264,10 @@ class Machine(tk.Frame):
 
       #button3 = tk.Button(self, text="Quit", fg="red",  font=LARGE_FONT, command = self.quit)
       #button3.pack(fill=X)
+
+   def loadCoordPars(self) :
+      subprocess.call("python coordParsing.py", shell=True)
+      self.cont.show_frame(Machining)
 
 class Machining(tk.Frame):
 
@@ -273,7 +283,7 @@ class Machining(tk.Frame):
       #button1.pack(fill=X)
 
          
-      button2 = tk.Button(self, text="Finish Machining", font=LARGE_FONT,
+      button2 = tk.Button(self, text="Pseudo Finish Button", font=LARGE_FONT,
          command=lambda: controller.show_frame(Finish))
       button2.pack(fill=X)
 
