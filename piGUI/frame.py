@@ -6,6 +6,7 @@ from tkFileDialog import askopenfilename
 import shutil
 from PIL import Image, ImageTk
 import os
+import coordParsing
 
 LARGE_FONT= ("Verdana", 15)
 
@@ -268,8 +269,8 @@ class Machine(tk.Frame):
       #button3.pack(fill=X)
 
    def loadCoordPars(self) :
-      subprocess.call("python coordParsing.py", shell=True)
       self.cont.show_frame(Machining)
+      coordParsing()
 
 class Machining(tk.Frame):
 

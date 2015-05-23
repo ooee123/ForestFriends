@@ -25,7 +25,7 @@ def cancelFlag():
    home = true
    
 
-def main():
+def coordParsing():
    fp = open(filename, "r")
    
 # reads from file and returns x, y, z
@@ -71,5 +71,5 @@ def test():
    print "SUCCESS"
 
 
-main()
+#main()
 #test()
