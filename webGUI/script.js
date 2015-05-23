@@ -61,9 +61,11 @@ var updateEverything = function (canvasNumber) {
       }
       document.getElementById("y" + canvasNumber).value = y
 
+      // check text for correct characters
+      text = text.replace(/[^A-Z0-9 ^><]/g, "") 
       // check text for arrows
       text = checkArrow(text)
-
+      
       canvas.x = x
       canvas.y = y
       canvas.text = text;
@@ -245,13 +247,13 @@ var createCanvasSample = function () {
    var textBoxElem = document.getElementById('textbox')
    if (textBox.length == 1) {
       var label = document.createElement('input')
-      label.type = "text"
+      //label.type = "text"
       label.value = "X Coordinate (in)"
       label.readOnly = "true"
       textBoxElem.appendChild(label)
       
       var ylabel = document.createElement('input')
-      ylabel.type = "text"
+      //ylabel.type = "text"
       ylabel.value = "Y Coordinate (in)"
       ylabel.readOnly = "true"
       textBoxElem.appendChild(ylabel)
