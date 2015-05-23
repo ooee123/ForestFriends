@@ -211,8 +211,8 @@ class VerifyParts(tk.Frame):
    def readFile(self):
       data = open("file.txt", "r")
       line = data.readline()
-      label1 = tk.label(self, text=("Width of Board: " + line), font=large_font)
-      label1.pack(anchor=s)
+      label1 = tk.Label(self, text=("Width of Board: " + line), font=LARGE_FONT)
+      label1.pack(anchor=S)
       print "read line %s" % (line)
       line = data.readline()
       label2 = tk.Label(self, text=("Height of Board: " + line), font=LARGE_FONT)
