@@ -58,5 +58,4 @@
 #define getYMaxLimitSwitch() _getBit(Y_LIMIT_PIN, Y_MAX_LIMIT_PIN_NUM)
 #define getZMaxLimitSwitch() _getBit(Z_LIMIT_PIN, Z_MAX_LIMIT_PIN_NUM)
 
-
 #endif
