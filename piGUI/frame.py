@@ -84,8 +84,8 @@ class ImportFile(tk.Frame):
       app.withdraw()
       filename = askopenfilename(filetypes=[('cpff files', '.cpff')])
       print(filename)
-      shutil.copyfile(filename, "file.txt") 
       app.deiconify()
+      shutil.copyfile(filename, "file.txt") 
       frames[VerifyParts].readFile()
       if filename: 
          print("New Frame: Board Design")
