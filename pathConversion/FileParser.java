@@ -21,6 +21,7 @@ import java.io.*;
 public class FileParser
 {
    private static int strokeWidth = Letter.INCH * 1 / 8;
+   private static int thickness = 1;
    private static int fontHeight = 1;
    private static int width = 12;
    private static int height = 12;
@@ -54,9 +55,11 @@ public class FileParser
 
       if (isFromFile)
       {
+         thickness = file.nextInt();
          width = file.nextInt();
          height = file.nextInt();
          fontHeight = file.nextInt();
+         System.out.println(thickness + " " + width + " " + height + " " + fontHeight);
       }
       FontPainter fp = new FontPainter(width * Letter.INCH, height * Letter.INCH, strokeWidth);
       /* Serial Coms and Printing */
@@ -87,6 +90,16 @@ public class FileParser
          }
          String text = file.nextLine();
          List<Paths> paths = verter.convertToPaths(x, y, text); 
+         try
+         {
+            checkPathsWithinBounds(paths, width * Letter.INCH, height * Letter.INCH, strokeWidth);
+         }
+         catch (BorderException e)
+         {
+            System.err.println("Paths not within bounds!");
+            System.err.println(e);
+            //System.exit(1);
+         }
          for (Paths p : paths) {
             fp.addLetter(p);
             printPaths(p, printer);
@@ -113,7 +126,7 @@ public class FileParser
       }
    }
 
-   private boolean checkPathsWithinBounds(List<Paths> paths, int width, int height, int strokeWeight) throws BorderException
+   private static boolean checkPathsWithinBounds(List<Paths> paths, int width, int height, int strokeWeight) throws BorderException
    {
       int minWidth = strokeWeight / 2 + SAFE_ZONE_BORDER_WIDTH;
       int minHeight = strokeWeight / 2 + SAFE_ZONE_BORDER_WIDTH;
@@ -125,7 +138,7 @@ public class FileParser
          {
             if (path.getX() < minWidth || path.getX() > maxWidth || path.getY() < minHeight || path.getY() > maxHeight)
             {
-               throw new BorderException("Letter '" + p.getLetter() + "' is out of bounds");
+               throw new BorderException("Letter '" + p.getLetter() + "' is out of bounds of coordinates: " + path.getX() + ", " + path.getY());
             }
          }
       }
