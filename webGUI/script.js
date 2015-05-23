@@ -346,7 +346,7 @@ function saveTextAsFile() {
    }
    
    var downloadLink = document.createElement("a");
-   downloadLink.download = fileNameToSaveAs// + ".cpff";
+   downloadLink.download = fileNameToSaveAs + ".cpff";
    downloadLink.innerHTML = "Download File";
    
    if (checkRed()) {
