@@ -91,6 +91,12 @@ var checkArrow = function(string) {
    string = string.replace("<", "←")
    return string
 }
+var checkCaret = function(string) {
+   string = string.replace("↑", "^")
+   string = string.replace("→", ">")
+   string = string.replace("←", "<")
+   return string
+}
 var updateRect = function (number) {
    if (dimension["width"] < 12) {
       document.getElementById("xCoord").value = 12
@@ -325,6 +331,7 @@ function saveTextAsFile() {
    for (var i = 0; i < textBox.length; i++) {
       var c = textBox[i]
       if (c.x && c.y && c.text) {
+         c.text = checkCaret(c.text)
          textToWrite += (c.x + "\n" + c.y + "\n" + c.text + "\n" /*+ c.font + "\n"*/)
       }
    }
@@ -373,8 +380,9 @@ var Dimension = function(width, height, letterHeight) {
 }
 
 var cleanString = function(s) {
-   var regex = /(<([^>]+)>)/ig
-   return s.replace(regex, "")
+   //var regex = /(<([^>]+)>)/ig
+   //return s.replace(regex, "")
+   return s
 }
 
 document.getElementById('upload').onchange = function(){
