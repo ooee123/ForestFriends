@@ -205,11 +205,11 @@ class VerifyParts(tk.Frame):
       #label.pack(side=LEFT)
       button1 = tk.Button(self, text="Correct", width = 12, height = 1, font=CONFIRM_FONT,
          command=lambda: controller.show_frame(Machine))
-      button1.pack(anchor=S, fill=X)
+      button1.pack(anchor=S, size=LEFT)
 
       button2 = tk.Button(self, text="Incorrect", width = 14, height = 1, font=CONFIRM_FONT,
          command=lambda: controller.show_frame(Reverify))
-      button2.pack(anchor=S, fill=X)
+      button2.pack(anchor=S, side=LEFT)
 
    def readFile(self):
       global thick
