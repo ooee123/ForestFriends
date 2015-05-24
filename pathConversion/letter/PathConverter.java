@@ -182,7 +182,10 @@ public class PathConverter {
             paths = new Up().getPaths();
             break;
          case ' ':
-            currentX += Dimensions.getRelativeY(1, 2);
+            currentx += dimensions.getrelativey(1, 2);
+            break;
+         case '_':
+            paths = new Underscore().getPaths();
             break;
          default:
             System.err.println("Not a pathable character: " + c);
