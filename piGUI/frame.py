@@ -9,7 +9,8 @@ import os
 import coordParsing
 
 LARGE_FONT= ("Verdana", 15)
-
+CONFIRM_FONT= ("Verdana", 14)
+thick = 0
 frames = {}
 
 class GUI(tk.Tk):
@@ -51,7 +52,7 @@ class Start(tk.Frame):
          command=lambda: controller.show_frame(ImportFile))
       button.pack(fill=BOTH)
 
-      #button2 = tk.Button(self, text="End",
+      #button2 = tk.Button(self, text="Cancel",
       #   command=lambda: controller.show_frame(Start))
       #button2.pack()
 
@@ -72,7 +73,7 @@ class ImportFile(tk.Frame):
          #command=lambda: controller.show_frame(VerifyDesign))
       button.pack(fill=X)
 
-      button2 = tk.Button(self, text="End", height = 5,font=LARGE_FONT,
+      button2 = tk.Button(self, text="Cancel", height = 5,font=LARGE_FONT,
          command=restartFrame)
          #command=lambda: controller.show_frame(Start))
       button2.pack(fill=X)
@@ -148,7 +149,7 @@ class badFileSyntax(tk.Frame):
       label = tk.Label(self, text="please try again.", font=LARGE_FONT)
       label.pack(pady=1,padx=10)
 
-      button2 = tk.Button(self, text="End", height = 3,font=LARGE_FONT,
+      button2 = tk.Button(self, text="Cancel", height = 3,font=LARGE_FONT,
          command=restartFrame)
          #command=lambda: controller.show_frame(Start))
       button2.pack(fill=X, anchor=S)
@@ -169,11 +170,11 @@ class VerifyDesign(tk.Frame):
 
       #label = tk.Label(self, text="Design is..", font=LARGE_FONT)
       #label.pack(side=LEFT)
-      button1 = tk.Button(self, text="Correct Design", width = 12, font=LARGE_FONT,
+      button1 = tk.Button(self, text="Correct", width = 12, font=CONFIRM_FONT,
          command=lambda: controller.show_frame(VerifyParts))
       button1.pack(side=LEFT, anchor=S)
 
-      button2 = tk.Button(self, text="Incorrect Design", width = 14, font=LARGE_FONT,
+      button2 = tk.Button(self, text="Incorrect", width = 14, font=CONFIRM_FONT,
          command=lambda: controller.show_frame(Redesign))
       button2.pack(side=LEFT, anchor=S)
 
@@ -187,7 +188,7 @@ class Redesign(tk.Frame):
       label = tk.Label(self, text="and start over", font=LARGE_FONT)
       label.pack(pady=2, fill=X)
 
-      button1 = tk.Button(self, text="End", height = 2, font=LARGE_FONT,
+      button1 = tk.Button(self, text="Cancel", height = 2, font=LARGE_FONT,
          command=restartFrame)
          #command=lambda: controller.show_frame(Start))
       button1.pack(fill=X, anchor=S)
@@ -202,32 +203,35 @@ class VerifyParts(tk.Frame):
       
       #label = tk.Label(self, text="Design is..", font=LARGE_FONT)
       #label.pack(side=LEFT)
-      button1 = tk.Button(self, text="Correct Parts", width = 12, height = 1, font=LARGE_FONT,
+      button1 = tk.Button(self, text="Correct", width = 12, height = 1, font=CONFIRM_FONT,
          command=lambda: controller.show_frame(Machine))
-      button1.pack(anchor=S, fill=X)
+      button1.pack(anchor=S, side=LEFT)
 
-      button2 = tk.Button(self, text="Incorrect Parts", width = 14, height = 1, font=LARGE_FONT,
+      button2 = tk.Button(self, text="Incorrect", width = 14, height = 1, font=CONFIRM_FONT,
          command=lambda: controller.show_frame(Reverify))
-      button2.pack(anchor=S, fill=X)
+      button2.pack(anchor=S, side=LEFT)
 
    def readFile(self):
+      global thick
       data = open("file.txt", "r")
       line = data.readline()
-      label1 = tk.Label(self, text=("Width of Board: " + line), font=LARGE_FONT)
-      label1.pack(anchor=S)
+      label1 = tk.Label(self, text=("Board Thickness: " + line), font=LARGE_FONT).grid(row=1, column=0)
+      #label1.pack()#, compound=CENTER)
+      thick = int(line)
+
       #print "read line %s" % (line)
       line = data.readline()
-      label2 = tk.Label(self, text=("Height of Board: " + line), font=LARGE_FONT)
-      label2.pack(anchor=S)
-      #print "read line %s" % (line)
-      #line = data.readline()
-      #label3 = tk.Label(self, text=("Board Thickness: " + line), font=LARGE_FONT)
-      #label3.pack(anchor=S)
+      label2 = tk.Label(self, text=("Width of Board: " + line), font=LARGE_FONT).grid(row=2, column=0)
+      #label2.pack(anchor=N)#, compound=TOP)
       #print "read line %s" % (line)
       line = data.readline()
-      label4 = tk.Label(self, text=("Letter Height: " + line), font=LARGE_FONT)
+      label3 = tk.Label(self, text=("Height of Board: " + line), font=LARGE_FONT).grid(row=3, column=0)
+      #label3.pack(anchor=N, compound=side)
+      #print "read line %s" % (line)
+      line = data.readline()
+      label4 = tk.Label(self, text=("Letter Height: " + line), font=LARGE_FONT).grid(row=4, column=0)
       #label4 = tk.Label(self, text=("Router Bit Size: " + line), font=LARGE_FONT)
-      label4.pack(anchor=S)
+      #label4.pack(anchor=N)
       #print "read line %s" % (line)
       print "data read"
       data.close()
@@ -241,7 +245,7 @@ class Reverify(tk.Frame):
       label = tk.Label(self, text="and start over", font=LARGE_FONT)
       label.pack(pady=2,padx=10)
 
-      button1 = tk.Button(self, text="End", font=LARGE_FONT,
+      button1 = tk.Button(self, text="Cancel", font=LARGE_FONT,
          command=restartFrame)
          #command=lambda: controller.show_frame(Start))
       button1.pack(anchor=S, fill=X)
@@ -260,7 +264,7 @@ class Machine(tk.Frame):
          command=self.loadCoordPars)
       button1.pack(anchor=S, fill=X)
 
-      button2 = tk.Button(self, text="End", font=LARGE_FONT,
+      button2 = tk.Button(self, text="Cancel", font=LARGE_FONT,
          command=restartFrame)
          #`command=lambda: controller.show_frame(Start))
       button2.pack(anchor=S, fill=X)
@@ -270,7 +274,8 @@ class Machine(tk.Frame):
 
    def loadCoordPars(self) :
       self.cont.show_frame(Machining)
-      coordParsing()
+      #coordParsing.coordParsing(thick)
+      coordParsing.test(thick)
 
 class Machining(tk.Frame):
 

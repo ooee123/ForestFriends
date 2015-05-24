@@ -1,9 +1,12 @@
 import serial
 import os
 
+# for the pi
 #port = serial.Serial("/dev/ttyUSB0", baudrate=9600, timeout=2)
-port = serial.Serial("/dev/tty.usbserial-A6026OUJ", baudrate=9600)
-
+# for the mac
+#port = serial.Serial("/dev/tty.usbserial-A6026OUJ", baudrate=9600)
+# for testing
+port = 1
 filename = "coordinates.txt"
 
 # converts a number to a 2 byte binary integer
@@ -25,20 +28,26 @@ def cancelFlag():
    home = true
    
 
-def coordParsing():
+def coordParsing(thick):
+   print(thick)
    fp = open(filename, "r")
    
 # reads from file and returns x, y, z
 
    # Go home, you're drunk.
-   print ("program begins")
-   toHOG(toBinary(0), toBinary(0), toBinary(0))
+   print ("data transfer begins")
+   # Changing the z coord. 
+   # if value is 3, we know its "go home, thickness of 0.75"
+   # if value is 4, we know its "go home, thickness of 1.5"
+   if (thick == 1) :
+      thick = 3
+   else :
+      thick = 4
+   toHOG(toBinary(0), toBinary(0), toBinary(thick))
    print("first")
-   found = port.read(1)
-   print found
-   while found.find('#') < 0:
-      found = port.read(1)
-      print found
+   while port.read(1).find('#') < 0:
+      pass
+
    print "start coord"
    # while wait
    # poll once from serial port for info arrival
@@ -50,14 +59,10 @@ def coordParsing():
       # send data to HOG
       toHOG(coord[0], coord[1], coord[2])
       found = port.read(1)
-      print "1 " + found
       while found.find('@') < 0:
          found = port.read(1)
-         print "2 " +found
          # wait until something in buffer
          
-      print "3 " +found
-
    # Go home, you're drunk.
    toHOG(toBinary(0), toBinary(0), toBinary(0))
    print("done")
@@ -67,9 +72,13 @@ def coordParsing():
 
    return
 
-def test():
-   print "SUCCESS"
+def test(thick):
+   if (thick == 1) :
+      thick = 3
+   else :
+      thick = 4
+   print "SUCCESS " + str(thick)
 
-
+#coordParsing(10)
 #main()
-#test()
+#test(10)

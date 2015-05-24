@@ -28,6 +28,10 @@ var updateEverything = function (canvasNumber) {
       var y = document.getElementById("y" + canvasNumber).value;
       var text = document.getElementById("text" + canvasNumber).value.toUpperCase();
       var canvas = textBox[canvasNumber - 1]
+      if (document.getElementById("fontSize").value > 6) {
+         document.getElementById("fontSize").value = 6
+         fontSize = 6
+      }
       if (dimension["length"] - 2 <= parseInt(document.getElementById("fontSize").value)) {
          dimension["length"] = parseInt(document.getElementById("fontSize").value)+2;
          document.getElementById("yCoord").value = dimension["length"] 
@@ -36,6 +40,7 @@ var updateEverything = function (canvasNumber) {
       }
       var width = dimension["width"]
       var length = dimension["length"]
+
       
       if (x == "" || x < 1) {
          x = 1;
@@ -49,7 +54,6 @@ var updateEverything = function (canvasNumber) {
          else {
             y = 2;
             document.getElementById("y" + canvasNumber).value = y
-            context.clearRect(0, 0, canvas.width*scale, canvas.height*scale)
          }
       }
       else if (y != "" && y > length - 1) {
@@ -57,9 +61,11 @@ var updateEverything = function (canvasNumber) {
       }
       document.getElementById("y" + canvasNumber).value = y
 
+      // check text for correct characters
+      text = text.replace(/[^A-Z0-9 ^><]/g, "") 
       // check text for arrows
       text = checkArrow(text)
-
+      
       canvas.x = x
       canvas.y = y
       canvas.text = text;
@@ -151,13 +157,13 @@ var createCanvas = function () {
    var textBoxElem = document.getElementById('textbox')
    if (textBox.length == 1) {
       var label = document.createElement('input')
-      label.type = "text"
+      //label.type = "text"
       label.value = "X Coordinate (in)"
       label.readOnly = "true"
       textBoxElem.appendChild(label)
       
       var ylabel = document.createElement('input')
-      ylabel.type = "text"
+      //ylabel.type = "text"
       ylabel.value = "Y Coordinate (in)"
       ylabel.readOnly = "true"
       textBoxElem.appendChild(ylabel)
@@ -241,13 +247,13 @@ var createCanvasSample = function () {
    var textBoxElem = document.getElementById('textbox')
    if (textBox.length == 1) {
       var label = document.createElement('input')
-      label.type = "text"
+      //label.type = "text"
       label.value = "X Coordinate (in)"
       label.readOnly = "true"
       textBoxElem.appendChild(label)
       
       var ylabel = document.createElement('input')
-      ylabel.type = "text"
+      //ylabel.type = "text"
       ylabel.value = "Y Coordinate (in)"
       ylabel.readOnly = "true"
       textBoxElem.appendChild(ylabel)
@@ -296,8 +302,6 @@ var updateRectSample = function () {
 
 
 /* Assigning listeners to the length and width number fields */
-//document.getElementById("yCoord").addEventListener("keyup", getDimension("length"))
-//document.getElementById("xCoord").addEventListener("keyup", getDimension("width"))
 document.getElementById("yCoord").addEventListener("focusout", getDimension("length"))
 document.getElementById("xCoord").addEventListener("focusout", getDimension("width"))
 //document.getElementById("fontSize").addEventListener("keyup", changeWHF)
@@ -324,6 +328,7 @@ var checkRed = function () {
 function saveTextAsFile() {
    
    var textToWrite = "";
+   textToWrite += document.getElementById("thickness").value + "\n"
    textToWrite += document.getElementById("yCoord").value + "\n"
    textToWrite += document.getElementById("xCoord").value + "\n"
    textToWrite += document.getElementById("fontSize").value + "\n"
@@ -373,12 +378,6 @@ var Text = function(x, y, text) {
    this.text = text
 }
 
-var Dimension = function(width, height, letterHeight) {
-   this.width = width
-   this.height = height
-   this.letterHeight = height
-}
-
 var cleanString = function(s) {
    //var regex = /(<([^>]+)>)/ig
    //return s.replace(regex, "")
@@ -399,10 +398,10 @@ document.getElementById('upload').onchange = function(){
          lines[n] = cleanString(lines[n])
       }
       
-      //var dimensions = new Dimension(lines[0], lines[1], lines[2]);
-      document.getElementById("yCoord").value = dimension["length"] = lines[0];
-      document.getElementById("xCoord").value = dimension["width"] = lines[1];
-      document.getElementById("fontSize").value = lines[2];
+      document.getElementById("thickness").value = lines[0];
+      document.getElementById("yCoord").value = dimension["length"] = lines[1];
+      document.getElementById("xCoord").value = dimension["width"] = lines[2];
+      document.getElementById("fontSize").value = lines[3];
       updateRect(0);
       var texts = [];
       
