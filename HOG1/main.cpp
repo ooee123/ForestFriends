@@ -45,7 +45,6 @@
 #include "state.h"
 #include "z_motor_task.h"
 
-//#define Z_AXIS
 
 // Declare the queues which are used by tasks to communicate with each other here. 
 // Each queue must also be declared 'extern' in a header file which will be read 
@@ -60,7 +59,7 @@
  *  task to be printed. 
  */
 
-frt_text_queue print_ser_queue (32, NULL, 10);
+//frt_text_queue* print_ser_queue = new frt(text_queue;
 
 /** This queue sends data from the source task to the sink task (both of these tasks
  *  have been removed in this revision).
@@ -71,6 +70,8 @@ frt_queue<uint16_t> queue_x (20);
 frt_queue<uint16_t> queue_y (20);
 frt_queue<uint16_t> queue_z (20);
 */
+
+frt_text_queue print_ser_queue(32, NULL, 10);
 /** This shared data item allows communication between the motor task and the task user.
  *  In this way, we can make a user interface which can update the motor operation in
  *  realtime as the tasks are called pseudo simultaneously in the RTOS.
@@ -163,7 +164,7 @@ int main (void)
    #else
       bool zReady = true;
    #endif
-   #ifndef OMIT_CURRENT_SENSOR
+   #ifdef CURRENT_SENSOR
 
    ADCSRA |= (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0); // Set ADC prescalar to 128 - 125KHz sample rate @ 16MHz
 

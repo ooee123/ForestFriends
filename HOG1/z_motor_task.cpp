@@ -25,6 +25,7 @@
 #include "constants.h"
 #define CPR 1000
 #include "state.h"
+#include "shares.h"
 
 
 //-------------------------------------------------------------------------------------
@@ -101,24 +102,22 @@ void z_motor_task::run (void)
          }
          else
          {
+            *zReady = true;
             motor->brake();
          }
       }
       else
       {
-         #ifdef ALL_MOTORS_TEST
          while (abs(*desired - (int16_t)encoder->getPosition()) > Z_AXIS_TOLERANCE)
-         #endif
          {
             *zReady = false;
-            *zReady = true; // Just for testing purposes
             encoder->updatePosition();
             motor->move(*desired - (int16_t)encoder->getPosition());
             #ifdef MOTOR_DEBUG
-               *p_serial << get_name();
-               *p_serial << " MOVING:";
-               *p_serial << *desired - (int16_t)encoder->getPosition();
-               *p_serial << "\n";
+               print_ser_queue << get_name();
+               print_ser_queue << ":";
+               print_ser_queue << *desired - (int16_t)encoder->getPosition();
+               print_ser_queue << "\n";
             #endif
          }
          *zReady = true;
