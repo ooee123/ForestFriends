@@ -63,6 +63,7 @@ var updateEverything = function (canvasNumber) {
 
       // check text for correct characters
       text = text.replace(/[^A-Z0-9 ^><.]/g, "") 
+
       // check text for arrows
       text = checkArrow(text)
       
@@ -405,9 +406,9 @@ document.getElementById('upload').onchange = function(){
       updateRect(0);
       var texts = [];
       
-      for(var line = 3; line + 3 < lines.length; line = line + 3){
+      for(var line = 4; line + 3 < lines.length; line = line + 3){
          //texts[texts.length] = new Text(lines[line], lines[line + 1], lines[line + 2]);
-         var index = line / 3
+         var index = (line - 1)/ 3 
          if (textBox.length < index)
          {
             createCanvas();
