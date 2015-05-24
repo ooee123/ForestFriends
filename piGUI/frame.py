@@ -205,32 +205,33 @@ class VerifyParts(tk.Frame):
       #label.pack(side=LEFT)
       button1 = tk.Button(self, text="Correct", width = 12, height = 1, font=CONFIRM_FONT,
          command=lambda: controller.show_frame(Machine))
-      button1.pack(anchor=N, side=LEFT)
+      button1.pack(anchor=S, side=LEFT)
 
       button2 = tk.Button(self, text="Incorrect", width = 14, height = 1, font=CONFIRM_FONT,
          command=lambda: controller.show_frame(Reverify))
-      button2.pack(anchor=N, side=LEFT)
+      button2.pack(anchor=S, side=LEFT)
 
    def readFile(self):
       global thick
       data = open("file.txt", "r")
       line = data.readline()
-      label1 = tk.Label(self, text=("Board Thickness: " + line), font=LARGE_FONT)
-      label1.pack(anchor=S)
+      label1 = tk.Label(self, text=("Board Thickness: " + line), font=LARGE_FONT).grid(row=3, column=0)
+      #label1.pack()#, compound=CENTER)
       thick = int(line)
-      print "read line %s" % (line)
-      line = data.readline()
-      label2 = tk.Label(self, text=("Width of Board: " + line), font=LARGE_FONT)
-      label2.pack(anchor=S)
+
       #print "read line %s" % (line)
       line = data.readline()
-      label3 = tk.Label(self, text=("Height of Board: " + line), font=LARGE_FONT)
-      label3.pack(anchor=S)
+      label2 = tk.Label(self, text=("Width of Board: " + line), font=LARGE_FONT).grid(row=6, column=0)
+      #label2.pack(anchor=N)#, compound=TOP)
       #print "read line %s" % (line)
       line = data.readline()
-      label4 = tk.Label(self, text=("Letter Height: " + line), font=LARGE_FONT)
+      label3 = tk.Label(self, text=("Height of Board: " + line), font=LARGE_FONT).grid(row=10, column=0)
+      #label3.pack(anchor=N, compound=side)
+      #print "read line %s" % (line)
+      line = data.readline()
+      label4 = tk.Label(self, text=("Letter Height: " + line), font=LARGE_FONT).grid(row=13, column=0)
       #label4 = tk.Label(self, text=("Router Bit Size: " + line), font=LARGE_FONT)
-      label4.pack(anchor=S)
+      #label4.pack(anchor=N)
       #print "read line %s" % (line)
       print "data read"
       data.close()
