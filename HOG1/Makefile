@@ -43,7 +43,7 @@ F_CPU = 16000000UL
 # -DTRANSITION_TRACE   For printing state transition traces on a serial device
 # -DTASK_PROFILE       For doing profiling, measurement of how long tasks take to run
 # -DUSE_HEX_DUMPS      Include functions for printing hex-formatted memory dumps
-OTHERS = -DSERIAL_DEBUG -DDEBUG -DZ_AXIS
+OTHERS = -DSERIAL_DEBUG -DDEBUG -DZ_AXIS -DMOTOR_DEBUG -DALL_MOTORS_TEST
 
 # If the code -DTASK_SETUP_AND_LOOP is specified, ME405/FreeRTOS tasks classes will be
 # required to provide methods setup() and loop(). Otherwise, they must only provide a
@@ -227,6 +227,14 @@ motor_driver.o: motor_driver.cpp $(HEADER_FILES)
 	@avr-gcc -c $(CPP_FLAGS) $< -o $@
 
 motor_task.o: motor_task.cpp $(HEADER_FILES)
+	@echo $<
+	@avr-gcc -c $(CPP_FLAGS) $< -o $@
+
+z_motor_task.o: z_motor_task.cpp $(HEADER_FILES)
+	@echo $<
+	@avr-gcc -c $(CPP_FLAGS) $< -o $@
+
+main.o: main.cpp $(HEADER_FILES)
 	@echo $<
 	@avr-gcc -c $(CPP_FLAGS) $< -o $@
 

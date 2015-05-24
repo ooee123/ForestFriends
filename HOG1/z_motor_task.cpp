@@ -106,13 +106,15 @@ void z_motor_task::run (void)
       }
       else
       {
+         #ifdef ALL_MOTORS_TEST
          while (abs(*desired - (int16_t)encoder->getPosition()) > Z_AXIS_TOLERANCE)
+         #endif
          {
-            _setBit(PORTA, PA0);
             *zReady = false;
+            *zReady = true; // Just for testing purposes
             encoder->updatePosition();
             motor->move(*desired - (int16_t)encoder->getPosition());
-            #ifdef DEBUG
+            #ifdef MOTOR_DEBUG
                *p_serial << get_name();
                *p_serial << " MOVING:";
                *p_serial << *desired - (int16_t)encoder->getPosition();
@@ -120,7 +122,6 @@ void z_motor_task::run (void)
             #endif
          }
          *zReady = true;
-         _clearBit(PORTA, PA0);
       }
       delay_from_to (previousTicks, configMS_TO_TICKS (100));
    }

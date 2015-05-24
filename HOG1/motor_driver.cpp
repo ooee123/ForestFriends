@@ -63,7 +63,12 @@ motor_driver::motor_driver (volatile uint8_t* DDR_en, volatile uint8_t* DDR_dir,
    pGain = pGain_in;
    powerMin = powerMin_in;
    powerMax = powerMax_in;
-	
+   /*
+    *ptr_to_serial << pConstant;
+    *ptr_to_serial << pGain;
+    *ptr_to_serial << powerMin;
+    *ptr_to_serial << powerMax;
+	*/
    /*
    _setBit(*DDR_EN, EN);
    _setBit(*DDR_DIR, INA);
