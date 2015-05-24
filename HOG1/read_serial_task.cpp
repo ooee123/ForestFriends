@@ -21,6 +21,7 @@
 #include "read_serial_task.h"                 // Header for this task
 #include <util/delay.h>
 #include "state.h"
+#include "shares.h"
 #include "pinLayout.h"
 #include "constants.h"
 #define CPR 1000
@@ -93,6 +94,11 @@ void read_serial_task::run (void)
 	for (;;)
 	{	
 		runs++;
+      while (print_ser_queue.check_for_char())
+      {
+         p_serial->putchar(print_ser_queue.getchar());
+      }
+      #ifdef CURRENT_SENSORS
       if (_getBit(ADCSR, ADIF))
       {
          *p_serial << ADCH;
@@ -110,6 +116,7 @@ void read_serial_task::run (void)
             ADMUX |= (sense + 1) % 3;
          }
       }
+      #endif
 
       // Check for all limit switches, make sure they're not violated 
       //if (!getXMaxLimitSwitch() || !getYMaxLimitSwitch() || !getZMaxLimitSwitch())
@@ -168,15 +175,22 @@ void read_serial_task::getNextCoordinate(void)
    *desiredX = serial->read_uint16_t();
    *desiredY = serial->read_uint16_t();
    *desiredZ = serial->read_uint16_t();
-   if (*desiredX == 0 && *desiredY == 0 && *desiredZ == 0)
+   if (*desiredX == 0 && *desiredY == 0 && (*desiredZ == 0 || *desiredZ == 3 || *desiredZ == 4))
    {
       *state = HOME;
+      if (*desiredZ == HOME_THREE_QUARTER_BOARD)
+      {
+         boardOffset = INCH * 3 / 4;
+      }
+      else if (*desiredZ == HOME_ONE_POINT_FIVE_BOARD)
+      {
+         boardOffset = INCH * 3 / 2;
+      }
    }
    #ifdef Z_AXIS
       else
       {
             *zReady = false;
-            *zReady = true; // Just for testing purposes
          #ifdef Z_CODE_TO_HEIGHT
             int16_t desiredHeight;
             if (*desiredZ == START || *desiredZ == MOVE)

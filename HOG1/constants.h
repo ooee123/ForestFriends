@@ -1,6 +1,8 @@
 #ifndef _CONSTANTS_H_
 #define _CONSTANTS_H_
 
+#include <frt_text_queue.h>
+
 #define TICKS_PER_REVOLUTION 30
 #define REVOLUTIONS_PER_INCH 8
 #define INCH (TICKS_PER_REVOLUTION * REVOLUTIONS_PER_INCH)
@@ -13,6 +15,8 @@
 #define START 0
 #define LINE 1
 #define MOVE 2
+#define HOME_THREE_QUARTER_BOARD  3
+#define HOME_ONE_POINT_FIVE_BOARD 4
 
 #define DISTANCE_1_5     (INCH / 2)
 #define HOVER_HEIGHT     (INCH / 4)
