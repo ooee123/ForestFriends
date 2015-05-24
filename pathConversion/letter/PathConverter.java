@@ -181,8 +181,11 @@ public class PathConverter {
          case '^':
             paths = new Up().getPaths();
             break;
+         case '\'':
+            paths = new Apostrophe().getPaths();
+            break;
          case ' ':
-            currentx += dimensions.getrelativey(1, 2);
+            currentX += Dimensions.getRelativeY(3, 5);
             break;
          case '_':
             paths = new Underscore().getPaths();

@@ -118,12 +118,6 @@ void motor_task::run (void)
                   print_ser_queue << ":";
                   print_ser_queue << *desired - (int16_t)encoder->getPosition();
                   print_ser_queue << "\n";
-                  /*
-                  *p_serial << get_name();
-                  *p_serial << " MOVING";
-                  *p_serial << *desired - (int16_t)encoder->getPosition();
-                  *p_serial << "\n";
-                  */
                #endif
             }
             else

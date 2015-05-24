@@ -44,6 +44,10 @@ class Dimensions
     */
    static int WIDTH_90 = (WIDTH * 9 / 10);
    /**
+    * Width of a 3/10 ratio letter
+    */
+   static int WIDTH_30 = (WIDTH * 3 / 10);
+   /**
     * Width of a 1/5 ratio letter
     */
    static int WIDTH_20 = (WIDTH * 1 / 5);
@@ -56,6 +60,10 @@ class Dimensions
     * Width of a 4/5 ratio letter
     */
    static int MAX_WIDTH_90 = WIDTH_90;
+   /**
+    * Width of a 3/10 ratio letter
+    */
+   static int MAX_WIDTH_30 = WIDTH_30;
    /**
     * Width of a 1/5 ratio letter
     */
@@ -74,8 +82,10 @@ class Dimensions
       MAX_WIDTH = WIDTH - strokeWeight;
       WIDTH_80 = (WIDTH * 4 / 5);
       WIDTH_90 = (WIDTH * 9 / 10);
+      WIDTH_30 = (WIDTH * 3 / 10);
       WIDTH_20 = (WIDTH * 1 / 5);
       WIDTH_20 = strokeWeight * 1;
+      MAX_WIDTH_30 = WIDTH_30 - strokeWeight;
       MAX_WIDTH_80 = WIDTH_80 - strokeWeight;
       MAX_WIDTH_90 = WIDTH_90 - strokeWeight;
       MAX_WIDTH_20 = strokeWeight;

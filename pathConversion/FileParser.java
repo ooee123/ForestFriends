@@ -59,6 +59,13 @@ public class FileParser
          width = file.nextInt();
          height = file.nextInt();
          fontHeight = file.nextInt();
+         if (fontHeight == 1)
+         {
+         }
+         else if (fontHeight == 2)
+         {
+            strokeWidth = Letter.INCH * 3 / 8;
+         }
          System.out.println(thickness + " " + width + " " + height + " " + fontHeight);
       }
       FontPainter fp = new FontPainter(width * Letter.INCH, height * Letter.INCH, strokeWidth);
