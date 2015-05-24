@@ -52,6 +52,7 @@ motor_task::motor_task (const char* a_name,
                          uint8_t limitPinNum_in,
                          volatile State* state_in,
                          bool* zReady_in
+                         //uint8_t current_sensor_pin_in
 								)
 	:
    frt_task (a_name, a_priority, a_stack_size, p_ser_dev)
@@ -63,6 +64,7 @@ motor_task::motor_task (const char* a_name,
    limitPinNum = limitPinNum_in;
    state = state_in;
    zReady = zReady_in;
+   //current_sensor_pin = current_sensor_pin_in;
    // Set the limit switches bumpers to input
    *limitDDR_in &= ~(1 << limitPinNum);
    // Activate Pull-Up Resistor
@@ -110,7 +112,7 @@ void motor_task::run (void)
             if (!isWithinTolerance(*desired, (int16_t)encoder->getPosition(), TOLERANCE))
             {
                motor->move(*desired - (int16_t)encoder->getPosition());
-               #ifdef DEBUG
+               #ifdef MOTOR_DEBUG
                   *p_serial << get_name();
                   *p_serial << " MOVING";
                   *p_serial << *desired - (int16_t)encoder->getPosition();

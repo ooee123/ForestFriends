@@ -37,12 +37,12 @@
 #define Z_ZERO_LIMIT_PIN_NUM PA5
 #define Z_MAX_LIMIT_PIN_NUM  PA0
 
-#define CURRENT_DDR          DDRA
-#define CURRENT_PORT         PORTA
-#define CURRENT_PIN          PINA
-#define X_CURRENT_PIN_NUM    PA0
-#define Y_CURRENT_PIN_NUM    PA0
-#define Z_CURRENT_PIN_NUM    PA0
+//#define CURRENT_DDR          DDRF
+//#define CURRENT_PORT         PORTF
+//#define CURRENT_PIN          PINF
+#define X_CURRENT_PIN_NUM    PF0
+#define Y_CURRENT_PIN_NUM    PF1
+#define Z_CURRENT_PIN_NUM    PF2
 
 #define SOLID_STATE_DDR      DDRA
 #define SOLID_STATE_PORT     PORTA

@@ -76,7 +76,7 @@ private:
    bool* zReady;
    uint16_t boardOffset;
 
-   bool isWithinTolerance(uint16_t actual, uint16_t expected);
+   void getNextCoordinate(void);
 
 protected:
 	// No protected variables or methods for this class

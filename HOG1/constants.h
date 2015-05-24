@@ -6,9 +6,10 @@
 #define INCH (TICKS_PER_REVOLUTION * REVOLUTIONS_PER_INCH)
 
 #define PCONSTANT 30
-#define PGAIN 1.7
-#define PID_MAX 65000
-#define PID_MIN 0
+#define PGAIN 0
+#define PID_MAX 400
+//#define PID_MIN 1023
+#define PID_MIN 400
 
 #define START 0
 #define LINE 1
@@ -35,6 +36,8 @@
 #define Z_POWERMIN  PID_MIN
 
 #define CALIBRATE_SPEED 100
+
+#define ADC_MAX (230)
 
 #define TOLERANCE (INCH / 16)
 #define isWithinTolerance(x, y, t) (abs((x) - (y)) <= t)

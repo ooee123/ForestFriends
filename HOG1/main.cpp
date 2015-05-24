@@ -93,9 +93,11 @@ encoder_driver* zEncoder = new encoder_driver(&Z_ENCODER_DDR, &Z_ENCODER_PIN, &Z
 motor_driver* xAxis = new motor_driver (&DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1A1, &OCR1A, X_PGAIN, X_PCONSTANT, X_POWERMAX, X_POWERMIN);
 motor_driver* yAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1B1, &OCR1B, Y_PGAIN, Y_PCONSTANT, Y_POWERMAX, Y_POWERMIN);
 motor_driver* zAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC1, PC7, PC6, PB7, COM1C1, &OCR1C, Z_PGAIN, Z_PCONSTANT, Z_POWERMAX, Z_POWERMIN);
+rs232 ser_port (9600, 0);
 uint16_t desiredX = 0;
 uint16_t desiredY = 0;
 uint16_t desiredZ = 0;
+uint16_t adcValue = 0;
 volatile State state = NORMAL;
 // X Current Switch SCL
 ISR(INT0_vect)
@@ -156,12 +158,31 @@ int main (void)
    EICRB = 0b01010101; // Set Int_4-7 to activate on pin toggle
    EIMSK = 0b11110000; // Turn on Int_4-7
    DDRA = 1;
-   bool zReady = false;
+   #ifdef Z_AXIS
+      bool zReady = false;
+   #else
+      bool zReady = true;
+   #endif
+   #ifndef OMIT_CURRENT_SENSOR
+
+ADCSRA |= (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0); // Set ADC prescalar to 128 - 125KHz sample rate @ 16MHz
+
+   ADMUX |= (1 << REFS0); // Set ADC reference to AVCC
+   ADMUX |= (1 << ADLAR); // Left adjust ADC result to allow easy 8 bit reading
+
+   // No MUX values needed to be changed to use ADC0
+
+   //ADCSRA |= (1 << ADFR);  // Set ADC to Free-Running Mode
+   ADCSRA |= (1 << ADEN);  // Enable ADC
+   ADCSRA |= (1 << ADSC);  // Start A2D Conversions
+
+   #endif
+
+
 	// Configure a serial port which can be used by a task to print debugging infor-
 	// mation, or to allow user interaction, or for whatever use is appropriate.  The
 	// serial port will be used by the user interface task after setup is complete and
 	// the task scheduler has been started by the function vTaskStartScheduler()
-	rs232 ser_port (9600, 0);
 
 
 	// task that controls motors

@@ -93,6 +93,24 @@ void read_serial_task::run (void)
 	for (;;)
 	{	
 		runs++;
+      if (_getBit(ADCSR, ADIF))
+      {
+         *p_serial << ADCH;
+         _setBit(ADCSRA, ADSC);
+         if (ADCH > ADC_MAX)
+         {
+            // Shut down machine!
+            *state = HOME;
+            desiredX = 0;
+            desiredY = 0;
+            desiredZ = 0;
+            _clearBit(SOLID_STATE_PORT, SOLID_STATE_PIN_NUM);
+            uint8_t sense = ADMUX & 0x111;
+            ADMUX &= 0b11111000;
+            ADMUX |= (sense + 1) % 3;
+         }
+      }
+
       // Check for all limit switches, make sure they're not violated 
       //if (!getXMaxLimitSwitch() || !getYMaxLimitSwitch() || !getZMaxLimitSwitch())
       if (false)
@@ -121,36 +139,7 @@ void read_serial_task::run (void)
             yEncoder->reset();
             zEncoder->reset();
             // And then take up the first coordinate
-            *desiredX = serial->read_uint16_t();
-            *desiredY = serial->read_uint16_t();
-            *desiredZ = serial->read_uint16_t();
-            *zReady = false;
-            if (*desiredX == 0 && *desiredY == 0 && *desiredZ == 0)
-            {
-               *state = HOME;
-            }
-            else
-            {
-               int16_t desiredHeight;
-               if (*desiredZ == START || *desiredZ == MOVE)
-               {
-                  desiredHeight = DISTANCE_1_5 + boardOffset - HOVER_HEIGHT;
-               }
-               else if (*desiredZ == LINE)
-               {
-                  desiredHeight = DISTANCE_1_5 + boardOffset + ROUTING_DEPTH;
-               }
-               *desiredZ = desiredHeight;
-            }
-         #ifdef DEBUG
-            *p_serial << "Got data HOME";
-            *p_serial << "X:";
-            *p_serial << *desiredX;
-            *p_serial << "Y:";
-            *p_serial << *desiredY;
-            *p_serial << "Z:";
-            *p_serial << *desiredZ;
-         #endif
+            getNextCoordinate();
          }
       }
       else if (*state == NORMAL)
@@ -167,40 +156,44 @@ void read_serial_task::run (void)
             *p_serial << NEXT_COMMAND;
             // Get the next command
             // Update desired
-            *desiredX = serial->read_uint16_t();
-            *desiredY = serial->read_uint16_t();
-            *desiredZ = serial->read_uint16_t();
-            
-
-            *zReady = false;
-            // If all points say 0, return home
-            if (*desiredX == 0 && *desiredY == 0 && *desiredZ == 0)
-            {
-               *state = HOME;
-            }
-            else
-            {
-               int16_t desiredHeight;
-               if (*desiredZ == START || *desiredZ == MOVE)
-               {
-                  desiredHeight = DISTANCE_1_5 + boardOffset - HOVER_HEIGHT;
-               }
-               else if (*desiredZ == LINE)
-               {
-                  desiredHeight = DISTANCE_1_5 + boardOffset + ROUTING_DEPTH;
-               }
-               *desiredZ = desiredHeight;
-               #ifdef DEBUG
-                  *p_serial << "X:";
-                  *p_serial << *desiredX;
-                  *p_serial << "Y:";
-                  *p_serial << *desiredY;
-                  *p_serial << "Z:";
-                  *p_serial << *desiredZ;
-               #endif
-            }
+            getNextCoordinate();
          }
       }
 		delay_from_to (previousTicks, configMS_TO_TICKS (100));
 	}
+}
+
+void read_serial_task::getNextCoordinate(void)
+{
+   *desiredX = serial->read_uint16_t();
+   *desiredY = serial->read_uint16_t();
+   *desiredZ = serial->read_uint16_t();
+   #ifdef Z_AXIS
+      *zReady = false;
+      if (*desiredX == 0 && *desiredY == 0 && *desiredZ == 0)
+      {
+         *state = HOME;
+      }
+      else
+      {
+         int16_t desiredHeight;
+         if (*desiredZ == START || *desiredZ == MOVE)
+         {
+            desiredHeight = DISTANCE_1_5 + boardOffset - HOVER_HEIGHT;
+         }
+         else if (*desiredZ == LINE)
+         {
+            desiredHeight = DISTANCE_1_5 + boardOffset + ROUTING_DEPTH;
+         }
+         *desiredZ = desiredHeight;
+      }
+   #endif
+   #ifdef DEBUG
+      *p_serial << "X:";
+      *p_serial << *desiredX;
+      *p_serial << "Y:";
+      *p_serial << *desiredY;
+      *p_serial << "Z:";
+      *p_serial << *desiredZ;
+   #endif
 }
