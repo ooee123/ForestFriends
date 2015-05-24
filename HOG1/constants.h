@@ -5,11 +5,10 @@
 #define REVOLUTIONS_PER_INCH 8
 #define INCH (TICKS_PER_REVOLUTION * REVOLUTIONS_PER_INCH)
 
-#define PCONSTANT 30
-#define PGAIN 0
-#define PID_MAX 400
-//#define PID_MIN 1023
-#define PID_MIN 400
+#define PCONSTANT 0
+#define PGAIN 1
+#define PID_MAX 50
+#define PID_MIN 50
 
 #define START 0
 #define LINE 1
@@ -20,20 +19,20 @@
 #define ROUTING_DEPTH    (INCH * 3 / 16)
 #define Z_AXIS_TOLERANCE 20
 
-#define X_PGAIN     PGAIN
-#define X_PCONSTANT PCONSTANT
-#define X_POWERMAX  PID_MAX
-#define X_POWERMIN  PID_MIN
+#define X_PGAIN     0
+#define X_PCONSTANT 120
+#define X_POWERMIN  0
+#define X_POWERMAX  0
 
-#define Y_PGAIN     PGAIN
-#define Y_PCONSTANT PCONSTANT
-#define Y_POWERMAX  PID_MAX
-#define Y_POWERMIN  PID_MIN
+#define Y_PGAIN     0
+#define Y_PCONSTANT 50
+#define Y_POWERMIN  0
+#define Y_POWERMAX  0
 
-#define Z_PGAIN     PGAIN
-#define Z_PCONSTANT PCONSTANT
-#define Z_POWERMAX  PID_MAX
-#define Z_POWERMIN  PID_MIN
+#define Z_PGAIN     0
+#define Z_PCONSTANT 200
+#define Z_POWERMIN  0
+#define Z_POWERMAX  0
 
 #define CALIBRATE_SPEED 100
 

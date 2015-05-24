@@ -90,9 +90,9 @@ frt_queue<uint16_t> queue_z (20);
 encoder_driver* xEncoder = new encoder_driver(&X_ENCODER_DDR, &X_ENCODER_PIN, &X_ENCODER_PORT, X_ENCODER_PINA, X_ENCODER_PINB);
 encoder_driver* yEncoder = new encoder_driver(&Y_ENCODER_DDR, &Y_ENCODER_PIN, &Y_ENCODER_PORT, Y_ENCODER_PINA, Y_ENCODER_PINB);
 encoder_driver* zEncoder = new encoder_driver(&Z_ENCODER_DDR, &Z_ENCODER_PIN, &Z_ENCODER_PORT, Z_ENCODER_PINA, Z_ENCODER_PINB);
-motor_driver* xAxis = new motor_driver (&DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1A1, &OCR1A, X_PGAIN, X_PCONSTANT, X_POWERMAX, X_POWERMIN);
-motor_driver* yAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1B1, &OCR1B, Y_PGAIN, Y_PCONSTANT, Y_POWERMAX, Y_POWERMIN);
-motor_driver* zAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC1, PC7, PC6, PB7, COM1C1, &OCR1C, Z_PGAIN, Z_PCONSTANT, Z_POWERMAX, Z_POWERMIN);
+motor_driver* xAxis = new motor_driver (&DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1A1, &OCR1A, X_PGAIN, X_PCONSTANT, X_POWERMIN, X_POWERMAX);
+motor_driver* yAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1B1, &OCR1B, Y_PGAIN, Y_PCONSTANT, Y_POWERMIN, Y_POWERMAX);
+motor_driver* zAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC1, PC7, PC6, PB7, COM1C1, &OCR1C, Z_PGAIN, Z_PCONSTANT, Z_POWERMIN, Z_POWERMAX);
 rs232 ser_port (9600, 0);
 uint16_t desiredX = 0;
 uint16_t desiredY = 0;
@@ -165,7 +165,7 @@ int main (void)
    #endif
    #ifndef OMIT_CURRENT_SENSOR
 
-ADCSRA |= (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0); // Set ADC prescalar to 128 - 125KHz sample rate @ 16MHz
+   ADCSRA |= (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0); // Set ADC prescalar to 128 - 125KHz sample rate @ 16MHz
 
    ADMUX |= (1 << REFS0); // Set ADC reference to AVCC
    ADMUX |= (1 << ADLAR); // Left adjust ADC result to allow easy 8 bit reading

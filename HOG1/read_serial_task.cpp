@@ -168,24 +168,27 @@ void read_serial_task::getNextCoordinate(void)
    *desiredX = serial->read_uint16_t();
    *desiredY = serial->read_uint16_t();
    *desiredZ = serial->read_uint16_t();
+   if (*desiredX == 0 && *desiredY == 0 && *desiredZ == 0)
+   {
+      *state = HOME;
+   }
    #ifdef Z_AXIS
-      *zReady = false;
-      if (*desiredX == 0 && *desiredY == 0 && *desiredZ == 0)
-      {
-         *state = HOME;
-      }
       else
       {
-         int16_t desiredHeight;
-         if (*desiredZ == START || *desiredZ == MOVE)
-         {
-            desiredHeight = DISTANCE_1_5 + boardOffset - HOVER_HEIGHT;
-         }
-         else if (*desiredZ == LINE)
-         {
-            desiredHeight = DISTANCE_1_5 + boardOffset + ROUTING_DEPTH;
-         }
-         *desiredZ = desiredHeight;
+            *zReady = false;
+            *zReady = true; // Just for testing purposes
+         #ifdef Z_CODE_TO_HEIGHT
+            int16_t desiredHeight;
+            if (*desiredZ == START || *desiredZ == MOVE)
+            {
+               desiredHeight = DISTANCE_1_5 + boardOffset - HOVER_HEIGHT;
+            }
+            else if (*desiredZ == LINE)
+            {
+               desiredHeight = DISTANCE_1_5 + boardOffset + ROUTING_DEPTH;
+            }
+            *desiredZ = desiredHeight;
+         #endif
       }
    #endif
    #ifdef DEBUG
