@@ -62,7 +62,7 @@ var updateEverything = function (canvasNumber) {
       document.getElementById("y" + canvasNumber).value = y
 
       // check text for correct characters
-      text = text.replace(/[^A-Z0-9 ^><.]/g, "") 
+      text = text.replace(/[^A-Z0-9 '^><.]/g, "") 
 
       // check text for arrows
       text = checkArrow(text)
