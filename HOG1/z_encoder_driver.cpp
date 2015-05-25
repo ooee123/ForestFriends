@@ -62,10 +62,6 @@ void z_encoder_driver::updatePosition(void)
          {
             position += 3;
          }
-         else if (prevSum == 2)
-         {
-            position += 2;
-         }
          else
          {
             position += 1;
@@ -77,18 +73,10 @@ void z_encoder_driver::updatePosition(void)
          {
             position -= 3;
          }
-         else if (prevSum == 2)
-         {
-            position -= 2;
-         }
          else
          {
             position -= 1;
          }
-      }
-      else
-      {
-         *ptr_to_serial << "NOT MOVING\n";
       }
       prevSum = sum;
    }

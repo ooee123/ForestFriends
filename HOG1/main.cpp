@@ -108,6 +108,8 @@ ISR(INT0_vect)
 {
    zEncoder->updatePosition();
    zAxis->move(desiredZ - zEncoder->getPosition());
+   ser_port << zEncoder->getPosition();
+   ser_port << "\n";
 }
 
 // Enc Z B SCL

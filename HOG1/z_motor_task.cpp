@@ -78,7 +78,6 @@ void z_motor_task::run (void)
 	
 	for (;;)
 	{
-      //encoder->updatePosition();
 		runs++;
 
       if (*state == HOME)
@@ -99,7 +98,6 @@ void z_motor_task::run (void)
          if (abs(*desired - encoder->getPosition()) > Z_AXIS_TOLERANCE)
          {
             *zReady = false;
-            encoder->updatePosition();
             motor->move(*desired - encoder->getPosition());
             #ifdef MOTOR_DEBUG
                print_ser_queue << get_name();

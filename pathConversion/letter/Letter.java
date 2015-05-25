@@ -7,7 +7,7 @@ public interface Letter
    /**
     * The number of encoder pulses per full revolution.
     */
-   public static final int TICKS_PER_REVOLUTION = 30;
+   public static final int TICKS_PER_REVOLUTION = 32;
 
    /**
     * The number of revolutions it takes to travel an inch.

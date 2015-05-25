@@ -10,9 +10,7 @@ typedef enum State
    HOME, NORMAL
 } State;
 
-#include <frt_text_queue.h>
-
-#define TICKS_PER_REVOLUTION 30
+#define TICKS_PER_REVOLUTION 32
 #define REVOLUTIONS_PER_INCH 8
 #define INCH (TICKS_PER_REVOLUTION * REVOLUTIONS_PER_INCH)
 
@@ -32,20 +30,20 @@ typedef enum State
 #define ROUTING_DEPTH    (INCH * 3 / 16)
 #define Z_AXIS_TOLERANCE 20
 
-#define X_PGAIN     0
+#define X_PGAIN     1
 #define X_PCONSTANT 120
 #define X_POWERMIN  0
-#define X_POWERMAX  0
+#define X_POWERMAX  1023
 
-#define Y_PGAIN     0
+#define Y_PGAIN     1
 #define Y_PCONSTANT 50
 #define Y_POWERMIN  0
-#define Y_POWERMAX  0
+#define Y_POWERMAX  1023
 
-#define Z_PGAIN     0
+#define Z_PGAIN     1
 #define Z_PCONSTANT 200
 #define Z_POWERMIN  0
-#define Z_POWERMAX  0
+#define Z_POWERMAX  1023
 
 #define CALIBRATE_SPEED 100
 

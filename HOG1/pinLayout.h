@@ -29,13 +29,13 @@
 #define Y_LIMIT_PORT         PORTA
 #define Y_LIMIT_PIN          PINA
 #define Y_ZERO_LIMIT_PIN_NUM PA6
-#define Y_MAX_LIMIT_PIN_NUM  PA0
+#define Y_MAX_LIMIT_PIN_NUM  PA3
 
 #define Z_LIMIT_DDR          DDRA
 #define Z_LIMIT_PORT         PORTA
 #define Z_LIMIT_PIN          PINA
 #define Z_ZERO_LIMIT_PIN_NUM PA5
-#define Z_MAX_LIMIT_PIN_NUM  PA0
+#define Z_MAX_LIMIT_PIN_NUM  PA2
 
 #define CURRENT_DDR          DDRF
 #define CURRENT_PORT         PORTF
