@@ -21,49 +21,75 @@
 #include <avr/io.h>
 #include <math.h>
 #include <avr/interrupt.h>
-#include <ctype.h>
 
 #include "rs232int.h"                       // Include header for serial port class
-#include "read_serial_driver.h"                // Include header for the A/D class
+#include "encoder_driver.h"                // Include header for the A/D class
+#include "z_encoder_driver.h"                // Include header for the A/D class
+#include "pinLayout.h"
 #define STOP_CONST 25
-//#define BINARY_SERIAL
 
 //---------------------		//p_motor_1->set_power(control1);----------------------------------------------------------------
 /** \brief This constructor initializes the motor driver. 
  *  \details The motor driver is made ready so that when a function such as \c set_power() is called the motor runs.
  *  when the \c brake() function is called it stops the motor if running. 
- *  @param ptr_to_serial The my_motor_driver class uses this pointer to the serial port to print desired data
  *  @param PORT initializes the data direction registers for the motor
  *  @param INA mode select for bit A of the motor
  *  @param INB mode select for bit B of the motor
  *  @param EN output enable and diagnostics
  *  @param OCR the pwm control register 
  */
+	//motor_driver* p_motor_1 = new my_motor_driver (p_serial, &DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1B1, &OCR1B);
 //Initialize my_motor_driver
-read_serial_driver::read_serial_driver(rs232 *serial_in)
+z_encoder_driver::z_encoder_driver(volatile uint8_t* DDR_en, volatile uint8_t* PIN_en, volatile uint8_t* PORT_EN, uint8_t Abit, uint8_t Bbit, volatile Direction* direction_in)
+   :
+   encoder_driver(DDR_en, PIN_en, PORT_EN, Abit, Bbit)
 {
-   serial = serial_in;
+   direction = direction_in;
 }
 
-uint16_t read_serial_driver::read_uint16_t()
+void z_encoder_driver::updatePosition(void)
 {
-   uint16_t num;
-   #ifdef BINARY_SERIAL
-      num = serial->getchar();
-      return (num << 8) | serial->getchar();
-   #else
-      num = serial->getchar() - '0';
-      num = num * 10 + serial->getchar() - '0';
-      num = num * 10 + serial->getchar() - '0';
-      return num;
-   #endif
-}
+   uint8_t newA = _getBit(*PIN, INA);
+   uint8_t newB = _getBit(*PIN, INB);
+   
+   uint8_t sum = (newA << 1) | newB;
 
-uint8_t read_serial_driver::read_uint8_t()
-{
-   #ifdef BINARY_SERIAL
-      return serial->getchar();
-   #else
-      return serial->getchar() - '0';
-   #endif
+   if (sum != prevSum)
+   {
+      if (*direction == INCREASING)
+      {
+         if (prevSum == 3)
+         {
+            position += 3;
+         }
+         else if (prevSum == 2)
+         {
+            position += 2;
+         }
+         else
+         {
+            position += 1;
+         }
+      }
+      else if (*direction == DECREASING)
+      {
+         if (prevSum == 3)
+         {
+            position -= 3;
+         }
+         else if (prevSum == 2)
+         {
+            position -= 2;
+         }
+         else
+         {
+            position -= 1;
+         }
+      }
+      else
+      {
+         *ptr_to_serial << "NOT MOVING\n";
+      }
+      prevSum = sum;
+   }
 }

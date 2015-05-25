@@ -65,25 +65,25 @@
 class motor_task : public frt_task
 {
 private:
+	// No private variables or methods for this class
+
+protected:
    motor_driver* motor;
    encoder_driver* encoder;
-   uint16_t* desired;
+   int16_t* desired;
    read_serial_driver* serial;
    volatile uint8_t* limitPIN;
    uint8_t limitPinNum;
    volatile State* state;
    bool* zReady;
-	// No private variables or methods for this class
-
-protected:
 	// No protected variables or methods for this class
 
 public:
 	// This constructor creates a task for controlling motor 1.
-	motor_task (const char*, unsigned portBASE_TYPE, size_t, emstream*, motor_driver*, encoder_driver*, uint16_t *desired_in, volatile uint8_t* limitDDR_in, volatile uint8_t* limitPORT_in, volatile uint8_t* limitPIN_in, uint8_t limitPinNum_in, volatile State* state_in, bool* zReady_in);
+	motor_task (const char*, unsigned portBASE_TYPE, size_t, emstream*, motor_driver*, encoder_driver*, int16_t *desired_in, volatile uint8_t* limitDDR_in, volatile uint8_t* limitPORT_in, volatile uint8_t* limitPIN_in, uint8_t limitPinNum_in, volatile State* state_in, bool* zReady_in);
 
 	// This method is called by the RTOS once to run the task loop for ever and ever.
-	void run (void);
+	virtual void run (void);
 };
 
 #endif

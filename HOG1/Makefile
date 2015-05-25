@@ -30,7 +30,7 @@ TARGET = main
 
 # A list of the source (.c, .cc, .cpp) files in the project, including $(TARGET). Files
 # in library subdirectories do not go in this list; they're automatically in LIB_OBJS
-ADDITIONAL_FILES = encoder_task.cpp encoder_driver.cpp read_serial_driver.cpp read_serial_task.cpp z_motor_task.cpp
+ADDITIONAL_FILES = encoder_task.cpp encoder_driver.cpp read_serial_driver.cpp read_serial_task.cpp z_motor_task.cpp z_encoder_driver.cpp
 SRC = $(TARGET).cpp motor_task.cpp motor_driver.cpp $(ADDITIONAL_FILES)
 HEADER_FILES = constants.h pinLayout.h
 # Clock frequency of the CPU, in Hz. This number should be an unsigned long integer.
@@ -222,15 +222,15 @@ LIB_OBJS = $(patsubst %.cpp, %.o, $(filter %.cpp, $(LIB_SRC))) \
 all:  $(TARGET).hex $(HEADER_FILES)
 
 
-motor_driver.o: motor_driver.cpp $(HEADER_FILES)
+motor_driver.o: motor_driver.cpp $(HEADER_FILES) motor_driver.h
 	@echo $<
 	@avr-gcc -c $(CPP_FLAGS) $< -o $@
 
-motor_task.o: motor_task.cpp $(HEADER_FILES)
+motor_task.o: motor_task.cpp $(HEADER_FILES) motor_task.h motor_driver.h
 	@echo $<
 	@avr-gcc -c $(CPP_FLAGS) $< -o $@
 
-z_motor_task.o: z_motor_task.cpp $(HEADER_FILES)
+z_motor_task.o: z_motor_task.cpp $(HEADER_FILES) motor_driver.h
 	@echo $<
 	@avr-gcc -c $(CPP_FLAGS) $< -o $@
 
@@ -238,7 +238,7 @@ main.o: main.cpp $(HEADER_FILES)
 	@echo $<
 	@avr-gcc -c $(CPP_FLAGS) $< -o $@
 
-read_serial_task.o: read_serial_task.cpp $(HEADER_FILES)
+read_serial_task.o: read_serial_task.cpp $(HEADER_FILES) read_serial_task.h
 	@echo $<
 	@avr-gcc -c $(CPP_FLAGS) $< -o $@
 

@@ -46,7 +46,7 @@ motor_task::motor_task (const char* a_name,
 								 emstream* p_ser_dev,
                          motor_driver* motor_in,
                          encoder_driver* encoder_in,
-                         uint16_t* desired_in,
+                         int16_t* desired_in,
                          volatile uint8_t* limitDDR_in,
                          volatile uint8_t* limitPORT_in,
                          volatile uint8_t* limitPIN_in,
@@ -65,11 +65,11 @@ motor_task::motor_task (const char* a_name,
    limitPinNum = limitPinNum_in;
    state = state_in;
    zReady = zReady_in;
-   //current_sensor_pin = current_sensor_pin_in;
+
    // Set the limit switches bumpers to input
-   *limitDDR_in &= ~(1 << limitPinNum);
    // Activate Pull-Up Resistor
-   *limitPORT_in |= 1 << limitPinNum;
+   setupLimitSwitch(*limitDDR_in, *limitPORT_in, limitPinNum);
+
 	// Nothing is done in the body of this constructor. All the work is done in the
 	// call to the frt_task constructor on the line just above this one
 }
@@ -85,31 +85,27 @@ motor_task::motor_task (const char* a_name,
 void motor_task::run (void)
 {
   	portTickType previousTicks = xTaskGetTickCount ();
-
-	// power is turned off. The task continuously reads the shared variable, mode1 (which
-	// determines the mode of operation for a motor driver and reads the shared variable
-	// power_level1 which determines the duty cycle and direction of the motor.	
 	
 	for (;;)
 	{	
 		runs++;
-
       if (*zReady)
       {
          if (*state == HOME)
          {
-            // If the switches are NOT pressed
-            if (_getBit(*limitPIN, limitPinNum))
+            // If the switches are pressed
+            if (!_getBit(*limitPIN, limitPinNum))
             {
-               motor->move(-CALIBRATE_SPEED);
+               motor->brake();
             }
             else
             {
-               motor->brake();
+               motor->move(-CALIBRATE_SPEED);
             }
          }
          else
          {
+            // State is NORMAL
             if (!isWithinTolerance(*desired, (int16_t)encoder->getPosition(), TOLERANCE))
             {
                motor->move(*desired - (int16_t)encoder->getPosition());
@@ -122,19 +118,13 @@ void motor_task::run (void)
             }
             else
             {
-            /*
-               #ifdef DEBUG
-                  *p_serial << get_name();
-                  *p_serial << " D: ";
-                  *p_serial << *desired;
-                  *p_serial << " A: ";
-                  *p_serial << encoder->getPosition();
-                  *p_serial << "\n";
-               #endif
-            */
                motor->brake();
             }
          }
+      }
+      else
+      {
+         motor->brake();
       }
       delay_from_to (previousTicks, configMS_TO_TICKS (30));
    }

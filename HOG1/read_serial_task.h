@@ -66,9 +66,9 @@ class read_serial_task : public frt_task
 {
 private:
    read_serial_driver* serial;
-   uint16_t* desiredX;
-   uint16_t* desiredY;
-   uint16_t* desiredZ;
+   int16_t* desiredX;
+   int16_t* desiredY;
+   int16_t* desiredZ;
    encoder_driver* xEncoder;
    encoder_driver* yEncoder;
    encoder_driver* zEncoder;
@@ -88,9 +88,9 @@ public:
 								 size_t a_stack_size,
 								 emstream* p_ser_dev,
                          read_serial_driver* serial_in,
-                         uint16_t* desiredX_in,
-                         uint16_t* desiredY_in,
-                         uint16_t* desiredZ_in,
+                         int16_t* desiredX_in,
+                         int16_t* desiredY_in,
+                         int16_t* desiredZ_in,
                          encoder_driver* xEncoder_in,
                          encoder_driver* yEncoder_in,
                          encoder_driver* zEncoder_in,

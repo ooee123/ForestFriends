@@ -24,6 +24,7 @@
 
 #include "rs232int.h"                       // Include header for serial port class
 #include "encoder_driver.h"                // Include header for the A/D class
+#include "shares.h"                // Include header for the A/D class
 #define STOP_CONST 25
 
 //---------------------		//p_motor_1->set_power(control1);----------------------------------------------------------------
@@ -90,7 +91,7 @@ void encoder_driver::updatePosition(void)
    }
 }
 
-uint16_t encoder_driver::getPosition(void)
+int16_t encoder_driver::getPosition(void)
 {
    return position;
 }

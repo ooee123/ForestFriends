@@ -46,7 +46,7 @@ z_motor_task::z_motor_task (const char* a_name,
 								 emstream* p_ser_dev,
                          motor_driver* motor_in,
                          encoder_driver* encoder_in,
-                         uint16_t* desired_in,
+                         int16_t* desired_in,
                          volatile uint8_t* limitDDR_in,
                          volatile uint8_t* limitPORT_in,
                          volatile uint8_t* limitPIN_in,
@@ -55,19 +55,8 @@ z_motor_task::z_motor_task (const char* a_name,
                          bool* zReady_in
 								)
 	:
-   frt_task (a_name, a_priority, a_stack_size, p_ser_dev)
+   motor_task(a_name, a_priority, a_stack_size, p_ser_dev, motor_in, encoder_in, desired_in, limitDDR_in, limitPORT_in, limitPIN_in, limitPinNum_in, state_in, zReady_in)
 {
-   motor = motor_in;
-   encoder = encoder_in;
-   desired = desired_in;
-   limitPIN = limitPIN_in;
-   limitPinNum = limitPinNum_in;
-   state = state_in;
-   zReady = zReady_in;
-   // Set the limit switches bumpers to input
-   *limitDDR_in &= ~(1 << limitPinNum);
-   // Activate Pull-Up Resistor
-   *limitPORT_in |= 1 << limitPinNum;
 	// Nothing is done in the body of this constructor. All the work is done in the
 	// call to the frt_task constructor on the line just above this one
 }
@@ -90,7 +79,7 @@ void z_motor_task::run (void)
 	
 	for (;;)
 	{
-      encoder->updatePosition();
+      //encoder->updatePosition();
 		runs++;
 
       if (*state == HOME)
@@ -108,19 +97,22 @@ void z_motor_task::run (void)
       }
       else
       {
-         while (abs(*desired - (int16_t)encoder->getPosition()) > Z_AXIS_TOLERANCE)
+         if (abs(*desired - encoder->getPosition()) > Z_AXIS_TOLERANCE)
          {
             *zReady = false;
             encoder->updatePosition();
-            motor->move(*desired - (int16_t)encoder->getPosition());
+            motor->move(*desired - encoder->getPosition());
             #ifdef MOTOR_DEBUG
                print_ser_queue << get_name();
                print_ser_queue << ":";
-               print_ser_queue << *desired - (int16_t)encoder->getPosition();
+               print_ser_queue << *desired - encoder->getPosition();
                print_ser_queue << "\n";
             #endif
          }
-         *zReady = true;
+         else
+         {
+            *zReady = true;
+         }
       }
       delay_from_to (previousTicks, configMS_TO_TICKS (100));
    }

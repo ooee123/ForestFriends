@@ -37,8 +37,8 @@
 //======================================================================================
 
 // This define prevents this .H file from being included multiple times in a .CPP file
-#ifndef _ENCODER_driver_H_
-#define _ENCODER_driver_H_
+#ifndef _Z_ENCODER_driver_H_
+#define _Z_ENCODER_driver_H_
 
 
 #include "emstream.h"                       // Header for serial ports and devices
@@ -48,6 +48,7 @@
 #include "semphr.h"                         // Header for FreeRTOS semaphores
 
 #include "shares.h"
+#include "constants.h"
 //-------------------------------------------------------------------------------------
 /** \brief This class should run the motor driver on an AVR processor. 
  *  \details my_motor_driver class holds the member functions in order to output a PWM signal 
@@ -60,20 +61,11 @@
  *  @param OCR the pwm control register 
  */
 
-class encoder_driver
+class z_encoder_driver : public encoder_driver
 {
 	protected:
 		//instance/global variables
-		emstream* ptr_to_serial;
-
-		volatile uint8_t* DDR_EN;
-      volatile uint8_t* PIN;
-		
-		uint8_t INA; 
-		uint8_t INB; 
-      int16_t position;
-      uint8_t prevA;
-      uint8_t prevSum;
+      volatile Direction* direction;
 		
 	public:
 		// The constructor sets up the motor driver. The "= NULL" part is a
@@ -81,15 +73,9 @@ class encoder_driver
 		// where this constructor is called, the compiler will just fill in "NULL".
 		// In this case that has the effect of turning off diagnostic printouts.
 		// This follows for the "= 0" part.
-      encoder_driver(volatile uint8_t* DDR_en, volatile uint8_t* PIN_en, volatile uint8_t* PORT_EN, uint8_t Abit, uint8_t Bbit);
+      z_encoder_driver(volatile uint8_t* DDR_en, volatile uint8_t* PIN_en, volatile uint8_t* PORT_EN, uint8_t Abit, uint8_t Bbit, volatile Direction* increasing_in);
 		
-      virtual void updatePosition(void);
-
-      void setSerial(emstream*);
-
-      int16_t getPosition(void);		
-
-      void reset(void);
+      void updatePosition(void);
 }; // end of class my_motor_driver
 
 #endif // _AVR_my_motor_driver_H_

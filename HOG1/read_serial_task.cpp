@@ -45,9 +45,9 @@ read_serial_task::read_serial_task (
 								 size_t a_stack_size,
 								 emstream* p_ser_dev,
                          read_serial_driver* serial_in,
-                         uint16_t* desiredX_in,
-                         uint16_t* desiredY_in,
-                         uint16_t* desiredZ_in,
+                         int16_t* desiredX_in,
+                         int16_t* desiredY_in,
+                         int16_t* desiredZ_in,
                          encoder_driver* xEncoder_in,
                          encoder_driver* yEncoder_in,
                          encoder_driver* zEncoder_in,
@@ -81,13 +81,6 @@ read_serial_task::read_serial_task (
  *  can control multiple motors.
  */
 
-/*
-bool read_serial_task::isWithinTolerance(uint16_t actual, uint16_t expected)
-{
-   return abs(actual - expected) <= TOLERANCE;
-}
-*/
-
 void read_serial_task::run (void)
 {
   	portTickType previousTicks = xTaskGetTickCount ();
@@ -101,8 +94,11 @@ void read_serial_task::run (void)
       #ifdef CURRENT_SENSORS
       if (_getBit(ADCSR, ADIF))
       {
-         *p_serial << ADCH;
-         _setBit(ADCSRA, ADSC);
+         #ifdef DEBUG
+            *p_serial << "CUR: ";
+            *p_serial << ADCH;
+            *p_serial << "\n";
+         #endif
          if (ADCH > ADC_MAX)
          {
             // Shut down machine!
@@ -110,24 +106,25 @@ void read_serial_task::run (void)
             desiredX = 0;
             desiredY = 0;
             desiredZ = 0;
+            *p_serial << "CURRENT SENSOR TRIPPED\n";
             _clearBit(SOLID_STATE_PORT, SOLID_STATE_PIN_NUM);
-            uint8_t sense = ADMUX & 0x111;
-            ADMUX &= 0b11111000;
-            ADMUX |= (sense + 1) % 3;
          }
+         uint8_t sense = ADMUX & 0x111;
+         ADMUX &= 0b11111000;
+         ADMUX |= (sense + 1) % NUM_CURRENT_SENSORS;
+         _setBit(ADCSRA, ADSC);
       }
       #endif
 
-      // Check for all limit switches, make sure they're not violated 
-      //if (!getXMaxLimitSwitch() || !getYMaxLimitSwitch() || !getZMaxLimitSwitch())
-      if (false)
+      // If ANY of the limit switches are triggered
+      if (!getXMaxLimitSwitch() || !getYMaxLimitSwitch() || !getZMaxLimitSwitch())
       {
          *state = HOME;
          *p_serial << "*ERROR*\n";
          *p_serial << "MAX SWITCH ACTIVATED\n";
          *p_serial << "*ERROR*\n";
       }
-      if (*state == HOME)
+      else if (*state == HOME)
       {
          // If both limit switches are activated
          if (!getXLimitSwitch() && !getYLimitSwitch()
@@ -162,7 +159,6 @@ void read_serial_task::run (void)
             // Notify Pi for next command
             *p_serial << NEXT_COMMAND;
             // Get the next command
-            // Update desired
             getNextCoordinate();
          }
       }
@@ -175,7 +171,7 @@ void read_serial_task::getNextCoordinate(void)
    *desiredX = serial->read_uint16_t();
    *desiredY = serial->read_uint16_t();
    *desiredZ = serial->read_uint16_t();
-   if (*desiredX == 0 && *desiredY == 0 && (*desiredZ == 0 || *desiredZ == 3 || *desiredZ == 4))
+   if (*desiredX == 0 && *desiredY == 0 && (*desiredZ == 0 || *desiredZ == HOME_THREE_QUARTER_BOARD || *desiredZ == HOME_ONE_POINT_FIVE_BOARD))
    {
       *state = HOME;
       if (*desiredZ == HOME_THREE_QUARTER_BOARD)
@@ -190,9 +186,9 @@ void read_serial_task::getNextCoordinate(void)
    #ifdef Z_AXIS
       else
       {
-            *zReady = false;
+         *zReady = false;
          #ifdef Z_CODE_TO_HEIGHT
-            int16_t desiredHeight;
+            int16_t desiredHeight = *desiredZ;
             if (*desiredZ == START || *desiredZ == MOVE)
             {
                desiredHeight = DISTANCE_1_5 + boardOffset - HOVER_HEIGHT;

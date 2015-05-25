@@ -36,6 +36,7 @@
 #include "shares.h"                         // Global ('extern') queue declarations
 #include "motor_task.h"  
 #include "encoder_driver.h"  
+#include "z_encoder_driver.h"  
 #include "read_serial_driver.h"  
 #include "read_serial_task.h"  
 
@@ -88,37 +89,30 @@ frt_text_queue print_ser_queue(32, NULL, 10);
 //encoder_driver* xEncoder = new encoder_driver(&DDRE, &PINE, &PORTE, PE4, PE5);
 //encoder_driver* yEncoder = new encoder_driver(&DDRE, &PINE, &PORTE, PE6, PE7);
 //encoder_driver* zEncoder = new encoder_driver(&DDRE, &PINE, &PORTE, PA1, PA0);
-encoder_driver* xEncoder = new encoder_driver(&X_ENCODER_DDR, &X_ENCODER_PIN, &X_ENCODER_PORT, X_ENCODER_PINA, X_ENCODER_PINB);
-encoder_driver* yEncoder = new encoder_driver(&Y_ENCODER_DDR, &Y_ENCODER_PIN, &Y_ENCODER_PORT, Y_ENCODER_PINA, Y_ENCODER_PINB);
-encoder_driver* zEncoder = new encoder_driver(&Z_ENCODER_DDR, &Z_ENCODER_PIN, &Z_ENCODER_PORT, Z_ENCODER_PINA, Z_ENCODER_PINB);
 motor_driver* xAxis = new motor_driver (&DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1A1, &OCR1A, X_PGAIN, X_PCONSTANT, X_POWERMIN, X_POWERMAX);
 motor_driver* yAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1B1, &OCR1B, Y_PGAIN, Y_PCONSTANT, Y_POWERMIN, Y_POWERMAX);
 motor_driver* zAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC1, PC7, PC6, PB7, COM1C1, &OCR1C, Z_PGAIN, Z_PCONSTANT, Z_POWERMIN, Z_POWERMAX);
+encoder_driver* xEncoder = new encoder_driver(&X_ENCODER_DDR, &X_ENCODER_PIN, &X_ENCODER_PORT, X_ENCODER_PINA, X_ENCODER_PINB);
+encoder_driver* yEncoder = new encoder_driver(&Y_ENCODER_DDR, &Y_ENCODER_PIN, &Y_ENCODER_PORT, Y_ENCODER_PINA, Y_ENCODER_PINB);
+z_encoder_driver* zEncoder = new z_encoder_driver(&Z_ENCODER_DDR, &Z_ENCODER_PIN, &Z_ENCODER_PORT, Z_ENCODER_PINA, Z_ENCODER_PINB, zAxis->getDirection());
+	// Configure a serial port which can be used by a task to print debugging infor-
+	// mation, or to allow user interaction, or for whatever use is appropriate.  The
+	// serial port will be used by the user interface task after setup is complete and
+	// the task scheduler has been started by the function vTaskStartScheduler()
 rs232 ser_port (9600, 0);
-uint16_t desiredX = 0;
-uint16_t desiredY = 0;
-uint16_t desiredZ = 0;
-uint16_t adcValue = 0;
+int16_t desiredX = 0;
+int16_t desiredY = 0;
+int16_t desiredZ = 0;
 volatile State state = NORMAL;
-// X Current Switch SCL
+// Enc Z A SDA
 ISR(INT0_vect)
 {
-   state = HOME;
-   desiredX = 0;
-   desiredY = 0;
-   desiredZ = 0;
-   _clearBit(SOLID_STATE_PORT, SOLID_STATE_PIN_NUM);
+   zEncoder->updatePosition();
+   zAxis->move(desiredZ - zEncoder->getPosition());
 }
 
-// Y Current Switch SDA
-ISR(INT1_vect)
-{
-   state = HOME;
-   desiredX = 0;
-   desiredY = 0;
-   desiredZ = 0;
-   _clearBit(SOLID_STATE_PORT, SOLID_STATE_PIN_NUM);
-}
+// Enc Z B SCL
+ISR(INT1_vect, ISR_ALIASOF(INT0_vect));
 
 // Enc X A PE4
 ISR(INT4_vect)
@@ -128,11 +122,7 @@ ISR(INT4_vect)
 }
 
 // Enc X B INT
-ISR(INT5_vect)
-{
-   xEncoder->updatePosition();
-   xAxis->move(desiredX - xEncoder->getPosition());
-}
+ISR(INT5_vect, ISR_ALIASOF(INT4_vect));
 
 // Enc Y A PE6
 ISR(INT6_vect)
@@ -142,11 +132,7 @@ ISR(INT6_vect)
 }
 
 // Enc Y B PE7
-ISR(INT7_vect)
-{
-   yEncoder->updatePosition();
-   yAxis->move(desiredY - yEncoder->getPosition());
-}
+ISR(INT7_vect, ISR_ALIASOF(INT6_vect));
 
 int main (void)
 {
@@ -155,10 +141,13 @@ int main (void)
 	// Disable the watchdog timer unless it's needed later. This is important because
 	// sometimes the watchdog timer may have been left on...and it tends to stay on
 	wdt_disable ();
-   sei();
+   EICRA = 0b00001111; // Set Int_0-1 to activate on rising edge
    EICRB = 0b01010101; // Set Int_4-7 to activate on pin toggle
-   EIMSK = 0b11110000; // Turn on Int_4-7
-   DDRA = 1;
+   EIMSK = 0b11110011; // Turn on Int_0-1, Int_4-7
+   
+   setupLimitSwitch(X_LIMIT_DDR, X_LIMIT_PORT, X_MAX_LIMIT_PIN_NUM);
+   setupLimitSwitch(Y_LIMIT_DDR, Y_LIMIT_PORT, Y_MAX_LIMIT_PIN_NUM);
+   setupLimitSwitch(Z_LIMIT_DDR, Z_LIMIT_PORT, Z_MAX_LIMIT_PIN_NUM);
    #ifdef Z_AXIS
       bool zReady = false;
    #else
@@ -166,25 +155,19 @@ int main (void)
    #endif
    #ifdef CURRENT_SENSOR
 
-   ADCSRA |= (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0); // Set ADC prescalar to 128 - 125KHz sample rate @ 16MHz
+      ADCSRA |= (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0); // Set ADC prescalar to 128 - 125KHz sample rate @ 16MHz
 
-   ADMUX |= (1 << REFS0); // Set ADC reference to AVCC
-   ADMUX |= (1 << ADLAR); // Left adjust ADC result to allow easy 8 bit reading
+      ADMUX |= (1 << REFS0); // Set ADC reference to AVCC
+      ADMUX |= (1 << ADLAR); // Left adjust ADC result to allow easy 8 bit reading
 
-   // No MUX values needed to be changed to use ADC0
+      // No MUX values needed to be changed to use ADC0
 
-   //ADCSRA |= (1 << ADFR);  // Set ADC to Free-Running Mode
-   ADCSRA |= (1 << ADEN);  // Enable ADC
-   ADCSRA |= (1 << ADSC);  // Start A2D Conversions
+      //ADCSRA |= (1 << ADFR);  // Set ADC to Free-Running Mode
+      ADCSRA |= (1 << ADEN);  // Enable ADC
+      ADCSRA |= (1 << ADSC);  // Start A2D Conversions
 
    #endif
-
-
-	// Configure a serial port which can be used by a task to print debugging infor-
-	// mation, or to allow user interaction, or for whatever use is appropriate.  The
-	// serial port will be used by the user interface task after setup is complete and
-	// the task scheduler has been started by the function vTaskStartScheduler()
-
+   sei();
 
 	// task that controls motors
    xEncoder->setSerial(&ser_port);
@@ -195,9 +178,9 @@ int main (void)
       zEncoder->setSerial(&ser_port);
       new z_motor_task ("Z", task_priority (2), 280, &ser_port, zAxis, zEncoder, &desiredZ, &Z_LIMIT_DDR, &Z_LIMIT_PORT, &Z_LIMIT_PIN, Z_ZERO_LIMIT_PIN_NUM, &state, &zReady);
    #endif
+   // task that reads incoming serial data
    read_serial_driver* serial = new read_serial_driver(&ser_port);
    new read_serial_task("S", task_priority (1), 280, &ser_port, serial, &desiredX, &desiredY, &desiredZ, xEncoder, yEncoder, zEncoder, &state, &zReady, 0);
-   // task that reads incoming serial data
 	// Here's where the RTOS scheduler is started up. It should never exit as long as
 	// power is on and the microcontroller isn't rebooted
 

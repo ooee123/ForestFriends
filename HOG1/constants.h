@@ -1,6 +1,15 @@
 #ifndef _CONSTANTS_H_
 #define _CONSTANTS_H_
 
+typedef enum Direction {
+   DECREASING, INCREASING, ZERO
+} Direction;
+
+typedef enum State
+{
+   HOME, NORMAL
+} State;
+
 #include <frt_text_queue.h>
 
 #define TICKS_PER_REVOLUTION 30

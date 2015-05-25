@@ -63,21 +63,9 @@ motor_driver::motor_driver (volatile uint8_t* DDR_en, volatile uint8_t* DDR_dir,
    pGain = pGain_in;
    powerMin = powerMin_in;
    powerMax = powerMax_in;
-   /*
-    *ptr_to_serial << pConstant;
-    *ptr_to_serial << pGain;
-    *ptr_to_serial << powerMin;
-    *ptr_to_serial << powerMax;
-	*/
-   /*
-   _setBit(*DDR_EN, EN);
-   _setBit(*DDR_DIR, INA);
-   _setBit(*DDR_DIR, INB);
-   _setBit(*DDR_PWM, PWM);
-   _setBit(*PORT_EN, EN);
-   _setBit(*PORT_DIR, INA);
-   _setBit(*PORT_DIR, INB);
-*/
+
+   direction = ZERO;
+
 	*DDR_EN |= (1 << EN); // Output enable motors 1 and 2
 	*DDR_DIR |= (1 << INA) | (1 << INB); // Output enable motors 1 and 2
 	*DDR_PWM |= (1 << PWM); // Turn on PWM for motors 1 and 2 as outputs
@@ -93,8 +81,6 @@ motor_driver::motor_driver (volatile uint8_t* DDR_en, volatile uint8_t* DDR_dir,
    // The line below is true for whatever ATmega they were using */
 	TCCR1A |= (1 << WGM10) | (1 << WGM11) | (1 << COMTIMER);
    
-   // For ATmega128 To activate 10 bit fast PWM mode...
-   // Actually I don't know with confidence
    // To activate 10 bit fast PWM mode on a 16 bit timer/counter
    //TCCR1A |= (1 << WGM10) | (1 << WGM11 ) (1 << COMTIMER);
 
@@ -120,6 +106,7 @@ void motor_driver::setSerial(emstream* stream)
 
 void motor_driver::set_power (double power)
 {	
+   // freewheeling
    if (power == 0)
    {
       *OCR = 0;
@@ -141,13 +128,7 @@ void motor_driver::set_power (double power)
       *PORT_DIR &= ~(1 << INB);
       
       *OCR = uint16_t(1.0*abs(power));
-      
    }	
-   // freewheeling
-   else
-   {
-      *OCR = 0;
-   }
 }
 
 //-------------------------------------------------------------------------------------
@@ -159,6 +140,7 @@ void motor_driver::brake (void)
 {
    *PORT_DIR |= (1 << INA) | (1 << INB);
    *PORT_EN |= (1 << EN); // Initialize mode for motor
+   direction = ZERO;
 }
 
 //-------------------------------------------------------------------------------------
@@ -186,13 +168,20 @@ void motor_driver::move(int16_t delta)
 {	
 	if(delta > 0)
 	{
+      direction = INCREASING;
 		set_power(PI(delta)); //go clockwise
 	}
 	
 	else if(delta < 0)
 	{
+      direction = DECREASING;
 		set_power(-PI(delta)); // go counterclockwise
 	}
+}
+
+volatile Direction* motor_driver::getDirection(void)
+{
+   return &direction;
 }
 
 double motor_driver::PI(uint16_t error)

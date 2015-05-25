@@ -50,6 +50,7 @@
 
 #include "shares.h"                         // Global ('extern') queue declarations
 #include "motor_driver.h"
+#include "motor_task.h"
 #include "encoder_driver.h"
 #include "read_serial_driver.h"
 #include "state.h"
@@ -61,18 +62,9 @@
  *  \c motor_driver.cpp.
  */
 
-class z_motor_task : public frt_task
+class z_motor_task : public motor_task
 {
 private:
-   motor_driver* motor;
-   encoder_driver* encoder;
-   uint16_t* desired;
-   read_serial_driver* serial;
-   volatile uint8_t* limitPIN;
-   uint8_t limitPinNum;
-   volatile State* state;
-   uint16_t offset;
-   bool* zReady;
 	// No private variables or methods for this class
 
 protected:
@@ -80,7 +72,7 @@ protected:
 
 public:
 	// This constructor creates a task for controlling motor 1.
-	z_motor_task (const char*, unsigned portBASE_TYPE, size_t, emstream*, motor_driver*, encoder_driver*, uint16_t *desired_in, volatile uint8_t* limitDDR_in, volatile uint8_t* limitPORT_in, volatile uint8_t* limitPIN_in, uint8_t limitPinNum_in, volatile State* state_in, bool* zReady_in);
+	z_motor_task (const char*, unsigned portBASE_TYPE, size_t, emstream*, motor_driver*, encoder_driver*, int16_t *desired_in, volatile uint8_t* limitDDR_in, volatile uint8_t* limitPORT_in, volatile uint8_t* limitPIN_in, uint8_t limitPinNum_in, volatile State* state_in, bool* zReady_in);
 
 	// This method is called by the RTOS once to run the task loop for ever and ever.
 	void run (void);

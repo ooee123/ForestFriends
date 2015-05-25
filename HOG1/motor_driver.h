@@ -48,6 +48,7 @@
 #include "semphr.h"                         // Header for FreeRTOS semaphores
 
 #include "shares.h"
+#include "constants.h"
 //-------------------------------------------------------------------------------------
 /** \brief This class should run the motor driver on an AVR processor. 
  *  \details my_motor_driver class holds the member functions in order to output a PWM signal 
@@ -84,9 +85,11 @@ class motor_driver
 		bool motor_trans;
 
       double pGain;
-      double pConstant;
+      uint16_t pConstant;
       uint16_t powerMax;
       uint16_t powerMin;
+
+      Direction direction;
 		
 	public:
 		// The constructor sets up the motor driver. The "= NULL" part is a
@@ -115,7 +118,7 @@ class motor_driver
 
       void move(int16_t);
 
-		
+      volatile Direction* getDirection(void);		
 }; // end of class my_motor_driver
 
 #endif // _AVR_my_motor_driver_H_
