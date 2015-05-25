@@ -215,9 +215,13 @@ class VerifyParts(tk.Frame):
       global thick
       data = open("file.txt", "r")
       line = data.readline()
+      thick = int(line)
+      if int(line) == 1:
+         line = "0.75"
+      if int(line) == 2:
+         line = "1.5"
       label1 = tk.Label(self, text=("Board Thickness: " + line), font=LARGE_FONT).grid(row=1, column=0)
       #label1.pack()#, compound=CENTER)
-      thick = int(line)
 
       #print "read line %s" % (line)
       line = data.readline()
