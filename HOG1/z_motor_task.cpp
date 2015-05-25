@@ -24,7 +24,6 @@
 #include "pinLayout.h"
 #include "constants.h"
 #define CPR 1000
-#include "state.h"
 #include "shares.h"
 
 

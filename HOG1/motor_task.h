@@ -52,7 +52,6 @@
 #include "motor_driver.h"
 #include "encoder_driver.h"
 #include "read_serial_driver.h"
-#include "state.h"
 
 
 //-------------------------------------------------------------------------------------

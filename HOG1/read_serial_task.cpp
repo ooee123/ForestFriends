@@ -20,7 +20,6 @@
 #include "read_serial_driver.h"
 #include "read_serial_task.h"                 // Header for this task
 #include <util/delay.h>
-#include "state.h"
 #include "shares.h"
 #include "pinLayout.h"
 #include "constants.h"

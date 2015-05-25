@@ -53,7 +53,6 @@
 #include "motor_task.h"
 #include "encoder_driver.h"
 #include "read_serial_driver.h"
-#include "state.h"
 
 //-------------------------------------------------------------------------------------
 /** \brief This task controls the direction and duty cycle of a motor driver. This task
