@@ -319,13 +319,10 @@ class Finish(tk.Frame):
 
    def __init__(self, parent, controller):
       tk.Frame.__init__(self, parent)
-      label = tk.Label(self, text="Machining is finished.", font=LARGE_FONT)
-      label.pack(anchor=S)
-
-      button1 = tk.Button(self, text="Machine more boards", font=LARGE_FONT,
+      button = tk.Button(self, text="Maching is finished. \n Machine more boards", font=LARGE_FONT,
          #command=lambda: controller.show_frame(Start))
          command=restartFrame)
-      button1.pack(anchor=S)
+      button.pack(fill=BOTH)
 
 app = GUI()
 #app.lower()
