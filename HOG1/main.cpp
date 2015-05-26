@@ -172,12 +172,12 @@ int main (void)
 
 	// task that controls motors
    xEncoder->setSerial(&ser_port);
-	new motor_task ("X", task_priority (2), 280, &ser_port, xAxis, xEncoder, &desiredX, &X_LIMIT_DDR, &X_LIMIT_PORT, &X_LIMIT_PIN, X_ZERO_LIMIT_PIN_NUM, &state, &zReady);
+	new motor_task ("X", task_priority (2), 280, &ser_port, xAxis, xEncoder, &desiredX, X_CALIBRATE_SPEED, &X_LIMIT_DDR, &X_LIMIT_PORT, &X_LIMIT_PIN, X_ZERO_LIMIT_PIN_NUM, &state, &zReady);
    yEncoder->setSerial(&ser_port);
-	new motor_task ("Y", task_priority (2), 280, &ser_port, yAxis, yEncoder, &desiredY, &Y_LIMIT_DDR, &Y_LIMIT_PORT, &Y_LIMIT_PIN, Y_ZERO_LIMIT_PIN_NUM, &state, &zReady);
+	new motor_task ("Y", task_priority (2), 280, &ser_port, yAxis, yEncoder, &desiredY, Y_CALIBRATE_SPEED, &Y_LIMIT_DDR, &Y_LIMIT_PORT, &Y_LIMIT_PIN, Y_ZERO_LIMIT_PIN_NUM, &state, &zReady);
    #ifdef Z_AXIS
       zEncoder->setSerial(&ser_port);
-      new z_motor_task ("Z", task_priority (2), 280, &ser_port, zAxis, zEncoder, &desiredZ, &Z_LIMIT_DDR, &Z_LIMIT_PORT, &Z_LIMIT_PIN, Z_ZERO_LIMIT_PIN_NUM, &state, &zReady);
+      new z_motor_task ("Z", task_priority (2), 280, &ser_port, zAxis, zEncoder, &desiredZ, Z_CALIBRATE_SPEED, &Z_LIMIT_DDR, &Z_LIMIT_PORT, &Z_LIMIT_PIN, Z_ZERO_LIMIT_PIN_NUM, &state, &zReady);
    #endif
    // task that reads incoming serial data
    read_serial_driver* serial = new read_serial_driver(&ser_port);

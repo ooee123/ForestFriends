@@ -45,7 +45,9 @@ typedef enum State
 #define Z_POWERMIN  0
 #define Z_POWERMAX  1023
 
-#define CALIBRATE_SPEED 100
+#define X_CALIBRATE_SPEED 300
+#define Y_CALIBRATE_SPEED 100
+#define Z_CALIBRATE_SPEED 200
 
 #define ADC_MAX (230)
 

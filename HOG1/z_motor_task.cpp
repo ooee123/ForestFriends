@@ -46,6 +46,7 @@ z_motor_task::z_motor_task (const char* a_name,
                          motor_driver* motor_in,
                          encoder_driver* encoder_in,
                          int16_t* desired_in,
+                         uint16_t calibrateSpeed_in,
                          volatile uint8_t* limitDDR_in,
                          volatile uint8_t* limitPORT_in,
                          volatile uint8_t* limitPIN_in,
@@ -54,7 +55,7 @@ z_motor_task::z_motor_task (const char* a_name,
                          bool* zReady_in
 								)
 	:
-   motor_task(a_name, a_priority, a_stack_size, p_ser_dev, motor_in, encoder_in, desired_in, limitDDR_in, limitPORT_in, limitPIN_in, limitPinNum_in, state_in, zReady_in)
+   motor_task(a_name, a_priority, a_stack_size, p_ser_dev, motor_in, encoder_in, desired_in, calibrateSpeed_in, limitDDR_in, limitPORT_in, limitPIN_in, limitPinNum_in, state_in, zReady_in)
 {
 	// Nothing is done in the body of this constructor. All the work is done in the
 	// call to the frt_task constructor on the line just above this one
@@ -85,7 +86,12 @@ void z_motor_task::run (void)
          // If the switches are NOT pressed
          if (_getBit(*limitPIN, limitPinNum))
          {
-            motor->move(-CALIBRATE_SPEED);
+            #ifdef MOTOR_DEBUG
+               print_ser_queue << "Z:";
+               print_ser_queue << calibrateSpeed;
+               print_ser_queue << "\n";
+            #endif
+            motor->move(calibrateSpeed);
          }
          else
          {
@@ -95,14 +101,16 @@ void z_motor_task::run (void)
       }
       else
       {
-         if (abs(*desired - encoder->getPosition()) > Z_AXIS_TOLERANCE)
+         //if (abs(*desired - encoder->getPosition()) > Z_AXIS_TOLERANCE)
+         if (!isWithinTolerance(encoder->getPosition(), *desired, Z_AXIS_TOLERANCE))
          {
+            int16_t error = encoder->getPosition() - *desired;
             *zReady = false;
-            motor->move(*desired - encoder->getPosition());
+            motor->move(error);
             #ifdef MOTOR_DEBUG
                print_ser_queue << get_name();
                print_ser_queue << ":";
-               print_ser_queue << *desired - encoder->getPosition();
+               print_ser_queue << error;
                print_ser_queue << "\n";
             #endif
          }

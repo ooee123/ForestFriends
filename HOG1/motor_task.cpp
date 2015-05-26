@@ -46,6 +46,7 @@ motor_task::motor_task (const char* a_name,
                          motor_driver* motor_in,
                          encoder_driver* encoder_in,
                          int16_t* desired_in,
+                         uint16_t calibrateSpeed_in,
                          volatile uint8_t* limitDDR_in,
                          volatile uint8_t* limitPORT_in,
                          volatile uint8_t* limitPIN_in,
@@ -64,6 +65,8 @@ motor_task::motor_task (const char* a_name,
    limitPinNum = limitPinNum_in;
    state = state_in;
    zReady = zReady_in;
+
+   calibrateSpeed = calibrateSpeed_in;
 
    // Set the limit switches bumpers to input
    // Activate Pull-Up Resistor
@@ -99,19 +102,26 @@ void motor_task::run (void)
             }
             else
             {
-               motor->move(-CALIBRATE_SPEED);
+               #ifdef MOTOR_DEBUG
+                  *p_serial << get_name();
+                  *p_serial << calibrateSpeed;
+                  *p_serial << "\n";
+               #endif
+               motor->move(calibrateSpeed);
             }
          }
          else
          {
             // State is NORMAL
-            if (!isWithinTolerance(*desired, (int16_t)encoder->getPosition(), TOLERANCE))
+            if (!isWithinTolerance(encoder->getPosition(), *desired, TOLERANCE))
+            //if (!isWithinTolerance(*desired, (int16_t)encoder->getPosition(), TOLERANCE))
             {
-               motor->move(*desired - (int16_t)encoder->getPosition());
+               int16_t error = encoder->getPosition() - *desired;
+               motor->move(error);
                #ifdef MOTOR_DEBUG
                   print_ser_queue << get_name();
                   print_ser_queue << ":";
-                  print_ser_queue << *desired - (int16_t)encoder->getPosition();
+                  print_ser_queue << error;
                   print_ser_queue << "\n";
                #endif
             }

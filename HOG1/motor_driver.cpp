@@ -166,6 +166,7 @@ void motor_driver::move_cw (void)
 
 void motor_driver::move(int16_t delta)
 {	
+   delta = -delta;
 	if(delta > 0)
 	{
       direction = INCREASING;

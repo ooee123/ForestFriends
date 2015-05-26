@@ -71,7 +71,7 @@ protected:
 
 public:
 	// This constructor creates a task for controlling motor 1.
-	z_motor_task (const char*, unsigned portBASE_TYPE, size_t, emstream*, motor_driver*, encoder_driver*, int16_t *desired_in, volatile uint8_t* limitDDR_in, volatile uint8_t* limitPORT_in, volatile uint8_t* limitPIN_in, uint8_t limitPinNum_in, volatile State* state_in, bool* zReady_in);
+	z_motor_task (const char*, unsigned portBASE_TYPE, size_t, emstream*, motor_driver*, encoder_driver*, int16_t *desired_in, uint16_t calibrateSpeed_in, volatile uint8_t* limitDDR_in, volatile uint8_t* limitPORT_in, volatile uint8_t* limitPIN_in, uint8_t limitPinNum_in, volatile State* state_in, bool* zReady_in);
 
 	// This method is called by the RTOS once to run the task loop for ever and ever.
 	void run (void);
