@@ -6,7 +6,7 @@ from tkFileDialog import askopenfilename
 import shutil
 from PIL import Image, ImageTk
 import os
-import coordParsing
+#import coordParsing
 
 LARGE_FONT= ("Verdana", 15)
 CONFIRM_FONT= ("Verdana", 14)
@@ -215,9 +215,14 @@ class VerifyParts(tk.Frame):
       global thick
       data = open("file.txt", "r")
       line = data.readline()
+      thick = int(line)
+      if int(line) == 1:
+         line = str("0.75")
+      else:
+         if int(line) == 2:
+            line = str("1.5")
       label1 = tk.Label(self, text=("Board Thickness: " + line), font=LARGE_FONT).grid(row=1, column=0)
       #label1.pack()#, compound=CENTER)
-      thick = int(line)
 
       #print "read line %s" % (line)
       line = data.readline()
@@ -275,7 +280,7 @@ class Machine(tk.Frame):
    def loadCoordPars(self) :
       self.cont.show_frame(Machining)
       #coordParsing.coordParsing(thick)
-      coordParsing.test(thick)
+      #coordParsing.test(thick)
 
 class Machining(tk.Frame):
 
@@ -315,13 +320,10 @@ class Finish(tk.Frame):
 
    def __init__(self, parent, controller):
       tk.Frame.__init__(self, parent)
-      label = tk.Label(self, text="Machining is finished.", font=LARGE_FONT)
-      label.pack(anchor=S)
-
-      button1 = tk.Button(self, text="Machine more boards", font=LARGE_FONT,
+      button = tk.Button(self, text="Maching is finished. \n Machine more boards", font=LARGE_FONT,
          #command=lambda: controller.show_frame(Start))
          command=restartFrame)
-      button1.pack(anchor=S)
+      button.pack(fill=BOTH)
 
 app = GUI()
 #app.lower()
