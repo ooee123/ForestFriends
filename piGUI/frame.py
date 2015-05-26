@@ -6,7 +6,7 @@ from tkFileDialog import askopenfilename
 import shutil
 from PIL import Image, ImageTk
 import os
-import coordParsing
+#import coordParsing
 
 LARGE_FONT= ("Verdana", 15)
 CONFIRM_FONT= ("Verdana", 14)
@@ -217,9 +217,9 @@ class VerifyParts(tk.Frame):
       line = data.readline()
       thick = int(line)
       if int(line) == 1:
-         line = "0.75"
+         line = str("0.75")
       if int(line) == 2:
-         line = "1.5"
+         line = str("1.5")
       label1 = tk.Label(self, text=("Board Thickness: " + line), font=LARGE_FONT).grid(row=1, column=0)
       #label1.pack()#, compound=CENTER)
 
@@ -279,7 +279,7 @@ class Machine(tk.Frame):
    def loadCoordPars(self) :
       self.cont.show_frame(Machining)
       #coordParsing.coordParsing(thick)
-      coordParsing.test(thick)
+      #coordParsing.test(thick)
 
 class Machining(tk.Frame):
 
