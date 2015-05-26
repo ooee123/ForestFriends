@@ -218,8 +218,9 @@ class VerifyParts(tk.Frame):
       thick = int(line)
       if int(line) == 1:
          line = str("0.75")
-      if int(line) == 2:
-         line = str("1.5")
+      else:
+         if int(line) == 2:
+            line = str("1.5")
       label1 = tk.Label(self, text=("Board Thickness: " + line), font=LARGE_FONT).grid(row=1, column=0)
       #label1.pack()#, compound=CENTER)
 

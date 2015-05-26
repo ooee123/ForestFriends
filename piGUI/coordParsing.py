@@ -2,11 +2,11 @@ import serial
 import os
 
 # for the pi
-#port = serial.Serial("/dev/ttyUSB0", baudrate=9600, timeout=2)
+port = serial.Serial("/dev/ttyUSB0", baudrate=9600, timeout=2)
 # for the mac
 #port = serial.Serial("/dev/tty.usbserial-A6026OUJ", baudrate=9600)
 # for testing
-port = 1
+#port = 1
 filename = "coordinates.txt"
 
 # converts a number to a 2 byte binary integer
@@ -43,7 +43,9 @@ def coordParsing(thick):
       thick = 3
    else :
       thick = 4
-   toHOG(toBinary(0), toBinary(0), toBinary(thick))
+   print thick
+   #toHOG(toBinary(0), toBinary(0), toBinary(int(thick)))
+   toHOG(toBinary(0), toBinary(0), toBinary(0))
    print("first")
    while port.read(1).find('#') < 0:
       pass
@@ -59,8 +61,10 @@ def coordParsing(thick):
       # send data to HOG
       toHOG(coord[0], coord[1], coord[2])
       found = port.read(1)
+      print found
       while found.find('@') < 0:
          found = port.read(1)
+         print found
          # wait until something in buffer
          
    # Go home, you're drunk.
@@ -79,6 +83,6 @@ def test(thick):
       thick = 4
    print "SUCCESS " + str(thick)
 
-#coordParsing(10)
+#coordParsing(2)
 #main()
 #test(10)
