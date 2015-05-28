@@ -34,16 +34,17 @@
 #include "frt_queue.h"                      // Header of wrapper for FreeRTOS queues
 #include "frt_shared_data.h"                // Header for thread-safe shared data
 #include "shares.h"                         // Global ('extern') queue declarations
-#include "motor_task.h"  
+#include "motor_driver.h"  
 #include "encoder_driver.h"  
+#include "motor_task.h"  
 #include "z_encoder_driver.h"  
+#include "z_motor_task.h"
 #include "read_serial_driver.h"  
 #include "read_serial_task.h"  
 
 #include <util/delay.h>			     // Delay 
 #include "pinLayout.h"
 #include "constants.h"
-#include "z_motor_task.h"
 
 
 // Declare the queues which are used by tasks to communicate with each other here. 
@@ -85,15 +86,16 @@ frt_text_queue print_ser_queue(32, NULL, 10);
  *  @return This is a real-time microcontroller program which doesn't return. Ever.
  */
 
-//encoder_driver* xEncoder = new encoder_driver(&DDRE, &PINE, &PORTE, PE4, PE5);
-//encoder_driver* yEncoder = new encoder_driver(&DDRE, &PINE, &PORTE, PE6, PE7);
-//encoder_driver* zEncoder = new encoder_driver(&DDRE, &PINE, &PORTE, PA1, PA0);
-motor_driver* xAxis = new motor_driver (&DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1A1, &OCR1A, X_PGAIN, X_PCONSTANT, X_POWERMIN, X_POWERMAX);
-motor_driver* yAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1B1, &OCR1B, Y_PGAIN, Y_PCONSTANT, Y_POWERMIN, Y_POWERMAX);
-motor_driver* zAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC1, PC7, PC6, PB7, COM1C1, &OCR1C, Z_PGAIN, Z_PCONSTANT, Z_POWERMIN, Z_POWERMAX);
-encoder_driver* xEncoder = new encoder_driver(&X_ENCODER_DDR, &X_ENCODER_PIN, &X_ENCODER_PORT, X_ENCODER_PINA, X_ENCODER_PINB);
-encoder_driver* yEncoder = new encoder_driver(&Y_ENCODER_DDR, &Y_ENCODER_PIN, &Y_ENCODER_PORT, Y_ENCODER_PINA, Y_ENCODER_PINB);
-z_encoder_driver* zEncoder = new z_encoder_driver(&Z_ENCODER_DDR, &Z_ENCODER_PIN, &Z_ENCODER_PORT, Z_ENCODER_PINA, Z_ENCODER_PINB, zAxis->getDirection());
+//motor_driver* xAxis = new motor_driver (&DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1A1, &OCR1A, false, X_PGAIN, X_PCONSTANT, X_POWERMIN, X_POWERMAX);
+//motor_driver* yAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1B1, &OCR1B, true, Y_PGAIN, Y_PCONSTANT, Y_POWERMIN, Y_POWERMAX);
+//motor_driver* zAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC1, PC7, PC6, PB7, COM1C1, &OCR1C, true, Z_PGAIN, Z_PCONSTANT, Z_POWERMIN, Z_POWERMAX);
+motor_driver xAxis(&DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1A1, &OCR1A, false, X_PGAIN, X_PCONSTANT, X_POWERMIN, X_POWERMAX);
+motor_driver yAxis(&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1B1, &OCR1B, true, Y_PGAIN, Y_PCONSTANT, Y_POWERMIN, Y_POWERMAX);
+motor_driver zAxis(&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC1, PC7, PC6, PB7, COM1C1, &OCR1C, true, Z_PGAIN, Z_PCONSTANT, Z_POWERMIN, Z_POWERMAX);
+
+encoder_driver xEncoder(&X_ENCODER_DDR, &X_ENCODER_PIN, &X_ENCODER_PORT, X_ENCODER_PINA, X_ENCODER_PINB, xAxis.getDirection(), false);
+encoder_driver yEncoder(&Y_ENCODER_DDR, &Y_ENCODER_PIN, &Y_ENCODER_PORT, Y_ENCODER_PINA, Y_ENCODER_PINB, yAxis.getDirection(), true);
+z_encoder_driver zEncoder(&Z_ENCODER_DDR, &Z_ENCODER_PIN, &Z_ENCODER_PORT, Z_ENCODER_PINA, Z_ENCODER_PINB, zAxis.getDirection(), true);
 	// Configure a serial port which can be used by a task to print debugging infor-
 	// mation, or to allow user interaction, or for whatever use is appropriate.  The
 	// serial port will be used by the user interface task after setup is complete and
@@ -103,13 +105,26 @@ int16_t desiredX = 0;
 int16_t desiredY = 0;
 int16_t desiredZ = 0;
 volatile State state = NORMAL;
+
 // Enc Z A SDA
 ISR(INT0_vect)
 {
-   zEncoder->updatePosition();
-   zAxis->move(desiredZ - zEncoder->getPosition());
-   ser_port << zEncoder->getPosition();
-   ser_port << "\n";
+   zEncoder.updatePosition();
+   if (!getZLimitSwitch() || !getZMaxLimitSwitch())
+   {
+      zAxis.brake();
+   }
+   else
+   {
+      zAxis.move(zEncoder.getPosition() - desiredZ);
+   }
+   #ifdef DEBUG
+      if (zEncoder.getPosition() % 128 == 0)
+      {
+         ser_port << zEncoder.getPosition();
+         ser_port << "\n";
+      }
+   #endif
 }
 
 // Enc Z B SCL
@@ -118,8 +133,22 @@ ISR(INT1_vect, ISR_ALIASOF(INT0_vect));
 // Enc X A PE4
 ISR(INT4_vect)
 {
-   xEncoder->updatePosition();
-   xAxis->move(desiredX - xEncoder->getPosition());
+   xEncoder.updatePosition();
+   if (!getXLimitSwitch() || !getXMaxLimitSwitch())
+   {
+      xAxis.brake();
+   }
+   else
+   {
+      xAxis.move(xEncoder.getPosition() - desiredX);
+   }
+   #ifdef DEBUG
+      if (xEncoder.getPosition() % 128 == 0)
+      {
+         ser_port << xEncoder.getPosition();
+         ser_port << "\n";
+      }
+   #endif
 }
 
 // Enc X B INT
@@ -128,8 +157,22 @@ ISR(INT5_vect, ISR_ALIASOF(INT4_vect));
 // Enc Y A PE6
 ISR(INT6_vect)
 {
-   yEncoder->updatePosition();
-   yAxis->move(desiredY - yEncoder->getPosition());
+   yEncoder.updatePosition();
+   if (!getYLimitSwitch() || !getYMaxLimitSwitch())
+   {
+      yAxis.brake();
+   }
+   else
+   {
+      yAxis.move(yEncoder.getPosition() - desiredY);
+   }
+   #ifdef DEBUG
+      if ((yEncoder.getPosition() % 128) == 0)
+      {
+         ser_port << yEncoder.getPosition();
+         ser_port << "\n";
+      }
+   #endif
 }
 
 // Enc Y B PE7
@@ -171,17 +214,17 @@ int main (void)
    sei();
 
 	// task that controls motors
-   xEncoder->setSerial(&ser_port);
-	new motor_task ("X", task_priority (2), 280, &ser_port, xAxis, xEncoder, &desiredX, X_CALIBRATE_SPEED, &X_LIMIT_DDR, &X_LIMIT_PORT, &X_LIMIT_PIN, X_ZERO_LIMIT_PIN_NUM, &state, &zReady);
-   yEncoder->setSerial(&ser_port);
-	new motor_task ("Y", task_priority (2), 280, &ser_port, yAxis, yEncoder, &desiredY, Y_CALIBRATE_SPEED, &Y_LIMIT_DDR, &Y_LIMIT_PORT, &Y_LIMIT_PIN, Y_ZERO_LIMIT_PIN_NUM, &state, &zReady);
+   xEncoder.setSerial(&ser_port);
+	new motor_task ("X", task_priority (2), 280, &ser_port, &xAxis, &xEncoder, &desiredX, X_CALIBRATE_SPEED, &X_LIMIT_DDR, &X_LIMIT_PORT, &X_LIMIT_PIN, X_ZERO_LIMIT_PIN_NUM, &state, &zReady);
+   yEncoder.setSerial(&ser_port);
+	new motor_task ("Y", task_priority (2), 280, &ser_port, &yAxis, &yEncoder, &desiredY, Y_CALIBRATE_SPEED, &Y_LIMIT_DDR, &Y_LIMIT_PORT, &Y_LIMIT_PIN, Y_ZERO_LIMIT_PIN_NUM, &state, &zReady);
    #ifdef Z_AXIS
-      zEncoder->setSerial(&ser_port);
-      new z_motor_task ("Z", task_priority (2), 280, &ser_port, zAxis, zEncoder, &desiredZ, Z_CALIBRATE_SPEED, &Z_LIMIT_DDR, &Z_LIMIT_PORT, &Z_LIMIT_PIN, Z_ZERO_LIMIT_PIN_NUM, &state, &zReady);
+      zEncoder.setSerial(&ser_port);
+      new z_motor_task ("Z", task_priority (2), 280, &ser_port, &zAxis, &zEncoder, &desiredZ, Z_CALIBRATE_SPEED, &Z_LIMIT_DDR, &Z_LIMIT_PORT, &Z_LIMIT_PIN, Z_ZERO_LIMIT_PIN_NUM, &state, &zReady);
    #endif
    // task that reads incoming serial data
    read_serial_driver* serial = new read_serial_driver(&ser_port);
-   new read_serial_task("S", task_priority (1), 280, &ser_port, serial, &desiredX, &desiredY, &desiredZ, xEncoder, yEncoder, zEncoder, &state, &zReady, 0);
+   new read_serial_task("S", task_priority (1), 280, &ser_port, serial, &desiredX, &desiredY, &desiredZ, &xEncoder, &yEncoder, &zEncoder, &state, &zReady, 0);
 	// Here's where the RTOS scheduler is started up. It should never exit as long as
 	// power is on and the microcontroller isn't rebooted
 

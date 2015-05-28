@@ -14,11 +14,6 @@ typedef enum State
 #define REVOLUTIONS_PER_INCH 8
 #define INCH (TICKS_PER_REVOLUTION * REVOLUTIONS_PER_INCH)
 
-#define PCONSTANT 0
-#define PGAIN 1
-#define PID_MAX 50
-#define PID_MIN 50
-
 #define START 0
 #define LINE 1
 #define MOVE 2
@@ -30,24 +25,24 @@ typedef enum State
 #define ROUTING_DEPTH    (INCH * 3 / 16)
 #define Z_AXIS_TOLERANCE 20
 
-#define X_PGAIN     1
-#define X_PCONSTANT 120
+#define X_PGAIN     0.05
+#define X_PCONSTANT 0
 #define X_POWERMIN  0
-#define X_POWERMAX  1023
+#define X_POWERMAX  200
 
-#define Y_PGAIN     1
-#define Y_PCONSTANT 50
+#define Y_PGAIN     0.05
+#define Y_PCONSTANT 0
 #define Y_POWERMIN  0
-#define Y_POWERMAX  1023
+#define Y_POWERMAX  200
 
-#define Z_PGAIN     1
-#define Z_PCONSTANT 200
+#define Z_PGAIN     0.05
+#define Z_PCONSTANT 0
 #define Z_POWERMIN  0
-#define Z_POWERMAX  1023
+#define Z_POWERMAX  50
 
-#define X_CALIBRATE_SPEED 300
+#define X_CALIBRATE_SPEED 200
 #define Y_CALIBRATE_SPEED 100
-#define Z_CALIBRATE_SPEED 200
+#define Z_CALIBRATE_SPEED 20
 
 #define ADC_MAX (230)
 

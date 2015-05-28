@@ -40,11 +40,10 @@
  */
 	//motor_driver* p_motor_1 = new my_motor_driver (p_serial, &DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1B1, &OCR1B);
 //Initialize my_motor_driver
-z_encoder_driver::z_encoder_driver(volatile uint8_t* DDR_en, volatile uint8_t* PIN_en, volatile uint8_t* PORT_EN, uint8_t Abit, uint8_t Bbit, volatile Direction* direction_in)
+z_encoder_driver::z_encoder_driver(volatile uint8_t* DDR_en, volatile uint8_t* PIN_en, volatile uint8_t* PORT_EN, uint8_t Abit, uint8_t Bbit, volatile Direction* direction_in, bool locatedAtZero_in)
    :
-   encoder_driver(DDR_en, PIN_en, PORT_EN, Abit, Bbit)
+   encoder_driver(DDR_en, PIN_en, PORT_EN, Abit, Bbit, direction_in, locatedAtZero_in)
 {
-   direction = direction_in;
 }
 
 void z_encoder_driver::updatePosition(void)
@@ -77,6 +76,10 @@ void z_encoder_driver::updatePosition(void)
          {
             position -= 1;
          }
+      }
+      else
+      {
+         position = 9999;
       }
       prevSum = sum;
    }

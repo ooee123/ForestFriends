@@ -17,6 +17,7 @@
  *    OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 //**************************************************************************************
 #include "frt_text_queue.h"                 // Header for text queue class
+#include "shares.h"
 #include "motor_driver.h"
 #include "motor_task.h"                 // Header for this task
 #include "frt_queue.h"
@@ -24,7 +25,6 @@
 #include "pinLayout.h"
 #include "constants.h"
 #define CPR 1000
-#include "shares.h"
 
 
 //-------------------------------------------------------------------------------------
@@ -133,6 +133,10 @@ void motor_task::run (void)
       }
       else
       {
+         if (!_getBit(*limitPIN, limitPinNum))
+         {
+            encoder->reset();
+         }
          motor->brake();
       }
       delay_from_to (previousTicks, configMS_TO_TICKS (30));

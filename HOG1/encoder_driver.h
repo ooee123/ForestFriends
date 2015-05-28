@@ -47,7 +47,8 @@
 #include "queue.h"                          // Header for FreeRTOS queues
 #include "semphr.h"                         // Header for FreeRTOS semaphores
 
-#include "shares.h"
+//#include "shares.h"
+#include "constants.h"
 //-------------------------------------------------------------------------------------
 /** \brief This class should run the motor driver on an AVR processor. 
  *  \details my_motor_driver class holds the member functions in order to output a PWM signal 
@@ -66,6 +67,8 @@ class encoder_driver
 		//instance/global variables
 		emstream* ptr_to_serial;
 
+      volatile Direction* direction;
+
 		volatile uint8_t* DDR_EN;
       volatile uint8_t* PIN;
 		
@@ -74,14 +77,14 @@ class encoder_driver
       int16_t position;
       uint8_t prevA;
       uint8_t prevSum;
-		
+
 	public:
 		// The constructor sets up the motor driver. The "= NULL" part is a
 		// default parameter, meaning that if that parameter isn't given on the line
 		// where this constructor is called, the compiler will just fill in "NULL".
 		// In this case that has the effect of turning off diagnostic printouts.
 		// This follows for the "= 0" part.
-      encoder_driver(volatile uint8_t* DDR_en, volatile uint8_t* PIN_en, volatile uint8_t* PORT_EN, uint8_t Abit, uint8_t Bbit);
+      encoder_driver(volatile uint8_t* DDR_en, volatile uint8_t* PIN_en, volatile uint8_t* PORT_EN, uint8_t Abit, uint8_t Bbit, volatile Direction* direction_in, bool locatedAtZero_in);
 		
       virtual void updatePosition(void);
 

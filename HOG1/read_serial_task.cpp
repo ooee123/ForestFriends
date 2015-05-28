@@ -61,9 +61,11 @@ read_serial_task::read_serial_task (
    desiredX = desiredX_in;
    desiredY = desiredY_in;
    desiredZ = desiredZ_in;
+   /*
    xEncoder = xEncoder_in;
    yEncoder = yEncoder_in;
    zEncoder = zEncoder_in;
+   */
    state = state_in;
    zReady = zReady_in;
    boardOffset = boardOffset_in;
@@ -122,15 +124,15 @@ void read_serial_task::run (void)
          *p_serial << "*ERROR*\n";
          *p_serial << "MAX SWITCH ACTIVATED\n";
          *p_serial << "*ERROR*\n";
+         xAxis.brake();
+         yAxis.brake();
+         zAxis.brake();
+         for (;;);
       }
       else if (*state == HOME)
       {
-         // If both limit switches are activated
-         if (!getXLimitSwitch() && !getYLimitSwitch()
-         #ifdef Z_AXIS
-            && !getZLimitSwitch()
-         #endif
-         )
+         // If all limit switches are activated
+         if (!getXLimitSwitch() && !getYLimitSwitch() && !getZLimitSwitch())
          {
          #ifdef DEBUG
             *p_serial << "LIMIT";
@@ -141,6 +143,10 @@ void read_serial_task::run (void)
             xEncoder->reset();
             yEncoder->reset();
             zEncoder->reset();
+            xAxis.brake();
+            yAxis.brake();
+            zAxis.brake();
+            for (;;);
             // And then take up the first coordinate
             getNextCoordinate();
          }
@@ -172,6 +178,7 @@ void read_serial_task::getNextCoordinate(void)
    *desiredZ = serial->read_uint16_t();
    if (*desiredX == 0 && *desiredY == 0 && (*desiredZ == 0 || *desiredZ == HOME_THREE_QUARTER_BOARD || *desiredZ == HOME_ONE_POINT_FIVE_BOARD))
    {
+      *zReady = false;
       *state = HOME;
       if (*desiredZ == HOME_THREE_QUARTER_BOARD)
       {

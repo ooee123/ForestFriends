@@ -17,6 +17,7 @@
  *    OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 //**************************************************************************************
 #include "frt_text_queue.h"                 // Header for text queue class
+#include "shares.h"
 #include "motor_driver.h"
 #include "z_motor_task.h"                 // Header for this task
 #include "frt_queue.h"
@@ -24,7 +25,6 @@
 #include "pinLayout.h"
 #include "constants.h"
 #define CPR 1000
-#include "shares.h"
 
 
 //-------------------------------------------------------------------------------------
@@ -83,8 +83,13 @@ void z_motor_task::run (void)
 
       if (*state == HOME)
       {
-         // If the switches are NOT pressed
-         if (_getBit(*limitPIN, limitPinNum))
+         // If the switches are pressed
+         if (!_getBit(*limitPIN, limitPinNum))
+         {
+            *zReady = true;
+            motor->brake();
+         }
+         else
          {
             #ifdef MOTOR_DEBUG
                print_ser_queue << "Z:";
@@ -92,11 +97,6 @@ void z_motor_task::run (void)
                print_ser_queue << "\n";
             #endif
             motor->move(calibrateSpeed);
-         }
-         else
-         {
-            *zReady = true;
-            motor->brake();
          }
       }
       else
@@ -118,7 +118,13 @@ void z_motor_task::run (void)
          {
             *zReady = true;
          }
+         if (!_getBit(*limitPIN, limitPinNum))
+         {
+            motor->brake();
+            encoder->reset();
+         }
       }
+      
       delay_from_to (previousTicks, configMS_TO_TICKS (100));
    }
 }
