@@ -10,16 +10,16 @@
 #define Y_ENCODER_DDR  DDRE
 #define Y_ENCODER_PIN  PINE
 #define Y_ENCODER_PORT PORTE
-//#define Y_ENCODER_PINA PE6
-//#define Y_ENCODER_PINB PE7
-#define Y_ENCODER_PINA PE7
-#define Y_ENCODER_PINB PE6
+#define Y_ENCODER_PINA PE6
+#define Y_ENCODER_PINB PE7
 
 #define Z_ENCODER_DDR  DDRD
 #define Z_ENCODER_PIN  PIND
 #define Z_ENCODER_PORT PORTD
 #define Z_ENCODER_PINA PD0
 #define Z_ENCODER_PINB PD1
+
+#define turnOffEncoders() (EIMSK = 0)
 
 #define X_LIMIT_DDR          DDRA
 #define X_LIMIT_PORT         PORTA

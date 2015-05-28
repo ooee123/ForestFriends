@@ -51,11 +51,12 @@ z_motor_task::z_motor_task (const char* a_name,
                          volatile uint8_t* limitPORT_in,
                          volatile uint8_t* limitPIN_in,
                          uint8_t limitPinNum_in,
+                         uint8_t limitMaxPinNum_in,
                          volatile State* state_in,
                          bool* zReady_in
 								)
 	:
-   motor_task(a_name, a_priority, a_stack_size, p_ser_dev, motor_in, encoder_in, desired_in, calibrateSpeed_in, limitDDR_in, limitPORT_in, limitPIN_in, limitPinNum_in, state_in, zReady_in)
+   motor_task(a_name, a_priority, a_stack_size, p_ser_dev, motor_in, encoder_in, desired_in, calibrateSpeed_in, limitDDR_in, limitPORT_in, limitPIN_in, limitPinNum_in, limitMaxPinNum_in, state_in, zReady_in)
 {
 	// Nothing is done in the body of this constructor. All the work is done in the
 	// call to the frt_task constructor on the line just above this one
@@ -80,6 +81,11 @@ void z_motor_task::run (void)
 	for (;;)
 	{
 		runs++;
+      // Max Limit Switch Activated
+      if (!_getBit(*limitPIN, limitMaxPinNum))
+      {
+         motor->brake();
+      }
 
       if (*state == HOME)
       {

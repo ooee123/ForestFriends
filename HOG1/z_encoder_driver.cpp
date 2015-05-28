@@ -48,39 +48,55 @@ z_encoder_driver::z_encoder_driver(volatile uint8_t* DDR_en, volatile uint8_t* P
 
 void z_encoder_driver::updatePosition(void)
 {
+   #ifdef FAST_ENCODER
+      encoder_driver::updatePosition();
+   #else
    uint8_t newA = _getBit(*PIN, INA);
    uint8_t newB = _getBit(*PIN, INB);
-   
-   uint8_t sum = (newA << 1) | newB;
 
-   if (sum != prevSum)
-   {
-      if (*direction == INCREASING)
+      if (newA && newB)
       {
-         if (prevSum == 3)
+         if (*direction == INCREASING)
          {
-            position += 3;
+            position++;
          }
-         else
+         else if (*direction == DECREASING)
          {
-            position += 1;
+            position--;
          }
       }
-      else if (*direction == DECREASING)
+      uint8_t sum = (newA << 1) | newB;
+      if (sum != prevSum)
       {
-         if (prevSum == 3)
+         if (*direction == INCREASING)
          {
-            position -= 3;
+            if (prevSum == 3)
+            {
+               position += 3;
+            }
+            else
+            {
+               position += 1;
+            }
          }
-         else
+         else if (*direction == DECREASING)
          {
-            position -= 1;
+            if (prevSum == 3)
+            {
+               position -= 3;
+            }
+            else
+            {
+               position -= 1;
+            }
          }
+         #ifdef DEBUG
+            else
+            {
+               position = 9999;
+            }
+         #endif
+         prevSum = sum;
       }
-      else
-      {
-         position = 9999;
-      }
-      prevSum = sum;
-   }
+   #endif
 }

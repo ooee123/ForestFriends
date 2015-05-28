@@ -68,9 +68,11 @@ private:
    int16_t* desiredX;
    int16_t* desiredY;
    int16_t* desiredZ;
+   /*
    encoder_driver* xEncoder;
    encoder_driver* yEncoder;
    encoder_driver* zEncoder;
+   */
    volatile State* state;
    bool* zReady;
    uint16_t boardOffset;
@@ -100,6 +102,7 @@ public:
 
 	// This method is called by the RTOS once to run the task loop for ever and ever.
 	void run (void);
+   void shutdown (void);
 };
 
 #endif

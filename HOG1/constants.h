@@ -40,11 +40,11 @@ typedef enum State
 #define Z_POWERMIN  0
 #define Z_POWERMAX  50
 
-#define X_CALIBRATE_SPEED 200
-#define Y_CALIBRATE_SPEED 100
-#define Z_CALIBRATE_SPEED 20
+#define X_CALIBRATE_SPEED -200
+#define Y_CALIBRATE_SPEED -100
+#define Z_CALIBRATE_SPEED -20
 
-#define ADC_MAX (230)
+#define ADC_MAX 31
 
 #define TOLERANCE (INCH / 16)
 #define isWithinTolerance(x, y, t) (abs((x) - (y)) <= t)

@@ -169,19 +169,19 @@ void motor_driver::move_cw (void)
 
 void motor_driver::move(int16_t delta)
 {
-   if (!towardsZero)
+   if (towardsZero)
    {
       delta = -delta;
    }
 	if(delta > 0)
 	{
-      direction = INCREASING;
+      direction = DECREASING;
 		set_power(PI(delta)); //go clockwise
 	}
 	
 	else if(delta < 0)
 	{
-      direction = DECREASING;
+      direction = INCREASING;
 		set_power(-PI(delta)); // go counterclockwise
 	}
 }
@@ -213,7 +213,7 @@ double motor_driver::PI(uint16_t error)
 	
 	else
 	{
-	  iState += position_error.get();
+	  iState += error;
 	  
 	  if( iState > iMax )
 	  {

@@ -51,6 +51,7 @@ motor_task::motor_task (const char* a_name,
                          volatile uint8_t* limitPORT_in,
                          volatile uint8_t* limitPIN_in,
                          uint8_t limitPinNum_in,
+                         uint8_t limitMaxPinNum_in,
                          volatile State* state_in,
                          bool* zReady_in
                          //uint8_t current_sensor_pin_in
@@ -63,6 +64,7 @@ motor_task::motor_task (const char* a_name,
    desired = desired_in;
    limitPIN = limitPIN_in;
    limitPinNum = limitPinNum_in;
+   limitMaxPinNum = limitMaxPinNum_in;
    state = state_in;
    zReady = zReady_in;
 
@@ -91,7 +93,12 @@ void motor_task::run (void)
 	for (;;)
 	{	
 		runs++;
-      if (*zReady)
+      // Max Limit Switch Activated
+      if (!_getBit(*limitPIN, limitMaxPinNum))
+      {
+         motor->brake();
+      }
+      else if (*zReady)
       {
          if (*state == HOME)
          {

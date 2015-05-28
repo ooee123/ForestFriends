@@ -69,38 +69,48 @@ encoder_driver::encoder_driver(volatile uint8_t* DDR_en, volatile uint8_t* PIN_e
 
 void encoder_driver::updatePosition(void)
 {
-   uint8_t newA = (*PIN >> INA) & 0x1;
-   uint8_t newB = (*PIN >> INB) & 0x1;
-   
-   uint8_t sum = (newA << 1) | newB;
 
-   if (sum != prevSum)
-   {
-      if (prevA != newA)
+   #ifdef FAST_ENCODER
+      if (*direction == INCREASING)
       {
-         if (prevSum == 1 || prevSum == 2)
+         position++;
+      }
+      else if (*direction == DECREASING)
+      {
+         position--;
+      }
+   #else
+      uint8_t newA = (*PIN >> INA) & 0x1;
+      uint8_t newB = (*PIN >> INB) & 0x1;
+      uint8_t sum = (newA << 1) | newB;
+      if (sum != prevSum)
+      {
+         if (prevA != newA)
          {
-            position++;
+            if (prevSum == 1 || prevSum == 2)
+            {
+               position++;
+            }
+            else
+            {
+               position--;
+            }
          }
          else
          {
-            position--;
+            if (prevSum == 0 || prevSum == 3)
+            {
+               position++;
+            }
+            else
+            {
+               position--;
+            }
          }
+         prevA = newA;
+         prevSum = sum;
       }
-      else
-      {
-         if (prevSum == 0 || prevSum == 3)
-         {
-            position++;
-         }
-         else
-         {
-            position--;
-         }
-      }
-      prevA = newA;
-      prevSum = sum;
-   }
+   #endif
 }
 
 int16_t encoder_driver::getPosition(void)
