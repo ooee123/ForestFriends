@@ -105,11 +105,7 @@ int16_t desiredX = 0;
 int16_t desiredY = 0;
 int16_t desiredZ = 0;
 volatile State state = NORMAL;
-#ifdef Z_AXIS
-   bool zReady = false;
-#else
-   bool zReady = true;
-#endif
+bool zReady = false;
 
 // Enc Z A SDA
 ISR(INT0_vect)
@@ -121,7 +117,7 @@ ISR(INT0_vect)
    }
    else
    {
-      if (!zReady)
+      if (!zReady && state == NORMAL)
       {
          //zAxis.move(zEncoder.getPosition() - desiredZ);
          zAxis.move(desiredZ - zEncoder.getPosition());
@@ -132,7 +128,7 @@ ISR(INT0_vect)
       }
    }
    #ifdef DEBUG
-      if (zEncoder.getPosition() % 128 == 0)
+      if (zEncoder.getPosition() % 64 == 0)
       {
          ser_port << zEncoder.getPosition();
          ser_port << "\n";
@@ -153,7 +149,7 @@ ISR(INT4_vect)
    }
    else
    {
-      if (zReady)
+      if (zReady && state == NORMAL)
       {
          //xAxis.move(xEncoder.getPosition() - desiredX);
          xAxis.move(desiredX - xEncoder.getPosition());
@@ -164,7 +160,7 @@ ISR(INT4_vect)
       }
    }
    #ifdef DEBUG
-      if (xEncoder.getPosition() % 128 == 0)
+      if (xEncoder.getPosition() % 64 == 0)
       {
          ser_port << xEncoder.getPosition();
          ser_port << "\n";
@@ -185,7 +181,7 @@ ISR(INT6_vect)
    }
    else
    {
-      if (zReady)
+      if (zReady && state == NORMAL)
       {
          //yAxis.move(yEncoder.getPosition() - desiredY);
          yAxis.move(desiredY - yEncoder.getPosition());
@@ -196,7 +192,7 @@ ISR(INT6_vect)
       }
    }
    #ifdef DEBUG
-      if ((yEncoder.getPosition() % 128) == 0)
+      if ((yEncoder.getPosition() % 64) == 0)
       {
          ser_port << yEncoder.getPosition();
          ser_port << "\n";
@@ -222,11 +218,20 @@ int main (void)
       EICRB = 0b01010101; // Set Int_4-7 to activate on pin toggle
       EIMSK = 0b11110011; // Turn on Int_0-1, Int_4-7
    #endif
-   
    setupLimitSwitch(X_LIMIT_DDR, X_LIMIT_PORT, X_MAX_LIMIT_PIN_NUM);
    setupLimitSwitch(Y_LIMIT_DDR, Y_LIMIT_PORT, Y_MAX_LIMIT_PIN_NUM);
    setupLimitSwitch(Z_LIMIT_DDR, Z_LIMIT_PORT, Z_MAX_LIMIT_PIN_NUM);
    #ifdef CURRENT_SENSOR
+      
+      _setBit(CURRENT_DDR, X_CURRENT_PIN_POWER);
+      _setBit(CURRENT_DDR, Y_CURRENT_PIN_POWER);
+      _setBit(CURRENT_DDR, Z_CURRENT_PIN_POWER);
+      _clearBit(CURRENT_DDR, X_CURRENT_PIN_NUM);
+      _clearBit(CURRENT_DDR, Y_CURRENT_PIN_NUM);
+      _clearBit(CURRENT_DDR, Z_CURRENT_PIN_NUM);
+      _setBit(CURRENT_PORT, X_CURRENT_PIN_POWER);
+      _setBit(CURRENT_PORT, Y_CURRENT_PIN_POWER);
+      _setBit(CURRENT_PORT, Z_CURRENT_PIN_POWER);
 
       ADCSRA |= (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0); // Set ADC prescalar to 128 - 125KHz sample rate @ 16MHz
 
@@ -247,15 +252,18 @@ int main (void)
 	new motor_task ("X", task_priority (2), 280, &ser_port, &xAxis, &xEncoder, &desiredX, X_CALIBRATE_SPEED, &X_LIMIT_DDR, &X_LIMIT_PORT, &X_LIMIT_PIN, X_ZERO_LIMIT_PIN_NUM, X_MAX_LIMIT_PIN_NUM, &state, &zReady);
    yEncoder.setSerial(&ser_port);
 	new motor_task ("Y", task_priority (2), 280, &ser_port, &yAxis, &yEncoder, &desiredY, Y_CALIBRATE_SPEED, &Y_LIMIT_DDR, &Y_LIMIT_PORT, &Y_LIMIT_PIN, Y_ZERO_LIMIT_PIN_NUM, Y_MAX_LIMIT_PIN_NUM, &state, &zReady);
-   #ifdef Z_AXIS
-      zEncoder.setSerial(&ser_port);
-      new z_motor_task ("Z", task_priority (2), 280, &ser_port, &zAxis, &zEncoder, &desiredZ, Z_CALIBRATE_SPEED, &Z_LIMIT_DDR, &Z_LIMIT_PORT, &Z_LIMIT_PIN, Z_ZERO_LIMIT_PIN_NUM, Z_MAX_LIMIT_PIN_NUM, &state, &zReady);
-   #endif
+   zEncoder.setSerial(&ser_port);
+   new z_motor_task ("Z", task_priority (2), 280, &ser_port, &zAxis, &zEncoder, &desiredZ, Z_CALIBRATE_SPEED, &Z_LIMIT_DDR, &Z_LIMIT_PORT, &Z_LIMIT_PIN, Z_ZERO_LIMIT_PIN_NUM, Z_MAX_LIMIT_PIN_NUM, &state, &zReady);
    // task that reads incoming serial data
    read_serial_driver* serial = new read_serial_driver(&ser_port);
    new read_serial_task("S", task_priority (1), 280, &ser_port, serial, &desiredX, &desiredY, &desiredZ, &xEncoder, &yEncoder, &zEncoder, &state, &zReady, 0);
 	// Here's where the RTOS scheduler is started up. It should never exit as long as
 	// power is on and the microcontroller isn't rebooted
+
+   //xAxis.move(550);
+   //yAxis.move(150);
+   //zAxis.move(128);
+   //zAxis.move(165);
 
 	vTaskStartScheduler ();
 }

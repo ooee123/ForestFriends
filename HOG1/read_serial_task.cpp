@@ -134,6 +134,7 @@ void read_serial_task::run (void)
             // Then we're ready to proceed to normal operation
             *p_serial << AT_HOME; 
             *state = NORMAL;
+            turnOnEncoders();
             xEncoder.reset();
             yEncoder.reset();
             zEncoder.reset();
@@ -173,6 +174,7 @@ void read_serial_task::getNextCoordinate(void)
    if (*desiredX == 0 && *desiredY == 0 && (*desiredZ == 0 || *desiredZ == HOME_THREE_QUARTER_BOARD || *desiredZ == HOME_ONE_POINT_FIVE_BOARD))
    {
       *state = HOME;
+      turnOffEncoders();
       if (*desiredZ == HOME_THREE_QUARTER_BOARD)
       {
          boardOffset = INCH * 3 / 4;
@@ -209,7 +211,7 @@ void read_serial_task::getNextCoordinate(void)
 
 void read_serial_task::shutdown(void)
 {
-   *state = HOME;
+   *state = NORMAL;
    xAxis.brake();
    yAxis.brake();
    zAxis.brake();

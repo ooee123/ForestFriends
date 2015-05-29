@@ -46,7 +46,7 @@ z_motor_task::z_motor_task (const char* a_name,
                          motor_driver* motor_in,
                          encoder_driver* encoder_in,
                          int16_t* desired_in,
-                         uint16_t calibrateSpeed_in,
+                         int16_t calibrateSpeed_in,
                          volatile uint8_t* limitDDR_in,
                          volatile uint8_t* limitPORT_in,
                          volatile uint8_t* limitPIN_in,
@@ -110,7 +110,8 @@ void z_motor_task::run (void)
          //if (abs(*desired - encoder->getPosition()) > Z_AXIS_TOLERANCE)
          if (!isWithinTolerance(encoder->getPosition(), *desired, Z_AXIS_TOLERANCE))
          {
-            int16_t error = encoder->getPosition() - *desired;
+            //int16_t error = encoder->getPosition() - *desired;
+            int16_t error = *desired - encoder->getPosition();
             *zReady = false;
             motor->move(error);
             #ifdef MOTOR_DEBUG
@@ -123,11 +124,6 @@ void z_motor_task::run (void)
          else
          {
             *zReady = true;
-         }
-         if (!_getBit(*limitPIN, limitPinNum))
-         {
-            motor->brake();
-            encoder->reset();
          }
       }
       

@@ -46,7 +46,7 @@ motor_task::motor_task (const char* a_name,
                          motor_driver* motor_in,
                          encoder_driver* encoder_in,
                          int16_t* desired_in,
-                         uint16_t calibrateSpeed_in,
+                         int16_t calibrateSpeed_in,
                          volatile uint8_t* limitDDR_in,
                          volatile uint8_t* limitPORT_in,
                          volatile uint8_t* limitPIN_in,
@@ -123,7 +123,8 @@ void motor_task::run (void)
             if (!isWithinTolerance(encoder->getPosition(), *desired, TOLERANCE))
             //if (!isWithinTolerance(*desired, (int16_t)encoder->getPosition(), TOLERANCE))
             {
-               int16_t error = encoder->getPosition() - *desired;
+               //int16_t error = encoder->getPosition() - *desired;
+               int16_t error = *desired - encoder->getPosition();
                motor->move(error);
                #ifdef MOTOR_DEBUG
                   print_ser_queue << get_name();

@@ -74,14 +74,14 @@ protected:
    volatile uint8_t* limitPIN;
    uint8_t limitPinNum;
    uint8_t limitMaxPinNum;
-   uint16_t calibrateSpeed;
+   int16_t calibrateSpeed;
    volatile State* state;
    bool* zReady;
 	// No protected variables or methods for this class
 
 public:
 	// This constructor creates a task for controlling motor 1.
-	motor_task (const char*, unsigned portBASE_TYPE, size_t, emstream*, motor_driver*, encoder_driver*, int16_t *desired_in, uint16_t calibrateSpeed_in, volatile uint8_t* limitDDR_in, volatile uint8_t* limitPORT_in, volatile uint8_t* limitPIN_in, uint8_t limitPinNum_in, uint8_t limitMaxPinNum_in, volatile State* state_in, bool* zReady_in);
+	motor_task (const char*, unsigned portBASE_TYPE, size_t, emstream*, motor_driver*, encoder_driver*, int16_t *desired_in, int16_t calibrateSpeed_in, volatile uint8_t* limitDDR_in, volatile uint8_t* limitPORT_in, volatile uint8_t* limitPIN_in, uint8_t limitPinNum_in, uint8_t limitMaxPinNum_in, volatile State* state_in, bool* zReady_in);
 
 	// This method is called by the RTOS once to run the task loop for ever and ever.
 	virtual void run (void);
