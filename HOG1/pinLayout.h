@@ -19,6 +19,13 @@
 #define Z_ENCODER_PINA PD0
 #define Z_ENCODER_PINB PD1
 
+#define turnOffEncoders() (EIMSK = 0)
+#ifdef FAST_ENCODER
+   #define turnOnEncoders() (EICRB = 0b11111111, EIMSK = 0b01010001)
+#else
+   #define turnOnEncoders() (EICRB = 0b01010101, EIMSK = 0b11110011)
+#endif
+
 #define X_LIMIT_DDR          DDRA
 #define X_LIMIT_PORT         PORTA
 #define X_LIMIT_PIN          PINA
@@ -40,9 +47,12 @@
 #define CURRENT_DDR          DDRF
 #define CURRENT_PORT         PORTF
 #define CURRENT_PIN          PINF
-#define X_CURRENT_PIN_NUM    PF0
-#define Y_CURRENT_PIN_NUM    PF1
-#define Z_CURRENT_PIN_NUM    PF2
+#define X_CURRENT_PIN_POWER  PF0
+#define Y_CURRENT_PIN_POWER  PF1
+#define Z_CURRENT_PIN_POWER  PF2
+#define X_CURRENT_PIN_NUM    PF3
+#define Y_CURRENT_PIN_NUM    PF4
+#define Z_CURRENT_PIN_NUM    PF5
 #define NUM_CURRENT_SENSORS  3
 
 #define SOLID_STATE_DDR      DDRA

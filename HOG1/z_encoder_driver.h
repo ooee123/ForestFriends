@@ -40,15 +40,15 @@
 #ifndef _Z_ENCODER_driver_H_
 #define _Z_ENCODER_driver_H_
 
-
 #include "emstream.h"                       // Header for serial ports and devices
 #include "FreeRTOS.h"                       // Header for the FreeRTOS RTOS
 #include "task.h"                           // Header for FreeRTOS task functions
 #include "queue.h"                          // Header for FreeRTOS queues
 #include "semphr.h"                         // Header for FreeRTOS semaphores
 
-#include "shares.h"
 #include "constants.h"
+#include "encoder_driver.h"
+//#include "shares.h"
 //-------------------------------------------------------------------------------------
 /** \brief This class should run the motor driver on an AVR processor. 
  *  \details my_motor_driver class holds the member functions in order to output a PWM signal 
@@ -65,7 +65,6 @@ class z_encoder_driver : public encoder_driver
 {
 	protected:
 		//instance/global variables
-      volatile Direction* direction;
 		
 	public:
 		// The constructor sets up the motor driver. The "= NULL" part is a
@@ -73,9 +72,9 @@ class z_encoder_driver : public encoder_driver
 		// where this constructor is called, the compiler will just fill in "NULL".
 		// In this case that has the effect of turning off diagnostic printouts.
 		// This follows for the "= 0" part.
-      z_encoder_driver(volatile uint8_t* DDR_en, volatile uint8_t* PIN_en, volatile uint8_t* PORT_EN, uint8_t Abit, uint8_t Bbit, volatile Direction* increasing_in);
+      z_encoder_driver(volatile uint8_t* DDR_en, volatile uint8_t* PIN_en, volatile uint8_t* PORT_EN, uint8_t Abit, uint8_t Bbit, volatile Direction* increasing_in, bool locatedAtZero);
 		
       void updatePosition(void);
 }; // end of class my_motor_driver
 
-#endif // _AVR_my_motor_driver_H_
+#endif

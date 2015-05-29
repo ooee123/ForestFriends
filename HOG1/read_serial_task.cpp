@@ -61,9 +61,11 @@ read_serial_task::read_serial_task (
    desiredX = desiredX_in;
    desiredY = desiredY_in;
    desiredZ = desiredZ_in;
+   /*
    xEncoder = xEncoder_in;
    yEncoder = yEncoder_in;
    zEncoder = zEncoder_in;
+   */
    state = state_in;
    zReady = zReady_in;
    boardOffset = boardOffset_in;
@@ -86,10 +88,12 @@ void read_serial_task::run (void)
 	for (;;)
 	{	
 		runs++;
-      while (print_ser_queue.check_for_char())
-      {
-         p_serial->putchar(print_ser_queue.getchar());
-      }
+      #if defined(DEBUG) || defined(MOTOR_DEBUG)
+         while (print_ser_queue.check_for_char())
+         {
+            p_serial->putchar(print_ser_queue.getchar());
+         }
+      #endif
       #ifdef CURRENT_SENSORS
       if (_getBit(ADCSR, ADIF))
       {
@@ -98,15 +102,11 @@ void read_serial_task::run (void)
             *p_serial << ADCH;
             *p_serial << "\n";
          #endif
-         if (ADCH > ADC_MAX)
+         if (!isWithinTolerance(ADCH, 128, ADC_MAX))
          {
             // Shut down machine!
-            *state = HOME;
-            desiredX = 0;
-            desiredY = 0;
-            desiredZ = 0;
             *p_serial << "CURRENT SENSOR TRIPPED\n";
-            _clearBit(SOLID_STATE_PORT, SOLID_STATE_PIN_NUM);
+            shutdown();
          }
          uint8_t sense = ADMUX & 0x111;
          ADMUX &= 0b11111000;
@@ -118,19 +118,15 @@ void read_serial_task::run (void)
       // If ANY of the limit switches are triggered
       if (!getXMaxLimitSwitch() || !getYMaxLimitSwitch() || !getZMaxLimitSwitch())
       {
-         *state = HOME;
          *p_serial << "*ERROR*\n";
          *p_serial << "MAX SWITCH ACTIVATED\n";
          *p_serial << "*ERROR*\n";
+         shutdown();
       }
-      else if (*state == HOME)
+      if (*state == HOME)
       {
-         // If both limit switches are activated
-         if (!getXLimitSwitch() && !getYLimitSwitch()
-         #ifdef Z_AXIS
-            && !getZLimitSwitch()
-         #endif
-         )
+         // If all limit switches are activated
+         if (!getXLimitSwitch() && !getYLimitSwitch() && !getZLimitSwitch())
          {
          #ifdef DEBUG
             *p_serial << "LIMIT";
@@ -138,9 +134,13 @@ void read_serial_task::run (void)
             // Then we're ready to proceed to normal operation
             *p_serial << AT_HOME; 
             *state = NORMAL;
-            xEncoder->reset();
-            yEncoder->reset();
-            zEncoder->reset();
+            turnOnEncoders();
+            xEncoder.reset();
+            yEncoder.reset();
+            zEncoder.reset();
+            xAxis.brake();
+            yAxis.brake();
+            zAxis.brake();
             // And then take up the first coordinate
             getNextCoordinate();
          }
@@ -148,13 +148,13 @@ void read_serial_task::run (void)
       else if (*state == NORMAL)
       {
          // Check if all axis are within tolerance
-         if (isWithinTolerance(xEncoder->getPosition(), *desiredX, TOLERANCE) &&
-             isWithinTolerance(yEncoder->getPosition(), *desiredY, TOLERANCE)
-             #ifdef Z_AXIS
-                && isWithinTolerance(zEncoder->getPosition(), *desiredZ, Z_AXIS_TOLERANCE)
-             #endif
-                )
+         if (isWithinTolerance(xEncoder.getPosition(), *desiredX, TOLERANCE) &&
+             isWithinTolerance(yEncoder.getPosition(), *desiredY, TOLERANCE) &&
+             isWithinTolerance(zEncoder.getPosition(), *desiredZ, Z_AXIS_TOLERANCE))
          {
+            xAxis.brake();
+            yAxis.brake();
+            zAxis.brake();
             // Notify Pi for next command
             *p_serial << NEXT_COMMAND;
             // Get the next command
@@ -170,9 +170,11 @@ void read_serial_task::getNextCoordinate(void)
    *desiredX = serial->read_uint16_t();
    *desiredY = serial->read_uint16_t();
    *desiredZ = serial->read_uint16_t();
+   *zReady = false;
    if (*desiredX == 0 && *desiredY == 0 && (*desiredZ == 0 || *desiredZ == HOME_THREE_QUARTER_BOARD || *desiredZ == HOME_ONE_POINT_FIVE_BOARD))
    {
       *state = HOME;
+      turnOffEncoders();
       if (*desiredZ == HOME_THREE_QUARTER_BOARD)
       {
          boardOffset = INCH * 3 / 4;
@@ -182,24 +184,21 @@ void read_serial_task::getNextCoordinate(void)
          boardOffset = INCH * 3 / 2;
       }
    }
-   #ifdef Z_AXIS
-      else
-      {
-         *zReady = false;
-         #ifdef Z_CODE_TO_HEIGHT
-            int16_t desiredHeight = *desiredZ;
-            if (*desiredZ == START || *desiredZ == MOVE)
-            {
-               desiredHeight = DISTANCE_1_5 + boardOffset - HOVER_HEIGHT;
-            }
-            else if (*desiredZ == LINE)
-            {
-               desiredHeight = DISTANCE_1_5 + boardOffset + ROUTING_DEPTH;
-            }
-            *desiredZ = desiredHeight;
-         #endif
-      }
-   #endif
+   else
+   {
+      #ifdef Z_CODE_TO_HEIGHT
+         int16_t desiredHeight = *desiredZ;
+         if (*desiredZ == START || *desiredZ == MOVE)
+         {
+            desiredHeight = DISTANCE_1_5 + boardOffset - HOVER_HEIGHT;
+         }
+         else if (*desiredZ == LINE)
+         {
+            desiredHeight = DISTANCE_1_5 + boardOffset + ROUTING_DEPTH;
+         }
+         *desiredZ = desiredHeight;
+      #endif
+   }
    #ifdef DEBUG
       *p_serial << "X:";
       *p_serial << *desiredX;
@@ -208,4 +207,18 @@ void read_serial_task::getNextCoordinate(void)
       *p_serial << "Z:";
       *p_serial << *desiredZ;
    #endif
+}
+
+void read_serial_task::shutdown(void)
+{
+   *state = NORMAL;
+   xAxis.brake();
+   yAxis.brake();
+   zAxis.brake();
+   *desiredX = xEncoder.getPosition();
+   *desiredY = yEncoder.getPosition();
+   *desiredZ = zEncoder.getPosition();
+   turnOffEncoders();
+   _clearBit(SOLID_STATE_PORT, SOLID_STATE_PIN_NUM);
+   for (;;);
 }

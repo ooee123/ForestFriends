@@ -36,6 +36,9 @@
 #include "frt_queue.h"
 #include "frt_text_queue.h"
 #include "frt_shared_data.h"
+#include "motor_driver.h"
+#include "encoder_driver.h"
+#include "z_encoder_driver.h"
 
 //-------------------------------------------------------------------------------------
 // Externs:  In this section, we declare variables and functions that are used in all
@@ -51,6 +54,14 @@
  */
 
 extern frt_text_queue print_ser_queue;
+
+extern motor_driver xAxis;
+extern motor_driver yAxis;
+extern motor_driver zAxis;
+
+extern encoder_driver xEncoder;
+extern encoder_driver yEncoder;
+extern z_encoder_driver zEncoder;
 
 /*  This queue sends data from the source task to the sink task.
  */

@@ -17,6 +17,7 @@
  *    OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 //**************************************************************************************
 #include "frt_text_queue.h"                 // Header for text queue class
+#include "shares.h"
 #include "motor_driver.h"
 #include "motor_task.h"                 // Header for this task
 #include "frt_queue.h"
@@ -24,7 +25,6 @@
 #include "pinLayout.h"
 #include "constants.h"
 #define CPR 1000
-#include "shares.h"
 
 
 //-------------------------------------------------------------------------------------
@@ -46,11 +46,12 @@ motor_task::motor_task (const char* a_name,
                          motor_driver* motor_in,
                          encoder_driver* encoder_in,
                          int16_t* desired_in,
-                         uint16_t calibrateSpeed_in,
+                         int16_t calibrateSpeed_in,
                          volatile uint8_t* limitDDR_in,
                          volatile uint8_t* limitPORT_in,
                          volatile uint8_t* limitPIN_in,
                          uint8_t limitPinNum_in,
+                         uint8_t limitMaxPinNum_in,
                          volatile State* state_in,
                          bool* zReady_in
                          //uint8_t current_sensor_pin_in
@@ -63,6 +64,7 @@ motor_task::motor_task (const char* a_name,
    desired = desired_in;
    limitPIN = limitPIN_in;
    limitPinNum = limitPinNum_in;
+   limitMaxPinNum = limitMaxPinNum_in;
    state = state_in;
    zReady = zReady_in;
 
@@ -91,7 +93,12 @@ void motor_task::run (void)
 	for (;;)
 	{	
 		runs++;
-      if (*zReady)
+      // Max Limit Switch Activated
+      if (!_getBit(*limitPIN, limitMaxPinNum))
+      {
+         motor->brake();
+      }
+      else if (*zReady)
       {
          if (*state == HOME)
          {
@@ -116,7 +123,8 @@ void motor_task::run (void)
             if (!isWithinTolerance(encoder->getPosition(), *desired, TOLERANCE))
             //if (!isWithinTolerance(*desired, (int16_t)encoder->getPosition(), TOLERANCE))
             {
-               int16_t error = encoder->getPosition() - *desired;
+               //int16_t error = encoder->getPosition() - *desired;
+               int16_t error = *desired - encoder->getPosition();
                motor->move(error);
                #ifdef MOTOR_DEBUG
                   print_ser_queue << get_name();
@@ -133,6 +141,10 @@ void motor_task::run (void)
       }
       else
       {
+         if (!_getBit(*limitPIN, limitPinNum))
+         {
+            encoder->reset();
+         }
          motor->brake();
       }
       delay_from_to (previousTicks, configMS_TO_TICKS (30));

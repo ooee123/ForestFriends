@@ -17,6 +17,7 @@
  *    OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 //**************************************************************************************
 #include "frt_text_queue.h"                 // Header for text queue class
+#include "shares.h"
 #include "motor_driver.h"
 #include "z_motor_task.h"                 // Header for this task
 #include "frt_queue.h"
@@ -24,7 +25,6 @@
 #include "pinLayout.h"
 #include "constants.h"
 #define CPR 1000
-#include "shares.h"
 
 
 //-------------------------------------------------------------------------------------
@@ -46,16 +46,17 @@ z_motor_task::z_motor_task (const char* a_name,
                          motor_driver* motor_in,
                          encoder_driver* encoder_in,
                          int16_t* desired_in,
-                         uint16_t calibrateSpeed_in,
+                         int16_t calibrateSpeed_in,
                          volatile uint8_t* limitDDR_in,
                          volatile uint8_t* limitPORT_in,
                          volatile uint8_t* limitPIN_in,
                          uint8_t limitPinNum_in,
+                         uint8_t limitMaxPinNum_in,
                          volatile State* state_in,
                          bool* zReady_in
 								)
 	:
-   motor_task(a_name, a_priority, a_stack_size, p_ser_dev, motor_in, encoder_in, desired_in, calibrateSpeed_in, limitDDR_in, limitPORT_in, limitPIN_in, limitPinNum_in, state_in, zReady_in)
+   motor_task(a_name, a_priority, a_stack_size, p_ser_dev, motor_in, encoder_in, desired_in, calibrateSpeed_in, limitDDR_in, limitPORT_in, limitPIN_in, limitPinNum_in, limitMaxPinNum_in, state_in, zReady_in)
 {
 	// Nothing is done in the body of this constructor. All the work is done in the
 	// call to the frt_task constructor on the line just above this one
@@ -80,11 +81,21 @@ void z_motor_task::run (void)
 	for (;;)
 	{
 		runs++;
+      // Max Limit Switch Activated
+      if (!_getBit(*limitPIN, limitMaxPinNum))
+      {
+         motor->brake();
+      }
 
       if (*state == HOME)
       {
-         // If the switches are NOT pressed
-         if (_getBit(*limitPIN, limitPinNum))
+         // If the switches are pressed
+         if (!_getBit(*limitPIN, limitPinNum))
+         {
+            *zReady = true;
+            motor->brake();
+         }
+         else
          {
             #ifdef MOTOR_DEBUG
                print_ser_queue << "Z:";
@@ -93,18 +104,14 @@ void z_motor_task::run (void)
             #endif
             motor->move(calibrateSpeed);
          }
-         else
-         {
-            *zReady = true;
-            motor->brake();
-         }
       }
       else
       {
          //if (abs(*desired - encoder->getPosition()) > Z_AXIS_TOLERANCE)
          if (!isWithinTolerance(encoder->getPosition(), *desired, Z_AXIS_TOLERANCE))
          {
-            int16_t error = encoder->getPosition() - *desired;
+            //int16_t error = encoder->getPosition() - *desired;
+            int16_t error = *desired - encoder->getPosition();
             *zReady = false;
             motor->move(error);
             #ifdef MOTOR_DEBUG
@@ -119,6 +126,7 @@ void z_motor_task::run (void)
             *zReady = true;
          }
       }
+      
       delay_from_to (previousTicks, configMS_TO_TICKS (100));
    }
 }

@@ -40,44 +40,63 @@
  */
 	//motor_driver* p_motor_1 = new my_motor_driver (p_serial, &DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1B1, &OCR1B);
 //Initialize my_motor_driver
-z_encoder_driver::z_encoder_driver(volatile uint8_t* DDR_en, volatile uint8_t* PIN_en, volatile uint8_t* PORT_EN, uint8_t Abit, uint8_t Bbit, volatile Direction* direction_in)
+z_encoder_driver::z_encoder_driver(volatile uint8_t* DDR_en, volatile uint8_t* PIN_en, volatile uint8_t* PORT_EN, uint8_t Abit, uint8_t Bbit, volatile Direction* direction_in, bool locatedAtZero_in)
    :
-   encoder_driver(DDR_en, PIN_en, PORT_EN, Abit, Bbit)
+   encoder_driver(DDR_en, PIN_en, PORT_EN, Abit, Bbit, direction_in, locatedAtZero_in)
 {
-   direction = direction_in;
 }
 
 void z_encoder_driver::updatePosition(void)
 {
+   #ifdef FAST_ENCODER
+      encoder_driver::updatePosition();
+   #else
    uint8_t newA = _getBit(*PIN, INA);
    uint8_t newB = _getBit(*PIN, INB);
-   
-   uint8_t sum = (newA << 1) | newB;
 
-   if (sum != prevSum)
-   {
-      if (*direction == INCREASING)
+      if (newA && newB)
       {
-         if (prevSum == 3)
+         if (*direction == INCREASING)
          {
-            position += 3;
+            position++;
          }
-         else
+         else if (*direction == DECREASING)
          {
-            position += 1;
+            position--;
          }
       }
-      else if (*direction == DECREASING)
+      uint8_t sum = (newA << 1) | newB;
+      if (sum != prevSum)
       {
-         if (prevSum == 3)
+         if (*direction == INCREASING)
          {
-            position -= 3;
+            if (prevSum == 3)
+            {
+               position += 3;
+            }
+            else
+            {
+               position += 1;
+            }
          }
-         else
+         else if (*direction == DECREASING)
          {
-            position -= 1;
+            if (prevSum == 3)
+            {
+               position -= 3;
+            }
+            else
+            {
+               position -= 1;
+            }
          }
+         #ifdef DEBUG
+            else
+            {
+               position = 9999;
+            }
+         #endif
+         prevSum = sum;
       }
-      prevSum = sum;
-   }
+   #endif
 }

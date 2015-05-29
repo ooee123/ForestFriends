@@ -23,6 +23,7 @@
 #include <avr/interrupt.h>
 
 #include "rs232int.h"                       // Include header for serial port class
+#include "shares.h"
 #include "motor_driver.h"                // Include header for the A/D class
 #include "pinLayout.h"
 #include "constants.h"
@@ -42,7 +43,8 @@
  */
 	//motor_driver* p_motor_1 = new my_motor_driver (p_serial, &DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1B1, &OCR1B);
 //Initialize my_motor_driver
-motor_driver::motor_driver (volatile uint8_t* DDR_en, volatile uint8_t* DDR_dir, volatile uint8_t* DDR_pwm, volatile uint8_t* PORT_en, volatile uint8_t* PORT_dir, uint8_t ENbit, uint8_t INAbit, uint8_t INBbit, uint8_t PWMbit, uint8_t COMtimer, volatile uint16_t* OCRtimer, uint16_t pConstant_in, double pGain_in, uint16_t powerMin_in, uint16_t powerMax_in)
+motor_driver::motor_driver (volatile uint8_t* DDR_en, volatile uint8_t* DDR_dir, volatile uint8_t* DDR_pwm, volatile uint8_t* PORT_en, volatile uint8_t* PORT_dir, uint8_t ENbit, uint8_t INAbit, uint8_t INBbit, uint8_t PWMbit, uint8_t COMtimer, volatile uint16_t* OCRtimer, bool towardsZero_in, double pGain_in, int16_t pConstant_in, int16_t powerMin_in, int16_t powerMax_in)
+
 {
 	DDR_DIR = DDR_dir;
 	DDR_EN = DDR_en;
@@ -59,6 +61,7 @@ motor_driver::motor_driver (volatile uint8_t* DDR_en, volatile uint8_t* DDR_dir,
 	OCR = OCRtimer;
 	PWM = PWMbit;
 
+   towardsZero = towardsZero_in;
    pConstant = pConstant_in;
    pGain = pGain_in;
    powerMin = powerMin_in;
@@ -165,14 +168,22 @@ void motor_driver::move_cw (void)
 }
 
 void motor_driver::move(int16_t delta)
-{	
-   delta = -delta;
+{
+   /*
+   if (towardsZero)
+   {
+      delta = -delta;
+   }
+   if (!positiveGoesAway)
+   {
+      delta = -delta;
+   }
+   */
 	if(delta > 0)
 	{
       direction = INCREASING;
 		set_power(PI(delta)); //go clockwise
 	}
-	
 	else if(delta < 0)
 	{
       direction = DECREASING;
@@ -185,11 +196,11 @@ volatile Direction* motor_driver::getDirection(void)
    return &direction;
 }
 
-double motor_driver::PI(uint16_t error)
+double motor_driver::PI(int16_t error)
 {
 	//Porportional error variables
-   double term;
-	double pTerm = pConstant + pGain * abs(error);
+   int16_t term;
+	int16_t pTerm = pConstant + pGain * abs(error);
 	
    /* Integral part
 	//Integral error variables
@@ -207,7 +218,7 @@ double motor_driver::PI(uint16_t error)
 	
 	else
 	{
-	  iState += position_error.get();
+	  iState += error;
 	  
 	  if( iState > iMax )
 	  {

@@ -17,6 +17,7 @@
  *    OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 //**************************************************************************************
 #include "frt_text_queue.h"                 // Header for text queue class
+#include "shares.h"
 #include "motor_driver.h"
 #include "encoder_task.h"                 // Header for this task
 #include <util/delay.h>

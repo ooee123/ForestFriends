@@ -40,7 +40,6 @@
 #ifndef _motor_driver_H_
 #define _motor_driver_H_
 
-
 #include "emstream.h"                       // Header for serial ports and devices
 #include "FreeRTOS.h"                       // Header for the FreeRTOS RTOS
 #include "task.h"                           // Header for FreeRTOS task functions
@@ -83,11 +82,12 @@ class motor_driver
 		uint8_t PWM;
 		
 		bool motor_trans;
+		bool towardsZero;
 
       double pGain;
-      uint16_t pConstant;
-      uint16_t powerMax;
-      uint16_t powerMin;
+      int16_t pConstant;
+      int16_t powerMax;
+      int16_t powerMin;
 
       Direction direction;
 		
@@ -97,7 +97,7 @@ class motor_driver
 		// where this constructor is called, the compiler will just fill in "NULL".
 		// In this case that has the effect of turning off diagnostic printouts.
 		// This follows for the "= 0" part.
-		motor_driver (volatile uint8_t* DDR_en, volatile uint8_t* DDR_dir, volatile uint8_t* DDR_pwm, volatile uint8_t* PORT_en, volatile uint8_t* PORT_dir, uint8_t ENbit, uint8_t INAbit, uint8_t INBbit, uint8_t PWMbit,uint8_t COMtimer, volatile uint16_t* OCRbit, uint16_t pConstant_in, double pGain_in, uint16_t powerMin_in, uint16_t powerMax_in);
+		motor_driver (volatile uint8_t* DDR_en, volatile uint8_t* DDR_dir, volatile uint8_t* DDR_pwm, volatile uint8_t* PORT_en, volatile uint8_t* PORT_dir, uint8_t ENbit, uint8_t INAbit, uint8_t INBbit, uint8_t PWMbit,uint8_t COMtimer, volatile uint16_t* OCRbit, bool towardsZero_in, double pGain_in, int16_t pConstant_in, int16_t powerMin_in, int16_t powerMax_in);
 		
 		// The set_power function first obtains 
    		// a reading from the power variables. 
@@ -113,8 +113,7 @@ class motor_driver
 		
 		void move_cw(void);
 		
-		
-		double PI(uint16_t);
+		double PI(int16_t);
 
       void move(int16_t);
 

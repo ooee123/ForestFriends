@@ -23,8 +23,10 @@
 #include <avr/interrupt.h>
 
 #include "rs232int.h"                       // Include header for serial port class
+//#include "shares.h"                // Include header for the A/D class
+//#include "z_encoder_driver.h"                // Include header for the A/D class
 #include "encoder_driver.h"                // Include header for the A/D class
-#include "shares.h"                // Include header for the A/D class
+#include "z_encoder_driver.h"                // Include header for the A/D class
 #define STOP_CONST 25
 
 //---------------------		//p_motor_1->set_power(control1);----------------------------------------------------------------
@@ -39,16 +41,26 @@
  */
 	//motor_driver* p_motor_1 = new my_motor_driver (p_serial, &DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1B1, &OCR1B);
 //Initialize my_motor_driver
-encoder_driver::encoder_driver(volatile uint8_t* DDR_en, volatile uint8_t* PIN_en, volatile uint8_t* PORT_EN, uint8_t Abit, uint8_t Bbit)
+encoder_driver::encoder_driver(volatile uint8_t* DDR_en, volatile uint8_t* PIN_en, volatile uint8_t* PORT_EN, uint8_t Abit, uint8_t Bbit, volatile Direction* direction_in, bool locatedAtZero_in)
 {
 	
 	DDR_EN = DDR_en;
 	
 	PIN = PIN_en;
+
+   direction = direction_in;
 	
-	INA = Abit; 
-	INB = Bbit; 
-	
+   if (locatedAtZero_in)
+   {
+      INA = Abit; 
+      INB = Bbit; 
+   }
+   else
+   {
+      INA = Bbit;
+      INB = Abit;
+   }
+
 	*DDR_EN &= ~((1 << INA) | (1 << INB)); // Input enable for Encoder Pin A and B
 
    *PORT_EN |= (1 << INA) | (1 << INB); // Activate pull up resister
@@ -57,38 +69,48 @@ encoder_driver::encoder_driver(volatile uint8_t* DDR_en, volatile uint8_t* PIN_e
 
 void encoder_driver::updatePosition(void)
 {
-   uint8_t newA = (*PIN >> INA) & 0x1;
-   uint8_t newB = (*PIN >> INB) & 0x1;
-   
-   uint8_t sum = (newA << 1) | newB;
 
-   if (sum != prevSum)
-   {
-      if (prevA != newA)
+   #ifdef FAST_ENCODER
+      if (*direction == INCREASING)
       {
-         if (prevSum == 1 || prevSum == 2)
+         position++;
+      }
+      else if (*direction == DECREASING)
+      {
+         position--;
+      }
+   #else
+      uint8_t newA = (*PIN >> INA) & 0x1;
+      uint8_t newB = (*PIN >> INB) & 0x1;
+      uint8_t sum = (newA << 1) | newB;
+      if (sum != prevSum)
+      {
+         if (prevA != newA)
          {
-            position++;
+            if (prevSum == 1 || prevSum == 2)
+            {
+               position++;
+            }
+            else
+            {
+               position--;
+            }
          }
          else
          {
-            position--;
+            if (prevSum == 0 || prevSum == 3)
+            {
+               position++;
+            }
+            else
+            {
+               position--;
+            }
          }
+         prevA = newA;
+         prevSum = sum;
       }
-      else
-      {
-         if (prevSum == 0 || prevSum == 3)
-         {
-            position++;
-         }
-         else
-         {
-            position--;
-         }
-      }
-      prevA = newA;
-      prevSum = sum;
-   }
+   #endif
 }
 
 int16_t encoder_driver::getPosition(void)
