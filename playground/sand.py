@@ -1,11 +1,9 @@
 #  ## !/usr/bin/env python
 
 import serial
-import string
-import time
 
 print "Set up.."
-port = serial.Serial("/dev/ttyAMA0", baudrate = 9600)
+port = serial.Serial("/dev/ttyAMA0", baudrate = 9600, timeout = 3.0)
 
 print "Reading"
 while True:
