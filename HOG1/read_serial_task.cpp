@@ -44,9 +44,9 @@ read_serial_task::read_serial_task (
 								 size_t a_stack_size,
 								 emstream* p_ser_dev,
                          read_serial_driver* serial_in,
-                         int16_t* desiredX_in,
-                         int16_t* desiredY_in,
-                         int16_t* desiredZ_in,
+                         int32_t* desiredX_in,
+                         int32_t* desiredY_in,
+                         int32_t* desiredZ_in,
                          encoder_driver* xEncoder_in,
                          encoder_driver* yEncoder_in,
                          encoder_driver* zEncoder_in,
@@ -94,11 +94,14 @@ void read_serial_task::run (void)
             p_serial->putchar(print_ser_queue.getchar());
          }
       #endif
-      #ifdef CURRENT_SENSORS
+      #ifdef CURRENT_SENSOR
+      uint8_t sense = ADMUX & 0x111;
       if (_getBit(ADCSR, ADIF))
       {
          #ifdef DEBUG
-            *p_serial << "CUR: ";
+            *p_serial << "CUR ";
+            *p_serial << sense;
+            *p_serial << ":";
             *p_serial << ADCH;
             *p_serial << "\n";
          #endif
@@ -108,7 +111,6 @@ void read_serial_task::run (void)
             *p_serial << "CURRENT SENSOR TRIPPED\n";
             shutdown();
          }
-         uint8_t sense = ADMUX & 0x111;
          ADMUX &= 0b11111000;
          ADMUX |= (sense + 1) % NUM_CURRENT_SENSORS;
          _setBit(ADCSRA, ADSC);
@@ -167,9 +169,9 @@ void read_serial_task::run (void)
 
 void read_serial_task::getNextCoordinate(void)
 {
-   *desiredX = serial->read_uint16_t();
-   *desiredY = serial->read_uint16_t();
-   *desiredZ = serial->read_uint16_t();
+   *desiredX = serial->read_int32_t();
+   *desiredY = serial->read_int32_t();
+   *desiredZ = serial->read_int32_t();
    *zReady = false;
    if (*desiredX == 0 && *desiredY == 0 && (*desiredZ == 0 || *desiredZ == HOME_THREE_QUARTER_BOARD || *desiredZ == HOME_ONE_POINT_FIVE_BOARD))
    {
@@ -181,20 +183,23 @@ void read_serial_task::getNextCoordinate(void)
       }
       else if (*desiredZ == HOME_ONE_POINT_FIVE_BOARD)
       {
-         boardOffset = INCH * 3 / 2;
+         boardOffset = 0;
       }
+      // boardOffset is the thickness of the board
    }
    else
    {
       #ifdef Z_CODE_TO_HEIGHT
-         int16_t desiredHeight = *desiredZ;
+         int32_t desiredHeight = *desiredZ;
          if (*desiredZ == START || *desiredZ == MOVE)
          {
             desiredHeight = DISTANCE_1_5 + boardOffset - HOVER_HEIGHT;
+            //desiredHeight = DISTANCE_1_5 + boardOffset - HOVER_HEIGHT;
          }
          else if (*desiredZ == LINE)
          {
-            desiredHeight = DISTANCE_1_5 + boardOffset + ROUTING_DEPTH;
+            //desiredHeight = DISTANCE_1_5 + boardOffset + ROUTING_DEPTH;
+            desiredHeight = DISTANCE_1_5 + +boardOffset + ROUTING_DEPTH;
          }
          *desiredZ = desiredHeight;
       #endif

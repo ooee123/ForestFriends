@@ -6,6 +6,7 @@ public class PathConverter {
 
    public static final int KERNING = Letter.INCH / 8;
    public static final int LINE_SPACING = Letter.INCH / 8;
+   public static final int MAX_DISTANCE = Letter.INCH / 4;
    private int currentX;
    private int currentY;
    private double scalar;
@@ -40,10 +41,12 @@ public class PathConverter {
          {
             p.translatePoints(strokeWidth / 2, strokeWidth / 2);
             p.translateOffset(currentX, currentY).scale(scalar);
+            p = breakApart(p, MAX_DISTANCE);
             paths.add(p);
             currentX += p.getWidth() + KERNING;
          }
       }
+
       return paths;
    }
 
@@ -196,6 +199,75 @@ public class PathConverter {
       }
       return paths;
    }
+
+   public static Paths breakApart(Paths paths, int maxDistance)
+   {
+      Paths newSplitPaths = new Paths(paths.getWidth(), paths.getHeight(), paths.getLetter());
+
+      Path prevPath = paths.get(0);
+      newSplitPaths.add(prevPath);
+      for (int i = 1; i < paths.size(); i++)
+      {
+         Path curPath = paths.get(i);
+
+         if (curPath.type == Path.MovementType.LINE)
+         {
+            if (distance(prevPath, curPath) > maxDistance)
+            {
+               // Split up the line
+               newSplitPaths.addAll(splitUpLine(prevPath, curPath, MAX_DISTANCE));
+            }
+         }
+         newSplitPaths.add(curPath);
+         prevPath = curPath;
+      }
+      return newSplitPaths;
+   }
+
+   public static int distance(Path p1, Path p2)
+   {
+      int d1 = p1.getX() - p2.getX();
+      int d2 = p1.getY() - p2.getY();
+      return (int)Math.round(Math.sqrt((d1 * d1) + (d2 * d2)));
+   }
+
+   public static List<Path> splitUpLine(Path p1, Path p2, int maxDistance)
+   {
+      List<Path> paths = new ArrayList<Path>();
+      int x1 = p1.getX();
+      int y1 = p1.getY();
+      int x2 = p2.getX();
+      int y2 = p2.getY();
+
+      System.err.println(String.format("%d, %d", x1, y1));
+
+      double totalDistance = distance(p1, p2);
+      int dX = x2 - x1;
+      int dY = y2 - y1;
+      System.err.println(String.format("Delta: %d, %d", dX, dY));
+      
+      double theta = Math.atan2(dY, dX);
+
+      double xFactor = Math.cos(theta);
+      double yFactor = Math.sin(theta);
+
+      if (xFactor == 0 || yFactor == 0)
+      {
+         return paths;
+      }
+
+      int inchingDistance = maxDistance;
+      
+      while (inchingDistance < totalDistance)
+      {
+         int newX = (int)Math.round(inchingDistance * xFactor);
+         int newY = (int)Math.round(inchingDistance * yFactor);
+         paths.add(new Path(x1 + newX, y1 + newY, Path.MovementType.LINE));
+         inchingDistance += maxDistance;
+      }
+      return paths;
+   }
+   
 
    public static void main(String args[]) {
    }

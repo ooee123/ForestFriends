@@ -43,7 +43,11 @@
  */
 	//motor_driver* p_motor_1 = new my_motor_driver (p_serial, &DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1B1, &OCR1B);
 //Initialize my_motor_driver
-motor_driver::motor_driver (volatile uint8_t* DDR_en, volatile uint8_t* DDR_dir, volatile uint8_t* DDR_pwm, volatile uint8_t* PORT_en, volatile uint8_t* PORT_dir, uint8_t ENbit, uint8_t INAbit, uint8_t INBbit, uint8_t PWMbit, uint8_t COMtimer, volatile uint16_t* OCRtimer, bool towardsZero_in, double pGain_in, int16_t pConstant_in, int16_t powerMin_in, int16_t powerMax_in)
+#ifdef INTEGRAL
+   motor_driver::motor_driver (volatile uint8_t* DDR_en, volatile uint8_t* DDR_dir, volatile uint8_t* DDR_pwm, volatile uint8_t* PORT_en, volatile uint8_t* PORT_dir, uint8_t ENbit, uint8_t INAbit, uint8_t INBbit, uint8_t PWMbit, uint8_t COMtimer, volatile uint16_t* OCRtimer, bool towardsZero_in, double pGain_in, int16_t pConstant_in, int16_t powerMin_in, int16_t powerMax_in, double iGain_in, int32_t iMin_in, int32_t iMax_in)
+#else
+   motor_driver::motor_driver (volatile uint8_t* DDR_en, volatile uint8_t* DDR_dir, volatile uint8_t* DDR_pwm, volatile uint8_t* PORT_en, volatile uint8_t* PORT_dir, uint8_t ENbit, uint8_t INAbit, uint8_t INBbit, uint8_t PWMbit, uint8_t COMtimer, volatile uint16_t* OCRtimer, bool towardsZero_in, double pGain_in, int16_t pConstant_in, int16_t powerMin_in, int16_t powerMax_in)
+#endif
 
 {
 	DDR_DIR = DDR_dir;
@@ -68,6 +72,12 @@ motor_driver::motor_driver (volatile uint8_t* DDR_en, volatile uint8_t* DDR_dir,
    powerMax = powerMax_in;
 
    direction = ZERO;
+   #ifdef INTEGRAL
+      iState = 0;
+      iGain = iGain_in;
+      iMin = iMin_in;
+      iMax = iMax_in;
+   #endif
 
 	*DDR_EN |= (1 << EN); // Output enable motors 1 and 2
 	*DDR_DIR |= (1 << INA) | (1 << INB); // Output enable motors 1 and 2
@@ -198,41 +208,36 @@ volatile Direction* motor_driver::getDirection(void)
 
 double motor_driver::PI(int16_t error)
 {
+   error = abs(error);
 	//Porportional error variables
-   int16_t term;
-	int16_t pTerm = pConstant + pGain * abs(error);
+   int16_t term = 0;
+	int16_t pTerm = pConstant + pGain * error;
 	
-   /* Integral part
-	//Integral error variables
-	double iTerm = 0.0000005;
-	uint32_t iState = 0;
-	uint32_t iMax = 72000000;
-	uint8_t iMin = 0;
-	double iGain = 0.0;
-	
-	
-	if(error <= TOLERANCE)
-	{
-	  iState = 0;
-	}
-	
-	else
-	{
-	  iState += error;
-	  
-	  if( iState > iMax )
-	  {
-		iState = iMax;
-	  }
-	  else if( iState < iMin )
-	  {
-		iState = iMin;
-	  }
-	  
-	  iTerm = iGain * iState;
-	}
-   End Integral */
-   term = pTerm;
+   #ifdef INTEGRAL
+      double iTerm;
+      
+      if (error <= TOLERANCE)
+      {
+         iState = 0;
+      }
+      else
+      {
+         iState += error;
+
+         if (iState > iMax)
+         {
+            iState = iMax;
+         }
+         else if (iState < iMin)
+         {
+            iState = iMin;
+         }
+
+         iTerm = iGain * iState;
+         term += iTerm;
+      }
+   #endif
+   term += pTerm;
    if (term > powerMax)
    {
       term = powerMax;

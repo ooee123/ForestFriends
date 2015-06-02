@@ -32,9 +32,9 @@ read_serial_driver::read_serial_driver(rs232 *serial_in)
    serial = serial_in;
 }
 
-uint16_t read_serial_driver::read_uint16_t()
+int32_t read_serial_driver::read_int32_t()
 {
-   uint16_t num;
+   int32_t num;
    #ifdef BINARY_SERIAL
       num = serial->getchar();
       return (num << 8) | serial->getchar();

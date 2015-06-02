@@ -90,12 +90,6 @@ void z_encoder_driver::updatePosition(void)
                position -= 1;
             }
          }
-         #ifdef DEBUG
-            else
-            {
-               position = 9999;
-            }
-         #endif
          prevSum = sum;
       }
    #endif

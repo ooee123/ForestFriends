@@ -113,7 +113,7 @@ void encoder_driver::updatePosition(void)
    #endif
 }
 
-int16_t encoder_driver::getPosition(void)
+int32_t encoder_driver::getPosition(void)
 {
    return position;
 }

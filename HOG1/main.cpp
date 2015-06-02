@@ -89,9 +89,21 @@ frt_text_queue print_ser_queue(32, NULL, 10);
 //motor_driver* xAxis = new motor_driver (&DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1A1, &OCR1A, false, X_PGAIN, X_PCONSTANT, X_POWERMIN, X_POWERMAX);
 //motor_driver* yAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1B1, &OCR1B, true, Y_PGAIN, Y_PCONSTANT, Y_POWERMIN, Y_POWERMAX);
 //motor_driver* zAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC1, PC7, PC6, PB7, COM1C1, &OCR1C, true, Z_PGAIN, Z_PCONSTANT, Z_POWERMIN, Z_POWERMAX);
-motor_driver xAxis(&DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1A1, &OCR1A, true, X_PGAIN, X_PCONSTANT, X_POWERMIN, X_POWERMAX);
-motor_driver yAxis(&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1B1, &OCR1B, false, Y_PGAIN, Y_PCONSTANT, Y_POWERMIN, Y_POWERMAX);
-motor_driver zAxis(&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC1, PC7, PC6, PB7, COM1C1, &OCR1C, false, Z_PGAIN, Z_PCONSTANT, Z_POWERMIN, Z_POWERMAX);
+motor_driver xAxis(&DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1A1, &OCR1A, true, X_PGAIN, X_PCONSTANT, X_POWERMIN, X_POWERMAX
+#ifdef INTEGRAL
+, X_IGAIN, X_IMIN, X_IMAX
+#endif
+);
+motor_driver yAxis(&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1B1, &OCR1B, false, Y_PGAIN, Y_PCONSTANT, Y_POWERMIN, Y_POWERMAX
+#ifdef INTEGRAL
+, Y_IGAIN, Y_IMIN, Y_IMAX
+#endif
+);
+motor_driver zAxis(&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC1, PC7, PC6, PB7, COM1C1, &OCR1C, false, Z_PGAIN, Z_PCONSTANT, Z_POWERMIN, Z_POWERMAX
+#ifdef INTEGRAL
+, Z_IGAIN, Z_IMIN, Z_IMAX
+#endif
+);
 
 encoder_driver xEncoder(&X_ENCODER_DDR, &X_ENCODER_PIN, &X_ENCODER_PORT, X_ENCODER_PINA, X_ENCODER_PINB, xAxis.getDirection(), true);
 encoder_driver yEncoder(&Y_ENCODER_DDR, &Y_ENCODER_PIN, &Y_ENCODER_PORT, Y_ENCODER_PINA, Y_ENCODER_PINB, yAxis.getDirection(), false);
@@ -101,9 +113,9 @@ z_encoder_driver zEncoder(&Z_ENCODER_DDR, &Z_ENCODER_PIN, &Z_ENCODER_PORT, Z_ENC
 	// serial port will be used by the user interface task after setup is complete and
 	// the task scheduler has been started by the function vTaskStartScheduler()
 rs232 ser_port (9600, 0);
-int16_t desiredX = 0;
-int16_t desiredY = 0;
-int16_t desiredZ = 0;
+int32_t desiredX = 0;
+int32_t desiredY = 0;
+int32_t desiredZ = 0;
 volatile State state = NORMAL;
 bool zReady = false;
 
@@ -240,7 +252,6 @@ int main (void)
 
       // No MUX values needed to be changed to use ADC0
 
-      //ADCSRA |= (1 << ADFR);  // Set ADC to Free-Running Mode
       ADCSRA |= (1 << ADEN);  // Enable ADC
       ADCSRA |= (1 << ADSC);  // Start A2D Conversions
 
@@ -260,6 +271,25 @@ int main (void)
 	// Here's where the RTOS scheduler is started up. It should never exit as long as
 	// power is on and the microcontroller isn't rebooted
 
+   while (!getXMaxLimitSwitch())
+   {
+      ser_port << "X";
+      xAxis.move(X_CALIBRATE_SPEED);
+   }
+   xAxis.brake();
+
+   while (!getYMaxLimitSwitch())
+   {
+      ser_port << "Y";
+      yAxis.move(Y_CALIBRATE_SPEED);
+   }
+   yAxis.brake();
+   while (!getZMaxLimitSwitch())
+   {
+      ser_port << "Z";
+      zAxis.move(Z_CALIBRATE_SPEED);
+   }
+   zAxis.brake();
    //xAxis.move(550);
    //yAxis.move(150);
    //zAxis.move(128);

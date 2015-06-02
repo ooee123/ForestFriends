@@ -45,7 +45,11 @@ F_CPU = 16000000UL
 # -DUSE_HEX_DUMPS      Include functions for printing hex-formatted memory dumps
 #OTHERS = -DSERIAL_DEBUG -DDEBUG -DZ_AXIS -DMOTOR_DEBUG -DZ_CODE_TO_HEIGHT
 
-OTHERS = -DSERIAL_DEBUG -DDEBUG -DZ_CODE_TO_HEIGHT -DFAST_ENCODER -DCURRENT_SENSORS -DMOTOR_DEBUG
+#OTHERS = -DSERIAL_DEBUG -DDEBUG -DZ_CODE_TO_HEIGHT -DFAST_ENCODER -DCURRENT_SENSOR -DMOTOR_DEBUG
+#OTHERS = -DSERIAL_DEBUG -DDEBUG -DZ_CODE_TO_HEIGHT -DFAST_ENCODER -DCURRENT_SENSOR -DINTEGRAL
+#OTHERS = -DSERIAL_DEBUG -DDEBUG -DZ_CODE_TO_HEIGHT -DFAST_ENCODER -DINTEGRAL -DMOTOR_DEBUG
+#OTHERS = -DSERIAL_DEBUG -DZ_CODE_TO_HEIGHT -DFAST_ENCODER -DINTEGRAL -DMOTOR_DEBUG
+OTHERS = -DSERIAL_DEBUG -DZ_CODE_TO_HEIGHT -DINTEGRAL 
 
 # If the code -DTASK_SETUP_AND_LOOP is specified, ME405/FreeRTOS tasks classes will be
 # required to provide methods setup() and loop(). Otherwise, they must only provide a
@@ -278,7 +282,7 @@ install:  $(TARGET).hex
   else ifeq ($(PROG), bootloader)
 	@echo "ERROR: No bootloader set up for this Makefile"
   else ifeq ($(PROG), usbtiny)
-	avrdude -p $(MCU) -c usbtiny -B 1 -Uflash:w:$(TARGET).hex
+	avrdude  -F -p $(MCU) -c usbtiny -B 1 -Uflash:w:$(TARGET).hex
   else
 	@echo "ERROR: No programmer" $(PROG) "in the Makefile"
   endif

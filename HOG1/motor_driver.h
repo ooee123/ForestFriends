@@ -89,6 +89,13 @@ class motor_driver
       int16_t powerMax;
       int16_t powerMin;
 
+      #ifdef INTEGRAL
+         double iGain;
+         int32_t iState;
+         int32_t iMin;
+         int32_t iMax;
+      #endif
+
       Direction direction;
 		
 	public:
@@ -97,7 +104,11 @@ class motor_driver
 		// where this constructor is called, the compiler will just fill in "NULL".
 		// In this case that has the effect of turning off diagnostic printouts.
 		// This follows for the "= 0" part.
-		motor_driver (volatile uint8_t* DDR_en, volatile uint8_t* DDR_dir, volatile uint8_t* DDR_pwm, volatile uint8_t* PORT_en, volatile uint8_t* PORT_dir, uint8_t ENbit, uint8_t INAbit, uint8_t INBbit, uint8_t PWMbit,uint8_t COMtimer, volatile uint16_t* OCRbit, bool towardsZero_in, double pGain_in, int16_t pConstant_in, int16_t powerMin_in, int16_t powerMax_in);
+      #ifdef INTEGRAL
+         motor_driver (volatile uint8_t* DDR_en, volatile uint8_t* DDR_dir, volatile uint8_t* DDR_pwm, volatile uint8_t* PORT_en, volatile uint8_t* PORT_dir, uint8_t ENbit, uint8_t INAbit, uint8_t INBbit, uint8_t PWMbit,uint8_t COMtimer, volatile uint16_t* OCRbit, bool towardsZero_in, double pGain_in, int16_t pConstant_in, int16_t powerMin_in, int16_t powerMax_in, double iGain_in, int32_t iMin_in, int32_t iMax_in);
+      #else
+         motor_driver (volatile uint8_t* DDR_en, volatile uint8_t* DDR_dir, volatile uint8_t* DDR_pwm, volatile uint8_t* PORT_en, volatile uint8_t* PORT_dir, uint8_t ENbit, uint8_t INAbit, uint8_t INBbit, uint8_t PWMbit,uint8_t COMtimer, volatile uint16_t* OCRbit, bool towardsZero_in, double pGain_in, int16_t pConstant_in, int16_t powerMin_in, int16_t powerMax_in);
+      #endif
 		
 		// The set_power function first obtains 
    		// a reading from the power variables. 
