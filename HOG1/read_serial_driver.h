@@ -76,7 +76,7 @@ class read_serial_driver
       read_serial_driver(rs232* serial_in);
 		
       void read();
-      uint16_t read_uint16_t();
+      int32_t read_int32_t();
       uint8_t read_uint8_t();
 
 		

@@ -74,7 +74,7 @@ class encoder_driver
 		
 		uint8_t INA; 
 		uint8_t INB; 
-      int16_t position;
+      int32_t position;
       uint8_t prevA;
       uint8_t prevSum;
 
@@ -90,7 +90,7 @@ class encoder_driver
 
       void setSerial(emstream*);
 
-      int16_t getPosition(void);		
+      int32_t getPosition(void);		
 
       void reset(void);
 }; // end of class my_motor_driver
