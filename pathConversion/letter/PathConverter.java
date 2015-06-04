@@ -4,7 +4,7 @@ import java.util.*;
 
 public class PathConverter {
 
-   public static final int KERNING = Letter.INCH / 8;
+   public static final int KERNING = Dimensions.HEIGHT / 8;
    public static final int LINE_SPACING = Letter.INCH / 8;
    public static final int MAX_DISTANCE = Letter.INCH / 4;
    private int currentX;
