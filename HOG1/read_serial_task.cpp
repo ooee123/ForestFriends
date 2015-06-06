@@ -189,7 +189,7 @@ void read_serial_task::getNextCoordinate(void)
    }
    else
    {
-      #ifdef Z_CODE_TO_HEIGHT
+      #ifndef NO_Z_CODE_CONVERSION
          int32_t desiredHeight = *desiredZ;
          if (*desiredZ == START || *desiredZ == MOVE)
          {
