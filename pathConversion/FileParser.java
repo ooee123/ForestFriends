@@ -62,7 +62,7 @@ public class FileParser
          if (fontHeight == 1)
          {
          }
-         else if (fontHeight == 2)
+         else if (fontHeight >= 2)
          {
             strokeWidth = Letter.INCH * 3 / 8;
          }
