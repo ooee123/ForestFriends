@@ -279,7 +279,7 @@ class Machine(tk.Frame):
 
    def loadCoordPars(self) :
       self.cont.show_frame(Finish)
-      #coordParsing.coordParsing(thick)
+      coordParsing.coordParsing(thick)
       #coordParsing.test(thick)
    
 
