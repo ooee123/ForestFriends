@@ -27,6 +27,7 @@ public class FontPainter extends Component {
    private int strokeWidth;
    private static final boolean displayFrame = false;
    private static final double DISPLAY_SCALE = 1.0 / 64.0;
+   //private static final double DISPLAY_SCALE = 1.0 / 4.0;
 
    public FontPainter(int width, int height, int strokeWidth)
    {
@@ -41,7 +42,6 @@ public class FontPainter extends Component {
          frame.pack();
          frame.setVisible(true);
       }
-      //img = new BufferedImage(preferredWidth, preferredHeight, BufferedImage.TYPE_BYTE_BINARY);
       img = new BufferedImage(preferredWidth, preferredHeight, BufferedImage.TYPE_INT_RGB);
       imgGraphics = img.createGraphics();
       //imgGraphics.setColor(Color.WHITE);

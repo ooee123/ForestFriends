@@ -65,7 +65,6 @@ public class FileParser
          else if (fontHeight == 2)
          {
             strokeWidth = Letter.INCH * 3 / 8;
-            strokeWidth = Letter.INCH * 1 / 4;
          }
          System.out.println(thickness + " " + width + " " + height + " " + fontHeight);
       }
