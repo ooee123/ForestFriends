@@ -6,7 +6,7 @@ from tkFileDialog import askopenfilename
 import shutil
 from PIL import Image, ImageTk
 import os
-#import coordParsing
+import coordParsing
 
 LARGE_FONT= ("Verdana", 15)
 CONFIRM_FONT= ("Verdana", 14)
@@ -279,7 +279,7 @@ class Machine(tk.Frame):
 
    def loadCoordPars(self) :
       self.cont.show_frame(Finish)
-      #coordParsing.coordParsing(thick)
+      coordParsing.coordParsing(thick)
       #coordParsing.test(thick)
    
 
