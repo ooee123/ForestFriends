@@ -43,18 +43,18 @@ F_CPU = 16000000UL
 # -DTRANSITION_TRACE   For printing state transition traces on a serial device
 # -DTASK_PROFILE       For doing profiling, measurement of how long tasks take to run
 # -DUSE_HEX_DUMPS      Include functions for printing hex-formatted memory dumps
-#OTHERS = -DSERIAL_DEBUG -DDEBUG -DZ_AXIS -DMOTOR_DEBUG -DZ_CODE_TO_HEIGHT
-
-#OTHERS = -DSERIAL_DEBUG -DDEBUG -DZ_CODE_TO_HEIGHT -DFAST_ENCODER -DCURRENT_SENSOR -DMOTOR_DEBUG
-#OTHERS = -DSERIAL_DEBUG -DDEBUG -DZ_CODE_TO_HEIGHT -DFAST_ENCODER -DCURRENT_SENSOR -DINTEGRAL
-#OTHERS = -DSERIAL_DEBUG -DDEBUG -DZ_CODE_TO_HEIGHT -DFAST_ENCODER -DINTEGRAL -DMOTOR_DEBUG
-#OTHERS = -DSERIAL_DEBUG -DZ_CODE_TO_HEIGHT -DFAST_ENCODER -DINTEGRAL -DMOTOR_DEBUG
-OTHERS = -DSERIAL_DEBUG -DZ_CODE_TO_HEIGHT -DINTEGRAL 
+OTHERS = -DSERIAL_DEBUG
+#OTHERS += -DDEBUG
+#OTHERS += -DMOTOR_DEBUG
+#OTHERS += -DNO_Z_CODE_CONVERSION
+OTHERS += -DBINARY_SERIAL
+#OTHERS += -DINTEGRAL
+#OTHERS += -DCURRENT_SENSOR
 
 # If the code -DTASK_SETUP_AND_LOOP is specified, ME405/FreeRTOS tasks classes will be
 # required to provide methods setup() and loop(). Otherwise, they must only provide a
 # a method called run() which is called just once by the scheduler.
-OTHERS += 
+#OTHERS += 
 
 # Other codes, used for turning on special features in a given project, can be put here
 # -DSWOOP_BOARD        Tells the nRF24L01 radio driver to set up for the Swoop 1 board

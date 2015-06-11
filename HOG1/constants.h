@@ -35,9 +35,9 @@ typedef enum State
 
 #define X_PGAIN     5.5
 #define X_PCONSTANT 20
-#define X_POWERMIN  280
+#define X_POWERMIN  300
 #define X_POWERMAX  700
-#define X_IGAIN     0.003
+#define X_IGAIN     0.0003
 #define X_IMIN      0
 #define X_IMAX      100000
 
@@ -45,7 +45,7 @@ typedef enum State
 #define Y_PCONSTANT 5
 #define Y_POWERMIN  100
 #define Y_POWERMAX  400
-#define Y_IGAIN     0.002
+#define Y_IGAIN     0.0002
 #define Y_IMIN      0
 #define Y_IMAX      100000
 
@@ -53,7 +53,7 @@ typedef enum State
 #define Z_PCONSTANT 0
 #define Z_POWERMIN  160
 #define Z_POWERMAX  230
-#define Z_IGAIN     0.001
+#define Z_IGAIN     0.0001
 #define Z_IMIN      0
 #define Z_IMAX      100000
 

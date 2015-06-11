@@ -20,7 +20,7 @@ import java.io.*;
  */
 public class FileParser
 {
-   private static int strokeWidth = Letter.INCH * 1 / 8;
+   private static int strokeWidth = Letter.INCH * 1 / 4;
    private static int thickness = 1;
    private static int fontHeight = 1;
    private static int width = 12;

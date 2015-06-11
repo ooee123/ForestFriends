@@ -4,7 +4,7 @@ import java.util.*;
 
 public class PathConverter {
 
-   public static final int KERNING = Letter.INCH / 8;
+   public static final int KERNING = Dimensions.HEIGHT / 8;
    public static final int LINE_SPACING = Letter.INCH / 8;
    public static final int MAX_DISTANCE = Letter.INCH / 4;
    private int currentX;
@@ -41,7 +41,7 @@ public class PathConverter {
          {
             p.translatePoints(strokeWidth / 2, strokeWidth / 2);
             p.translateOffset(currentX, currentY).scale(scalar);
-            p = breakApart(p, MAX_DISTANCE);
+            //p = breakApart(p, MAX_DISTANCE);
             paths.add(p);
             currentX += p.getWidth() + KERNING;
          }
