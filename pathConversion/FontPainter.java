@@ -27,6 +27,7 @@ public class FontPainter extends Component {
    private int strokeWidth;
    private static final boolean displayFrame = false;
    private static final double DISPLAY_SCALE = 1.0 / 64.0;
+   public static final int MAX_DISTANCE = Letter.INCH / 4;
    //private static final double DISPLAY_SCALE = 1.0 / 4.0;
 
    public FontPainter(int width, int height, int strokeWidth)
@@ -76,7 +77,6 @@ public class FontPainter extends Component {
 
    public void addLetter(Paths paths)
    {
-      paths.flipCoordinates();
       letters.add(paths);
    }
 

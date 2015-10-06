@@ -145,4 +145,13 @@ public class Paths extends ArrayList<Path>
    {
       return letter;
    }
+
+   public String toString()
+   {
+      StringBuilder buf = new StringBuilder();
+      for (Path p : this) {
+         buf.append(p.toString() + "\n");
+      }
+      return buf.toString();
+   }
 }

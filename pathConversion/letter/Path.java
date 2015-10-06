@@ -63,4 +63,9 @@ public class Path {
    {
       return (short)(y + offsetY);
    }
+
+   public String toString()
+   {
+      return getX() + ":" + getY();
+   }
 }

@@ -221,6 +221,7 @@ public class PathConverter {
          newSplitPaths.add(curPath);
          prevPath = curPath;
       }
+      System.err.println(newSplitPaths);
       return newSplitPaths;
    }
 
@@ -239,22 +240,22 @@ public class PathConverter {
       int x2 = p2.getX();
       int y2 = p2.getY();
 
-      System.err.println(String.format("%d, %d", x1, y1));
+      //System.err.println(String.format("%d, %d", x1, y1));
 
       double totalDistance = distance(p1, p2);
       int dX = x2 - x1;
       int dY = y2 - y1;
-      System.err.println(String.format("Delta: %d, %d", dX, dY));
+      //System.err.println(String.format("Delta: %d, %d", dX, dY));
+
+      if (dX == 0 || dY == 0)
+      {
+         return paths;
+      }
       
       double theta = Math.atan2(dY, dX);
 
       double xFactor = Math.cos(theta);
       double yFactor = Math.sin(theta);
-
-      if (xFactor == 0 || yFactor == 0)
-      {
-         return paths;
-      }
 
       int inchingDistance = maxDistance;
       
@@ -265,6 +266,7 @@ public class PathConverter {
          paths.add(new Path(x1 + newX, y1 + newY, Path.MovementType.LINE));
          inchingDistance += maxDistance;
       }
+      System.err.println(paths);
       return paths;
    }
    

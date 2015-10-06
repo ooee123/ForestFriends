@@ -26,6 +26,7 @@ public class FileParser
    private static int width = 12;
    private static int height = 12;
    private static final int SAFE_ZONE_BORDER_WIDTH = Letter.INCH;
+   public static final int MAX_DISTANCE = Letter.INCH / 4;
 
    public static void main(String args[])
    {
@@ -107,8 +108,13 @@ public class FileParser
             System.err.println(e);
             //System.exit(1);
          }
+         System.err.println("Before add letter");
+         System.err.println(paths);
          for (Paths p : paths) {
+            p.flipCoordinates();
+            p = PathConverter.breakApart(p, MAX_DISTANCE);
             fp.addLetter(p);
+            System.err.println(p);
             printPaths(p, printer);
          }
          allPaths.addAll(paths);
@@ -125,6 +131,9 @@ public class FileParser
 
    private static void printPaths(Paths paths, PrintWriter printer)
    {
+      System.err.println("Printing my damn own paths");
+      System.err.println(paths);
+      System.err.println("Printing their paths");
       for (Path p: paths)
       {
          String toPrint = String.format("%d, %d, %d\n", p.getX(), p.getY(), p.type.ordinal());
