@@ -78,6 +78,7 @@ private:
    uint16_t boardOffset;
 
    void getNextCoordinate(void);
+   bool checkForEmoOff(void);
 
 protected:
 	// No protected variables or methods for this class

@@ -28,6 +28,9 @@ typedef enum State
 #define HOME_THREE_QUARTER_BOARD  3
 #define HOME_ONE_POINT_FIVE_BOARD 4
 
+#define ENCODER_EMO_TOLERANCE 16
+#define CURRENT_EMO_TOLERANCE 16
+
 // Let DISTANCE_1_5 be the distance from the router bit to the surface of a 1.5 in board
 #define DISTANCE_1_5     (INCH / 4)
 #define HOVER_HEIGHT     (INCH / 4)

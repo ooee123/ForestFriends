@@ -194,12 +194,10 @@ void read_serial_task::getNextCoordinate(void)
          if (*desiredZ == START || *desiredZ == MOVE)
          {
             desiredHeight = DISTANCE_1_5 + boardOffset - HOVER_HEIGHT;
-            //desiredHeight = DISTANCE_1_5 + boardOffset - HOVER_HEIGHT;
          }
          else if (*desiredZ == LINE)
          {
-            //desiredHeight = DISTANCE_1_5 + boardOffset + ROUTING_DEPTH;
-            desiredHeight = DISTANCE_1_5 + +boardOffset + ROUTING_DEPTH;
+            desiredHeight = DISTANCE_1_5 + boardOffset + ROUTING_DEPTH;
          }
          *desiredZ = desiredHeight;
       #endif
@@ -227,3 +225,30 @@ void read_serial_task::shutdown(void)
    _clearBit(SOLID_STATE_PORT, SOLID_STATE_PIN_NUM);
    for (;;);
 }
+
+bool read_serial_task::checkForEmoOff(void) {
+#ifdef CURRENT_SENSOR
+   static int oldX = xEncoder.getPosition();
+   static int oldY = yEncoder.getPosition();
+   static int oldZ = zEncoder.getPosition();
+   // Check X pin
+   ADCSRA |= (1 << ADSC);
+   ADMUX = 0;
+
+   int newX, newY, newZ;
+   newX = xEncoder.getPosition();
+   newY = yEncoder.getPosition();
+   newZ = zEncoder.getPosition();
+
+   bool encodersZero, currentZero;
+   if (abs(oldX - newX) < ENCODER_EMO_TOLERANCE &&
+         abs(oldY - newY) < ENCODER_EMO_TOLERANCE &&
+         abs(oldZ - newZ) < ENCODER_EMO_TOLERANCE) {
+      encodersZero = true;
+   }
+   int current_reading;
+   ENCODER_EMO_TOLERANCE;
+#endif
+   return false;
+}
+
