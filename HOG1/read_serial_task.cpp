@@ -226,14 +226,25 @@ void read_serial_task::shutdown(void)
    for (;;);
 }
 
+int read_serial_task::getA2DResult(void) {
+   int val = ADCH << 2;
+   val += ADCL >> 6;
+   return val;
+}
+
+void read_serial_task::startA2D(int pinNumber) {
+   ADMUX = (ADMUX & 0b11111000) + pinNumber;
+   ADCSRA |= (1 << ADSC);
+}
+
 bool read_serial_task::checkForEmoOff(void) {
 #ifdef CURRENT_SENSOR
    static int oldX = xEncoder.getPosition();
    static int oldY = yEncoder.getPosition();
    static int oldZ = zEncoder.getPosition();
-   // Check X pin
-   ADCSRA |= (1 << ADSC);
-   ADMUX = 0;
+   static char currentPins[] = {X_CURRENT_PIN_NUM, Y_CURRENT_PIN_NUM, Z_CURRENT_PIN_NUM};
+   static int pinIndex;
+   static bool motorWasOff = false;
 
    int newX, newY, newZ;
    newX = xEncoder.getPosition();
@@ -245,10 +256,31 @@ bool read_serial_task::checkForEmoOff(void) {
          abs(oldY - newY) < ENCODER_EMO_TOLERANCE &&
          abs(oldZ - newZ) < ENCODER_EMO_TOLERANCE) {
       encodersZero = true;
+      for (int k = 0; k < NUM_CURRENT_SENSORS; k++) {
+         pinIndex = (pinIndex + 1) % NUM_CURRENT_SENSORS;
+         startA2D(currentPins[pinIndex]);
+         while (_getBit(ADCSRC, ADSC) != 0);
+         int current_reading = getA2DResult();
+         if (!isWithinTolerance(current_reading, ADC_ZERO_CURRENT, CURRENT_EMO_TOLERANCE)) {
+            // Motor is on!
+            motorWasOff = false;
+            return false;
+         }
+      }
+      // all 3 motors are drawing no current
+      if (motorWasOff == false) {
+         // No current in the last check either
+         return true;
+      } else {
+         motorWasOff = true;
+         return false;
+      }
+   } else {
+      encodersZero = false;
+      motorWasOff = false;
+      return false;
    }
-   int current_reading;
-   ENCODER_EMO_TOLERANCE;
-#endif
+   #endif
    return false;
 }
 

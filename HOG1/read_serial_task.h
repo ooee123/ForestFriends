@@ -80,8 +80,12 @@ private:
    void getNextCoordinate(void);
    bool checkForEmoOff(void);
 
+
 protected:
 	// No protected variables or methods for this class
+   int getA2DResult(void);
+
+   void startA2D(int);
 
 public:
    read_serial_task (

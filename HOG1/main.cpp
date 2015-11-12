@@ -235,15 +235,19 @@ int main (void)
    setupLimitSwitch(Z_LIMIT_DDR, Z_LIMIT_PORT, Z_MAX_LIMIT_PIN_NUM);
    #ifdef CURRENT_SENSOR
       
+      /*
       _setBit(CURRENT_DDR, X_CURRENT_PIN_POWER);
       _setBit(CURRENT_DDR, Y_CURRENT_PIN_POWER);
       _setBit(CURRENT_DDR, Z_CURRENT_PIN_POWER);
+      */
       _clearBit(CURRENT_DDR, X_CURRENT_PIN_NUM);
       _clearBit(CURRENT_DDR, Y_CURRENT_PIN_NUM);
       _clearBit(CURRENT_DDR, Z_CURRENT_PIN_NUM);
+      /*
       _setBit(CURRENT_PORT, X_CURRENT_PIN_POWER);
       _setBit(CURRENT_PORT, Y_CURRENT_PIN_POWER);
       _setBit(CURRENT_PORT, Z_CURRENT_PIN_POWER);
+      */
 
       ADCSRA |= (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0); // Set ADC prescalar to 128 - 125KHz sample rate @ 16MHz
 
@@ -290,10 +294,6 @@ int main (void)
       zAxis.move(Z_CALIBRATE_SPEED);
    }
    zAxis.brake();
-   //xAxis.move(550);
-   //yAxis.move(150);
-   //zAxis.move(128);
-   //zAxis.move(165);
 
 	vTaskStartScheduler ();
 }

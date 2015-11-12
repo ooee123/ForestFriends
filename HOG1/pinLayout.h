@@ -47,9 +47,11 @@
 #define CURRENT_DDR          DDRF
 #define CURRENT_PORT         PORTF
 #define CURRENT_PIN          PINF
+/*
 #define X_CURRENT_PIN_POWER  PF0
 #define Y_CURRENT_PIN_POWER  PF1
 #define Z_CURRENT_PIN_POWER  PF2
+*/
 #define X_CURRENT_PIN_NUM    PF3
 #define Y_CURRENT_PIN_NUM    PF4
 #define Z_CURRENT_PIN_NUM    PF5

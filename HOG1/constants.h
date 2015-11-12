@@ -65,9 +65,11 @@ typedef enum State
 #define Z_CALIBRATE_SPEED -190
 
 #define ADC_MAX 31
+#define ADC_ZERO_CURRENT = (1 << 8) / 2;
+#define CURRENT_TOLERANCE = 2;
 
-//#define isWithinTolerance(x, y, t) (abs((x) - (y)) <= t)
-#define isWithinTolerance(x, y, t) (abs((x) - (y)) <= TOLERANCE)
+#define isWithinTolerance(x, y, t) (abs((x) - (y)) <= t)
+//#define isWithinTolerance(x, y, t) (abs((x) - (y)) <= TOLERANCE)
 //#define isWithinTolerance(x, y) (abs((x) - (y)) <= TOLERANCE)
 #define NEXT_COMMAND "@"
 #define AT_HOME "#"
