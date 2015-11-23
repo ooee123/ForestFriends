@@ -144,6 +144,7 @@ class ImportFile(tk.Frame):
       
    def getErrorCodes(self):
       errorCodes = {}
+      os.chdir(os.path.dirname(__file__))
       fp = open("../pathConversion/ERROR_CODES.txt")
       for l in fp:
          pieces = l.split(",")
