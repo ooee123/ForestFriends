@@ -2,11 +2,11 @@ import serial
 import os
 
 # for the pi
-port = serial.Serial("/dev/ttyUSB0", baudrate=9600, timeout=2)
+#port = serial.Serial("/dev/ttyUSB0", baudrate=9600, timeout=2)
 # for the mac
 #port = serial.Serial("/dev/tty.usbserial-A6026OUJ", baudrate=9600)
 # for testing
-#port = 1
+port = 1
 filename = "coordinates.txt"
 
 # converts a number to a 2 byte binary integer

@@ -31,9 +31,10 @@ class GUI(tk.Tk):
          frames[F] = frame
          frame.grid(row=0, column=0, sticky="nsew")
 
-      self.show_frame(Start)
-      
-
+      if (len(sys.argv) > 1):
+         self.show_frame(ImportFile)
+      else:
+         self.show_frame(Start)
 
    def show_frame(self, cont):
 
@@ -69,7 +70,7 @@ class ImportFile(tk.Frame):
       #label.pack(pady=10,padx=10)
 
       button = tk.Button(self, text="Import File", height = 5,font=LARGE_FONT,
-         command=self.openFile)
+         command=self.openFileWithFileDialog)
          #command=lambda: controller.show_frame(VerifyDesign))
       button.pack(fill=X)
 
@@ -78,13 +79,16 @@ class ImportFile(tk.Frame):
          #command=lambda: controller.show_frame(Start))
       button2.pack(fill=X)
 
+   def openFileWithFileDialog(self):
+      filename = tkinter.filedialog.askopenfilename(parenimaget=self.root)
+      filename = askopenfilename().overridedirect(1)
+      openFile(self, filename)
 
-   def openFile(self):
+   def openFile(self, filename):
       print("importing file")
       #filename = tkinter.filedialog.askopenfilename(parenimaget=self.root)
       #filename = askopenfilename().overridedirect(1)
       app.withdraw()
-      filename = askopenfilename(filetypes=[('cpff files', '.cpff')])
       print(filename)
       app.deiconify()
       shutil.copyfile(filename, "file.txt") 
@@ -95,6 +99,10 @@ class ImportFile(tk.Frame):
          self.javaExec()
          self.resize()
          self.cont.show_frame(VerifyDesign)
+
+   def chooseFile(self):
+      filename = askopenfilename(filetypes=[('cpff files', '.cpff')])
+      return filename
 
    def resize(self):
       img = Image.open("original.jpg")
@@ -221,20 +229,24 @@ class VerifyParts(tk.Frame):
       else:
          if int(line) == 2:
             line = str("1.5")
-      label1 = tk.Label(self, text=("Board Thickness: " + line), font=LARGE_FONT).grid(row=1, column=0)
+      #label1 = tk.Label(self, text=("Board Thickness: " + line), font=LARGE_FONT).grid(row=1, column=0)
+      label1 = tk.Label(self, text=("Board Thickness: " + line), font=LARGE_FONT)
       #label1.pack()#, compound=CENTER)
 
       #print "read line %s" % (line)
       line = data.readline()
-      label2 = tk.Label(self, text=("Width of Board: " + line), font=LARGE_FONT).grid(row=2, column=0)
+      #label2 = tk.Label(self, text=("Width of Board: " + line), font=LARGE_FONT).grid(row=2, column=0)
+      label2 = tk.Label(self, text=("Width of Board: " + line), font=LARGE_FONT)
       #label2.pack(anchor=N)#, compound=TOP)
       #print "read line %s" % (line)
       line = data.readline()
-      label3 = tk.Label(self, text=("Height of Board: " + line), font=LARGE_FONT).grid(row=3, column=0)
+      #label3 = tk.Label(self, text=("Height of Board: " + line), font=LARGE_FONT).grid(row=3, column=0)
+      label3 = tk.Label(self, text=("Height of Board: " + line), font=LARGE_FONT)
       #label3.pack(anchor=N, compound=side)
       #print "read line %s" % (line)
       line = data.readline()
-      label4 = tk.Label(self, text=("Letter Height: " + line), font=LARGE_FONT).grid(row=4, column=0)
+      #label4 = tk.Label(self, text=("Letter Height: " + line), font=LARGE_FONT).grid(row=4, column=0)
+      label4 = tk.Label(self, text=("Letter Height: " + line), font=LARGE_FONT)
       #label4 = tk.Label(self, text=("Router Bit Size: " + line), font=LARGE_FONT)
       #label4.pack(anchor=N)
       #print "read line %s" % (line)
@@ -292,12 +304,25 @@ class Finish(tk.Frame):
          command=restartFrame)
       button.pack(fill=BOTH)
 
+print ("1")
 app = GUI()
+print ("2")
 #app.lower()
 app.overrideredirect(True)
+print ("3")
 app.title("Forest Friends")
+print ("4")
 app.geometry("320x240")
+print ("5")
 #app.geometry("{0}x{1}+0+0".format(app.winfo_screenwidth(), app.winfo_screenheight()))
 app.focus_set()
+print ("6")
 app.bind("<Escape>", lambda e: app.quit())
+print ("8")
+if (len(sys.argv) > 1):
+   print ("9")
+   frames[ImportFile].openFile(sys.argv[1])
+print ("10")
+print ("7")
 app.mainloop()
+

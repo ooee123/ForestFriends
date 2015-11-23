@@ -45,7 +45,7 @@ public class FileParser
          }
          catch (FileNotFoundException e)
          {
-            System.err.println("NOT FOUND");
+            System.err.println(e.toString());
             System.exit(-1);
          }
       }
@@ -67,7 +67,6 @@ public class FileParser
          {
             strokeWidth = Letter.INCH * 3 / 8;
          }
-         System.out.println(thickness + " " + width + " " + height + " " + fontHeight);
       }
       FontPainter fp = new FontPainter(width * Letter.INCH, height * Letter.INCH, strokeWidth);
       /* Serial Coms and Printing */
@@ -108,8 +107,6 @@ public class FileParser
             System.err.println(e);
             //System.exit(1);
          }
-         System.err.println("Before add letter");
-         System.err.println(paths);
          for (Paths p : paths) {
             p.flipCoordinates();
             p = PathConverter.breakApart(p, MAX_DISTANCE);
@@ -131,9 +128,6 @@ public class FileParser
 
    private static void printPaths(Paths paths, PrintWriter printer)
    {
-      System.err.println("Printing my damn own paths");
-      System.err.println(paths);
-      System.err.println("Printing their paths");
       for (Path p: paths)
       {
          String toPrint = String.format("%d, %d, %d\n", p.getX(), p.getY(), p.type.ordinal());
