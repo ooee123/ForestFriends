@@ -55,17 +55,20 @@ def coordParsing(thick):
    # poll once from serial port for info arrival
    # return home when [cancel is clicked]/[finsihed] toHOG(0,0,0)
    for coord in fp:
-      coord = map(toBinary, map(int, coord.split(",")))
-      print coord
-   
-      # send data to HOG
-      toHOG(coord[0], coord[1], coord[2])
-      found = port.read(1)
-      print found
-      while found.find('@') < 0:
+      if (coord.trim().startswith("#")):
+         # This line is a comment. Ignore it
+      else:
+         coord = map(toBinary, map(int, coord.split(",")))
+         print coord
+      
+         # send data to HOG
+         toHOG(coord[0], coord[1], coord[2])
          found = port.read(1)
          print found
-         # wait until something in buffer
+         while found.find('@') < 0:
+            found = port.read(1)
+            print found
+            # wait until something in buffer
          
    # Go home, you're drunk.
    toHOG(toBinary(0), toBinary(0), toBinary(0))

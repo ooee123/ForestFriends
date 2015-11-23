@@ -37,34 +37,27 @@ public class FileParser
 
       List<Paths> allPaths = new ArrayList<Paths>();
 
-      if (isFromFile)
-      {
-         try
-         {
+      if (isFromFile) {
+         try {
             file = new Scanner(new File(args[0]));
          }
-         catch (FileNotFoundException e)
-         {
+         catch (FileNotFoundException e) {
             System.err.println(e.toString());
             System.exit(-1);
          }
       }
-      else
-      {
+      else {
          file = new Scanner(System.in);
       }
 
-      if (isFromFile)
-      {
+      if (isFromFile) {
          thickness = file.nextInt();
          width = file.nextInt();
          height = file.nextInt();
          fontHeight = file.nextInt();
-         if (fontHeight == 1)
-         {
+         if (fontHeight == 1) {
          }
-         else if (fontHeight >= 2)
-         {
+         else if (fontHeight >= 2) {
             strokeWidth = Letter.INCH * 3 / 8;
          }
       }
@@ -128,9 +121,12 @@ public class FileParser
 
    private static void printPaths(Paths paths, PrintWriter printer)
    {
-      for (Path p: paths)
-      {
-         String toPrint = String.format("%d, %d, %d\n", p.getX(), p.getY(), p.type.ordinal());
+      String toPrint; 
+      toPrint = String.format("# %s\n", paths.getLetter());
+      System.err.print(toPrint);
+      printer.print(toPrint);
+      for (Path p: paths) {
+         toPrint = String.format("%d, %d, %d\n", p.getX(), p.getY(), p.type.ordinal());
          System.err.print(toPrint);
          printer.print(toPrint);
       }
@@ -142,12 +138,9 @@ public class FileParser
       int minHeight = strokeWeight / 2 + SAFE_ZONE_BORDER_WIDTH;
       int maxWidth = width - strokeWeight / 2 - SAFE_ZONE_BORDER_WIDTH;
       int maxHeight = height - strokeWeight / 2 - SAFE_ZONE_BORDER_WIDTH;
-      for (Paths p : paths)
-      {
-         for (Path path : p)
-         {
-            if (path.getX() < minWidth || path.getX() > maxWidth || path.getY() < minHeight || path.getY() > maxHeight)
-            {
+      for (Paths p : paths) {
+         for (Path path : p) {
+            if (path.getX() < minWidth || path.getX() > maxWidth || path.getY() < minHeight || path.getY() > maxHeight) {
                throw new BorderException("Letter '" + p.getLetter() + "' is out of bounds of coordinates: " + path.getX() + ", " + path.getY());
             }
          }
