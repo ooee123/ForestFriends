@@ -142,11 +142,24 @@ class ImportFile(tk.Frame):
       
       return true;
       
+   def getErrorCodes(self):
+      errorCodes = {}
+      fp = open("../pathConversion/ERROR_CODES.txt")
+      for l in fp:
+         pieces = l.split(",")
+         errorCodes[int(pieces[0])] = pieces[1]
+      return errorCodes
+
    def javaExec(self):
       # Up to redoing depending on path
       #os.chdir("../pathConversion/")
       #retCode = subprocess.call(["java", "-cp", "../pathConversion/rxtx-2.1-7-bins-r2/*:../pathConversion/.", "FileParser", "../piGUI/file.txt"])
+      errorCodes = self.getErrorCodes()
       retCode = subprocess.call("java -cp ../pathConversion/rxtx-2.1-7-bins-r2/*:../pathConversion/ FileParser ../piGUI/file.txt", shell=True)
+      if retCode != 0:
+         errorMessage = errorCodes[retCode]
+         print(errorMessage)
+         sys.exit(-1)
       print("DONE!")
 
 class badFileSyntax(tk.Frame):   
@@ -304,25 +317,15 @@ class Finish(tk.Frame):
          command=restartFrame)
       button.pack(fill=BOTH)
 
-print ("1")
 app = GUI()
-print ("2")
 #app.lower()
 app.overrideredirect(True)
-print ("3")
 app.title("Forest Friends")
-print ("4")
 app.geometry("320x240")
-print ("5")
 #app.geometry("{0}x{1}+0+0".format(app.winfo_screenwidth(), app.winfo_screenheight()))
 app.focus_set()
-print ("6")
 app.bind("<Escape>", lambda e: app.quit())
-print ("8")
 if (len(sys.argv) > 1):
-   print ("9")
    frames[ImportFile].openFile(sys.argv[1])
-print ("10")
-print ("7")
 app.mainloop()
 

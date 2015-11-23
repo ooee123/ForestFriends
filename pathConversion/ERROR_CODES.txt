@@ -1,0 +1,2 @@
+1,File does not exist
+2,Sign design does not fit inside the safe board dimensions

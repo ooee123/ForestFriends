@@ -56,6 +56,8 @@ def coordParsing(thick):
    # return home when [cancel is clicked]/[finsihed] toHOG(0,0,0)
    for coord in fp:
       if (coord.trim().startswith("#")):
+         print("Working on letter ")
+         print(coord.trim()[1:].trim())
          # This line is a comment. Ignore it
       else:
          coord = map(toBinary, map(int, coord.split(",")))

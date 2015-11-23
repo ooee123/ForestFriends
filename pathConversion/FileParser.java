@@ -42,8 +42,8 @@ public class FileParser
             file = new Scanner(new File(args[0]));
          }
          catch (FileNotFoundException e) {
-            System.err.println(e.toString());
-            System.exit(-1);
+            System.err.println(e);
+            System.exit(1);
          }
       }
       else {
@@ -96,9 +96,8 @@ public class FileParser
          }
          catch (BorderException e)
          {
-            System.err.println("Paths not within bounds!");
             System.err.println(e);
-            //System.exit(1);
+            System.exit(2);
          }
          for (Paths p : paths) {
             p.flipCoordinates();
