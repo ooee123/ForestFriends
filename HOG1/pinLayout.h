@@ -4,14 +4,14 @@
 #define X_ENCODER_DDR  DDRE
 #define X_ENCODER_PIN  PINE
 #define X_ENCODER_PORT PORTE
-#define X_ENCODER_PINA PE4
-#define X_ENCODER_PINB PE5
+#define X_ENCODER_PINA PE4    // Must be interrupts
+#define X_ENCODER_PINB PE5    // Must be interrupts
 
 #define Y_ENCODER_DDR  DDRE
 #define Y_ENCODER_PIN  PINE
 #define Y_ENCODER_PORT PORTE
-#define Y_ENCODER_PINA PE6
-#define Y_ENCODER_PINB PE7
+#define Y_ENCODER_PINA PE6    // Must be interrupts
+#define Y_ENCODER_PINB PE7    // Must be interrupts
 
 #define Z_ENCODER_DDR  DDRD
 #define Z_ENCODER_PIN  PIND

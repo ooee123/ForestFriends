@@ -32,19 +32,23 @@ read_serial_driver::read_serial_driver(rs232 *serial_in)
    serial = serial_in;
 }
 
-int32_t read_serial_driver::read_int32_t()
+uint32_t read_serial_driver::read_int32_t()
 {
-   int32_t num;
+   uint32_t num;
    #ifdef BINARY_SERIAL
+   // Assumes bits come in MSB order first (big endian)
       num = serial->getchar();
-      return (num << 8) | serial->getchar();
+      num = (num << 8) | serial->getchar();
+      num = (num << 8) | serial->getchar();
+      num = (num << 8) | serial->getchar();
    #else
       num = serial->getchar() - '0';
       num = num * 10 + serial->getchar() - '0';
       num = num * 10 + serial->getchar() - '0';
       num = num * 10 + serial->getchar() - '0';
-      return num;
+      num = num * 10 + serial->getchar() - '0';
    #endif
+   return num;
 }
 
 uint8_t read_serial_driver::read_uint8_t()

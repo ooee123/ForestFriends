@@ -102,18 +102,16 @@ void motor_task::run (void)
       {
          if (*state == HOME)
          {
-            // If the switches are pressed
+            // If the minimum switches are pressed
             if (!_getBit(*limitPIN, limitPinNum))
             {
                motor->brake();
             }
             else
             {
-               #ifdef MOTOR_DEBUG
-                  *p_serial << get_name();
-                  *p_serial << calibrateSpeed;
-                  *p_serial << "\n";
-               #endif
+#ifdef MOTOR_DEBUG
+               print_ser_queue << "H" << get_name() << "\n";
+#endif
                motor->move(calibrateSpeed);
             }
          }
@@ -124,12 +122,9 @@ void motor_task::run (void)
             {
                int32_t error = *desired - encoder->getPosition();
                motor->move(error);
-               #ifdef MOTOR_DEBUG
-                  print_ser_queue << get_name();
-                  print_ser_queue << ":";
-                  print_ser_queue << error;
-                  print_ser_queue << "\n";
-               #endif
+#ifdef MOTOR_DEBUG
+               print_ser_queue << get_name() << ":" << error << "\n";
+#endif
             }
             else
             {

@@ -43,11 +43,17 @@ F_CPU = 16000000UL
 # -DTRANSITION_TRACE   For printing state transition traces on a serial device
 # -DTASK_PROFILE       For doing profiling, measurement of how long tasks take to run
 # -DUSE_HEX_DUMPS      Include functions for printing hex-formatted memory dumps
+# -DDEBUG              
+# -DMOTOR_DEBUG        For debugging motors
+# -DNO_Z_CODE_CONVERSTION For not requiring a number for the z axis for the different heights.
+# -DBINARY_SERIAL      Serial ports take in binary values instead of ascii numbers
+# -DINTEGRAL           Integral portion of PID controller
+# -DCURRENT_SENSOR     Polls current sensor
 OTHERS = -DSERIAL_DEBUG
-#OTHERS += -DDEBUG
-#OTHERS += -DMOTOR_DEBUG
-#OTHERS += -DNO_Z_CODE_CONVERSION
-OTHERS += -DBINARY_SERIAL
+OTHERS += -DDEBUG
+OTHERS += -DMOTOR_DEBUG
+OTHERS += -DNO_Z_CODE_CONVERSION
+#OTHERS += -DBINARY_SERIAL
 #OTHERS += -DINTEGRAL
 #OTHERS += -DCURRENT_SENSOR
 

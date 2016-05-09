@@ -88,24 +88,24 @@ void read_serial_task::run (void)
 	for (;;)
 	{	
 		runs++;
-      #if defined(DEBUG) || defined(MOTOR_DEBUG)
-         while (print_ser_queue.check_for_char())
-         {
-            p_serial->putchar(print_ser_queue.getchar());
-         }
-      #endif
-      #ifdef CURRENT_SENSOR
+#if defined(DEBUG) || defined(MOTOR_DEBUG)
+      while (print_ser_queue.check_for_char())
+      {
+         p_serial->putchar(print_ser_queue.getchar());
+      }
+#endif
+#ifdef CURRENT_SENSOR
       uint8_t sense = ADMUX & 0x111;
       if (_getBit(ADCSR, ADIF))
       {
-         #ifdef DEBUG
+#ifdef DEBUG
             *p_serial << "CUR ";
             *p_serial << sense;
             *p_serial << ":";
             *p_serial << ADCH;
             *p_serial << "\n";
-         #endif
-         if (!isWithinTolerance(ADCH, 128, ADC_MAX))
+#endif
+         if (!isWithinTolerance(ADCH, (1 << 7), ADC_MAX))
          {
             // Shut down machine!
             *p_serial << "CURRENT SENSOR TRIPPED\n";
@@ -115,14 +115,12 @@ void read_serial_task::run (void)
          ADMUX |= (sense + 1) % NUM_CURRENT_SENSORS;
          _setBit(ADCSRA, ADSC);
       }
-      #endif
+#endif
 
       // If ANY of the limit switches are triggered
       if (!getXMaxLimitSwitch() || !getYMaxLimitSwitch() || !getZMaxLimitSwitch())
       {
-         *p_serial << "*ERROR*\n";
-         *p_serial << "MAX SWITCH ACTIVATED\n";
-         *p_serial << "*ERROR*\n";
+         *p_serial << "*ERROR*\n" << "MAX SWITCH ACTIVATED\n" << "*ERROR*\n";
          shutdown();
       }
       if (*state == HOME)
@@ -130,9 +128,9 @@ void read_serial_task::run (void)
          // If all limit switches are activated
          if (!getXLimitSwitch() && !getYLimitSwitch() && !getZLimitSwitch())
          {
-         #ifdef DEBUG
+#ifdef DEBUG
             *p_serial << "LIMIT";
-         #endif
+#endif
             // Then we're ready to proceed to normal operation
             *p_serial << AT_HOME; 
             *state = NORMAL;
@@ -169,12 +167,16 @@ void read_serial_task::run (void)
 
 void read_serial_task::getNextCoordinate(void)
 {
+#ifndef BINARY_SERIAL
+   *p_serial << "Enter three 5 digits numbers without spaces\n";
+#endif
    *desiredX = serial->read_int32_t();
    *desiredY = serial->read_int32_t();
    *desiredZ = serial->read_int32_t();
    *zReady = false;
    if (*desiredX == 0 && *desiredY == 0 && (*desiredZ == 0 || *desiredZ == HOME_THREE_QUARTER_BOARD || *desiredZ == HOME_ONE_POINT_FIVE_BOARD))
    {
+      // If destionation is 0,0,0 or 0,0,3 or 0,0,4, then go home
       *state = HOME;
       turnOffEncoders();
       if (*desiredZ == HOME_THREE_QUARTER_BOARD)
@@ -189,27 +191,28 @@ void read_serial_task::getNextCoordinate(void)
    }
    else
    {
-      #ifndef NO_Z_CODE_CONVERSION
-         int32_t desiredHeight = *desiredZ;
-         if (*desiredZ == START || *desiredZ == MOVE)
-         {
-            desiredHeight = DISTANCE_1_5 + boardOffset - HOVER_HEIGHT;
-         }
-         else if (*desiredZ == LINE)
-         {
-            desiredHeight = DISTANCE_1_5 + boardOffset + ROUTING_DEPTH;
-         }
-         *desiredZ = desiredHeight;
-      #endif
+      // Coordinates are next destination
+#ifndef NO_Z_CODE_CONVERSION
+      int32_t desiredHeight = *desiredZ;
+      if (*desiredZ == START || *desiredZ == MOVE)
+      {
+         desiredHeight = DISTANCE_1_5 + boardOffset - HOVER_HEIGHT;
+      }
+      else if (*desiredZ == LINE)
+      {
+         desiredHeight = DISTANCE_1_5 + boardOffset + ROUTING_DEPTH;
+      }
+      *desiredZ = desiredHeight;
+#endif
    }
-   #ifdef DEBUG
-      *p_serial << "X:";
-      *p_serial << *desiredX;
-      *p_serial << "Y:";
-      *p_serial << *desiredY;
-      *p_serial << "Z:";
-      *p_serial << *desiredZ;
-   #endif
+#ifdef DEBUG
+   *p_serial << "X:";
+   *p_serial << *desiredX;
+   *p_serial << "Y:";
+   *p_serial << *desiredY;
+   *p_serial << "Z:";
+   *p_serial << *desiredZ;
+#endif
 }
 
 void read_serial_task::shutdown(void)
@@ -280,7 +283,7 @@ bool read_serial_task::checkForEmoOff(void) {
       motorWasOff = false;
       return false;
    }
-   #endif
+#endif
    return false;
 }
 

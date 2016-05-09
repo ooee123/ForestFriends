@@ -89,7 +89,7 @@ frt_text_queue print_ser_queue(32, NULL, 10);
 //motor_driver* xAxis = new motor_driver (&DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1A1, &OCR1A, false, X_PGAIN, X_PCONSTANT, X_POWERMIN, X_POWERMAX);
 //motor_driver* yAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC0, PC5, PC4, PB6, COM1B1, &OCR1B, true, Y_PGAIN, Y_PCONSTANT, Y_POWERMIN, Y_POWERMAX);
 //motor_driver* zAxis = new motor_driver (&DDRC, &DDRC, &DDRB, &PORTC, &PORTC, PC1, PC7, PC6, PB7, COM1C1, &OCR1C, true, Z_PGAIN, Z_PCONSTANT, Z_POWERMIN, Z_POWERMAX);
-motor_driver xAxis(&DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC3, PC2, PB5, COM1A1, &OCR1A, true, X_PGAIN, X_PCONSTANT, X_POWERMIN, X_POWERMAX
+motor_driver xAxis(&DDRD, &DDRC, &DDRB, &PORTD, &PORTC, PD7, PC2, PC3, PB5, COM1A1, &OCR1A, true, X_PGAIN, X_PCONSTANT, X_POWERMIN, X_POWERMAX
 #ifdef INTEGRAL
 , X_IGAIN, X_IMIN, X_IMAX
 #endif
@@ -223,26 +223,17 @@ int main (void)
 	// sometimes the watchdog timer may have been left on...and it tends to stay on
 	wdt_disable ();
    EICRA = 0b00001111; // Set Int_0-1 to activate on rising edge
-   #ifdef FAST_ENCODER
-      EICRB = 0b11111111; // Set Int_4-7 to activate on rising edge 
-      EIMSK = 0b01010001; // Turn on Int_0, 4, 6
-   #else
-      EICRB = 0b01010101; // Set Int_4-7 to activate on pin toggle
-      EIMSK = 0b11110011; // Turn on Int_0-1, Int_4-7
-   #endif
+   // Turn on pull-up resistor on all limit switch pins
    setupLimitSwitch(X_LIMIT_DDR, X_LIMIT_PORT, X_MAX_LIMIT_PIN_NUM);
    setupLimitSwitch(Y_LIMIT_DDR, Y_LIMIT_PORT, Y_MAX_LIMIT_PIN_NUM);
    setupLimitSwitch(Z_LIMIT_DDR, Z_LIMIT_PORT, Z_MAX_LIMIT_PIN_NUM);
    #ifdef CURRENT_SENSOR
       
-      /*
-      _setBit(CURRENT_DDR, X_CURRENT_PIN_POWER);
-      _setBit(CURRENT_DDR, Y_CURRENT_PIN_POWER);
-      _setBit(CURRENT_DDR, Z_CURRENT_PIN_POWER);
-      */
       _clearBit(CURRENT_DDR, X_CURRENT_PIN_NUM);
       _clearBit(CURRENT_DDR, Y_CURRENT_PIN_NUM);
       _clearBit(CURRENT_DDR, Z_CURRENT_PIN_NUM);
+
+      // Set pins as pull-up resistors?
       /*
       _setBit(CURRENT_PORT, X_CURRENT_PIN_POWER);
       _setBit(CURRENT_PORT, Y_CURRENT_PIN_POWER);
@@ -275,8 +266,10 @@ int main (void)
 	// Here's where the RTOS scheduler is started up. It should never exit as long as
 	// power is on and the microcontroller isn't rebooted
 
+   // While the X max limit switch is engaged (if it goes low because of pull-up resistor)
    while (!getXMaxLimitSwitch())
    {
+      // Move it back
       ser_port << "X";
       xAxis.move(X_CALIBRATE_SPEED);
    }
