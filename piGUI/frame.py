@@ -6,7 +6,8 @@ from tkFileDialog import askopenfilename
 import shutil
 from PIL import Image, ImageTk
 import os
-import coordParsing
+#import coordParsing
+import serialFudgerTester as coordParsing
 
 LARGE_FONT= ("Verdana", 15)
 CONFIRM_FONT= ("Verdana", 14)
@@ -85,8 +86,8 @@ class ImportFile(tk.Frame):
       importDialog.grid(row=0, sticky=N+S+E+W)
 
       cancel = tk.Button(self, text="Cancel", height = 5,font=LARGE_FONT, bg="#FF8080", activebackground="#FF0000",
-         command=restartFrame)
-         #command=lambda: controller.show_frame(Start))
+         #command=restartFrame)
+         command=lambda: controller.show_frame(Start))
       cancel.grid(row=1, sticky=N+S+E+W)
 
    def openFileWithFileDialog(self):
@@ -178,15 +179,15 @@ class badFileSyntax(tk.Frame):
       #label.pack(pady=1,padx=10)
 
       button2 = tk.Button(self, text="Input file design is incorrect, \n please try again.", height = 10,font=LARGE_FONT,
-         command=restartFrame)
-         #command=lambda: controller.show_frame(Start))
+         #command=restartFrame)
+         command=lambda: controller.show_frame(Start))
       button2.pack(fill=BOTH)
 
 class VerifyDesign(tk.Frame):
 
    def __init__(self, parent, controller):
       tk.Frame.__init__(self, parent)
-      self.controller = controller
+      self.cont = controller
       #label = tk.Label(self, text="Verify Design", font=LARGE_FONT)
       #label.pack(pady=10,padx=10)
       self.rowconfigure(0, weight=1)
@@ -196,7 +197,7 @@ class VerifyDesign(tk.Frame):
 
    def verifyParts(self):
       frames[VerifyParts].readFile()
-      self.controller.show_frame(VerifyParts)
+      self.cont.show_frame(VerifyParts)
 
    def updateImage(self):
       # display image design
@@ -216,7 +217,7 @@ class VerifyDesign(tk.Frame):
       correctButton.grid(row=1, column=0, sticky=N+S+E+W)
 
       incorrectButton = tk.Button(self, text="Incorrect", width = 14, font=CONFIRM_FONT, bg="#FF8080", activebackground="#FF0000",
-         command=lambda: controller.show_frame(Redesign))
+         command=lambda: self.cont.show_frame(Redesign))
       #button2.pack(side=LEFT, anchor=S)
       #incorrectButton.pack(side=RIGHT,anchor=S)
       incorrectButton.grid(row=1, column=1, sticky=N+S+E+W)
@@ -232,8 +233,8 @@ class Redesign(tk.Frame):
       #label.pack(pady=2, fill=X)
 
       button1 = tk.Button(self, text="Please redesign and start over.", height = 10, font=LARGE_FONT,
-         command=restartFrame)
-         #command=lambda: controller.show_frame(Start))
+         #command=restartFrame)
+         command=lambda: controller.show_frame(Start))
       button1.pack(fill=BOTH)
 
 
@@ -311,8 +312,8 @@ class Reverify(tk.Frame):
       #label.pack(pady=2,padx=10)
 
       button1 = tk.Button(self, text="Please adjust parts \nand start over.", font=LARGE_FONT, height = 10,
-         command=restartFrame)
-         #command=lambda: controller.show_frame(Start))
+         #command=restartFrame)
+         command=lambda: controller.show_frame(Start))
       button1.pack(fill = BOTH)
 
 class Machine(tk.Frame):
@@ -339,8 +340,8 @@ class Machine(tk.Frame):
       button1.grid(row=0, sticky="nswe")
 
       button2 = tk.Button(self, text="Cancel", font=LARGE_FONT,height = 5, bg="#FF8080", activebackground="#FF0000",
-         command=restartFrame)
-         #`command=lambda: controller.show_frame(Start))
+         #command=restartFrame)
+         command=lambda: controller.show_frame(Start))
       #button2.pack(anchor=S, fill=X)
       button2.grid(row=1, sticky="nswe")
 
@@ -354,6 +355,9 @@ class Machine(tk.Frame):
 class Routing(tk.Frame):
 
    def start(self):
+      self.step = 1
+      self.totalSteps = coordParsing.getNumberOfSteps() + 2
+      coordParsing.setCallback(self.labelCallback)
       coordParsing.coordParsing(thick)
       self.cont.show_frame(Finish)
 
@@ -361,7 +365,10 @@ class Routing(tk.Frame):
       self.xTarget.config(text="X Target: %s" % str(x))
       self.yTarget.config(text="Y Target: %s" % str(y))
       self.zTarget.config(text="Z Target: %s" % str(z))
+      self.steps.config(text="Step: {0} / {1}".format(self.step, self.totalSteps))
       self.message.config(text=message)
+      self.update()
+      self.step += 1
 
    def __init__(self, parent, controller):
       self.cont = controller
@@ -370,8 +377,10 @@ class Routing(tk.Frame):
       self.rowconfigure(1, weight=1)
       self.rowconfigure(2, weight=1)
       self.rowconfigure(3, weight=1)
+      self.rowconfigure(4, weight=1)
+      self.step = 0
+      self.totalSteps = 0
       self.columnconfigure(0, weight = 1)
-      coordParsing.setCallback(self.labelCallback)
       self.xTarget = tk.Label(self, text=("X Target: "), font=LARGE_FONT)
       self.xTarget.grid(row=0, sticky=E+W+N+S)
 
@@ -381,17 +390,23 @@ class Routing(tk.Frame):
       self.zTarget = tk.Label(self, text=("Z Target: "), font=LARGE_FONT)
       self.zTarget.grid(row=2, sticky=E+W+N+S)
 
+      self.steps = tk.Label(self, text=("Step: {0} / {1}".format(self.step, self.totalSteps)), font=LARGE_FONT)
+      self.steps.grid(row=3, sticky=E+W+N+S)
+
       self.message = tk.Label(self, text="", font=LARGE_FONT)
-      self.message.grid(row=3, sticky=E+W+N+S)
+      self.message.grid(row=4, sticky=E+W+N+S)
 
 class Finish(tk.Frame):
 
    def __init__(self, parent, controller):
       tk.Frame.__init__(self, parent)
-      button = tk.Button(self, text="Machining is finished. \nMachine more boards.", font=LARGE_FONT,
-         #command=lambda: controller.show_frame(Start))
-         command=restartFrame)
-      button.pack(fill=BOTH)
+      self.columnconfigure(0, weight=1)
+      self.rowconfigure(0, weight=1)
+      button = tk.Button(self, text="Machining is finished. \nMachine more boards.", font=LARGE_FONT, bg="#80FF80", activebackground="#00FF00",
+         command=lambda: controller.show_frame(Start))
+         #command=restartFrame)
+      #button.pack(fill=BOTH)
+      button.grid(sticky="nswe")
 
 app = GUI()
 #app.lower()

@@ -10,11 +10,22 @@ port = 1
 filename = "coordinates.txt"
 callbackFunc = None
 
+def getNumberOfSteps():
+   fil = open(filename, "r")
+   lines = 0
+   for line in fil:
+      if not line.lstrip().startswith("#"):
+         lines += 1
+   return lines
+
 # converts a number to a 2 byte binary integer
 def toBinary(integer):
-   array = bytearray(2)
-   array[0] = integer/256
-   array[1] = integer%256
+   array = bytearray(4)
+   array[0] = (integer >> 24) & 0xFF
+   array[1] = (integer >> 16) & 0XFF
+   array[2] = (integer >> 8) & 0xFF
+   array[3] = integer & 0xFF 
+
    return array
 
 def setCallback(func):
@@ -28,11 +39,6 @@ def toHOG(x, y, z):
    port.write(z) 
    return
 
-#change cancel flag
-def cancelFlag():
-   home = true
-   
-
 def coordParsing(thick):
    print(thick)
    fp = open(filename, "r")
@@ -44,13 +50,13 @@ def coordParsing(thick):
    # if value is 4, we know its "go home, thickness of 1.5"
    if (thick == 1) :
       thick = 3
-   else :
+   else:
       thick = 4
    print thick
    #toHOG(toBinary(0), toBinary(0), toBinary(int(thick)))
    toHOG(toBinary(0), toBinary(0), toBinary(0))
    if callbackFunc != None:
-      callbackFunc(x, y, z, "Returning home")
+      callbackFunc(0, 0, 0, "Returning home")
    print("first")
    # Wait until # symbol comes
    while port.read(1).find('#') < 0:
@@ -62,17 +68,17 @@ def coordParsing(thick):
    # poll once from serial port for info arrival
    # return home when [cancel is clicked]/[finsihed] toHOG(0,0,0)
    for coord in fp:
-      if (coord.trim().startswith("#")):
+      if (coord.lstrip().startswith("#")):
          # This line is a comment. No real HOG data
-         currentLetter = coord.trim()[1:].trim()
-         print("Working on letter %s" % currentLetter)
+         currentLetter = coord.lstrip().split()[1].strip()
       else:
-         coord = map(toBinary, map(int, coord.split(",")))
+         intCoord = map(int, coord.split(","))
+         binCoord = map(toBinary, intCoord)
       
          # send data to HOG
-         toHOG(coord[0], coord[1], coord[2])
+         toHOG(binCoord[0], binCoord[1], binCoord[2])
          if callbackFunc != None:
-            callbackFunc(x, y, z, currentLetter)
+            callbackFunc(intCoord[0], intCoord[1], intCoord[2], "Letter: " + currentLetter)
 
          found = port.read(1)
          print found
@@ -81,10 +87,9 @@ def coordParsing(thick):
             print found
             # wait until something in buffer
          
-   # Go home, you're drunk.
    toHOG(toBinary(0), toBinary(0), toBinary(0))
    if callbackFunc != None:
-      callbackFunc(x, y, z, "Returning home")
+      callbackFunc(0, 0, 0, "Returning home")
    print("done")
    while port.read(1).find('#') < 0:
       pass
