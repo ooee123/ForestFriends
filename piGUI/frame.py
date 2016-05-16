@@ -6,12 +6,15 @@ from tkFileDialog import askopenfilename
 import shutil
 from PIL import Image, ImageTk
 import os
-#import coordParsing
-import serialFudgerTester as coordParsing
+import coordParsing
+#import serialFudgerTester as coordParsing
 
 LARGE_FONT= ("Verdana", 15)
 CONFIRM_FONT= ("Verdana", 14)
 thick = 0
+height = 0
+width = 0
+letterHeight = 0
 frames = {}
 
 GRIDMODE = True
@@ -66,11 +69,6 @@ class Start(tk.Frame):
       #button2 = tk.Button(self, text="Cancel",
       #   command=lambda: controller.show_frame(Start))
       #button2.pack()
-
-
-def restartFrame():
-   pass
-   #os.execv("/usr/bin/python", ["python", "frame.py"])
 
 class ImportFile(tk.Frame):
       
@@ -194,21 +192,6 @@ class VerifyDesign(tk.Frame):
       self.rowconfigure(1, weight=1)
       self.columnconfigure(0, weight=1)
       self.columnconfigure(1, weight=1)
-
-   def verifyParts(self):
-      frames[VerifyParts].readFile()
-      self.cont.show_frame(VerifyParts)
-
-   def updateImage(self):
-      # display image design
-      photo = ImageTk.PhotoImage(Image.open("resize.jpg"))
-      label = Label(self, image = photo)
-      label.image = photo
-      #label.pack(side=TOP)
-      label.grid(row=0, column=0, columnspan=2)
-
-      #label = tk.Label(self, text="Design is..", font=LARGE_FONT)
-      #label.pack(side=LEFT)
       correctButton = tk.Button(self, text="Correct", width = 12, font=CONFIRM_FONT, bg="#80FF80", activebackground="#00FF00",
          #command=lambda: controller.show_frame(VerifyParts))
          command=self.verifyParts)
@@ -221,6 +204,28 @@ class VerifyDesign(tk.Frame):
       #button2.pack(side=LEFT, anchor=S)
       #incorrectButton.pack(side=RIGHT,anchor=S)
       incorrectButton.grid(row=1, column=1, sticky=N+S+E+W)
+      self.label = Label(self, image=None)
+
+      #label.pack(side=TOP)
+      self.label.grid(row=0, column=0, columnspan=2)
+
+   def verifyParts(self):
+      frames[VerifyParts].readFile()
+      self.cont.show_frame(VerifyParts)
+
+   def updateImage(self):
+      # display image design
+      photo = ImageTk.PhotoImage(Image.open("resize.jpg"))
+      #self.label = Label(self, image = photo)
+      self.label.config(image = photo)
+      self.label.image = photo
+      self.update()
+      #self.label.image = photo
+      #label.pack(side=TOP)
+      #self.label.grid(row=0, column=0, columnspan=2)
+
+      #label = tk.Label(self, text="Design is..", font=LARGE_FONT)
+      #label.pack(side=LEFT)
 
 
 class Redesign(tk.Frame):
@@ -267,6 +272,9 @@ class VerifyParts(tk.Frame):
 
    def readFile(self):
       global thick
+      global height
+      global width
+      global letterHeight
       data = open("file.txt", "r")
       line = data.readline()
       thick = int(line)
@@ -282,19 +290,19 @@ class VerifyParts(tk.Frame):
       label1.grid(row=0, columnspan=2, sticky=E+W+N+S)
 
       #print "read line %s" % (line)
-      line = data.readline()
-      label2 = tk.Label(self, text=("Width of Board: " + line), font=LARGE_FONT)
+      width = data.readline()
+      label2 = tk.Label(self, text=("Width of Board: " + width), font=LARGE_FONT)
       #label2.pack(side=TOP, anchor=W)
       label2.grid(row=1, columnspan=2, sticky=E+W+N+S)
       #label2.pack(anchor=N)#, compound=TOP)
       #print "read line %s" % (line)
-      line = data.readline()
-      label3 = tk.Label(self, text=("Height of Board: " + line), font=LARGE_FONT)
+      height = data.readline()
+      label3 = tk.Label(self, text=("Height of Board: " + height), font=LARGE_FONT)
       label3.grid(row=2, columnspan=2, sticky=E+W+N+S)
       #label3.pack(anchor=N, compound=side)
       #print "read line %s" % (line)
-      line = data.readline()
-      label4 = tk.Label(self, text=("Letter Height: " + line), font=LARGE_FONT)
+      letterHeight = data.readline()
+      label4 = tk.Label(self, text=("Letter Height: " + letterHeight), font=LARGE_FONT)
       label4.grid(row=3, columnspan=2, sticky=E+W+N+S)
       #label4 = tk.Label(self, text=("Router Bit Size: " + line), font=LARGE_FONT)
       #label4.pack(anchor=N)
@@ -355,6 +363,7 @@ class Machine(tk.Frame):
 class Routing(tk.Frame):
 
    def start(self):
+      self.painter = subprocess.Popen(["java", "-cp", "../pathConversion", "Painter", str(width), str(height), str(letterHeight)], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
       self.step = 1
       self.totalSteps = coordParsing.getNumberOfSteps() + 2
       coordParsing.setCallback(self.labelCallback)
@@ -362,11 +371,16 @@ class Routing(tk.Frame):
       self.cont.show_frame(Finish)
 
    def labelCallback(self, x, y, z, message):
+      self.painter.stdin.write("{0} {1} {2}\n".format(int(x) / 64, int(y) / 64, int(z)))
       self.xTarget.config(text="X Target: %s" % str(x))
       self.yTarget.config(text="Y Target: %s" % str(y))
       self.zTarget.config(text="Z Target: %s" % str(z))
       self.steps.config(text="Step: {0} / {1}".format(self.step, self.totalSteps))
       self.message.config(text=message)
+      self.painter.stdout.readline()
+      photo = ImageTk.PhotoImage(Image.open("original.jpg"))
+      self.preview.config(image=photo)
+
       self.update()
       self.step += 1
 
@@ -378,6 +392,7 @@ class Routing(tk.Frame):
       self.rowconfigure(2, weight=1)
       self.rowconfigure(3, weight=1)
       self.rowconfigure(4, weight=1)
+      self.rowconfigure(5, weight=1)
       self.step = 0
       self.totalSteps = 0
       self.columnconfigure(0, weight = 1)
@@ -394,7 +409,13 @@ class Routing(tk.Frame):
       self.steps.grid(row=3, sticky=E+W+N+S)
 
       self.message = tk.Label(self, text="", font=LARGE_FONT)
-      self.message.grid(row=4, sticky=E+W+N+S)
+      self.message.grid(row=5, sticky=E+W+N+S)
+
+      # display image design
+      importedImage = Image.open("original.jpg")
+      photo = ImageTk.PhotoImage(importedImage)
+      self.preview = Label(self, image=photo)
+      self.preview.grid(row=4)
 
 class Finish(tk.Frame):
 

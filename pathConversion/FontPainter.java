@@ -20,15 +20,15 @@ public class FontPainter extends Component {
 
    private final boolean showGreen = false;
    private java.util.List<Paths> letters;
-   private BufferedImage img;
-   private Graphics2D imgGraphics;
+   private Painter painter;
    private int preferredWidth;
    private int preferredHeight;
    private int strokeWidth;
    private static final boolean displayFrame = false;
-   private static final double DISPLAY_SCALE = 1.0 / 64.0;
+   public static final double DISPLAY_SCALE = 1.0 / 64.0;
    public static final int MAX_DISTANCE = Letter.INCH / 4;
    //private static final double DISPLAY_SCALE = 1.0 / 4.0;
+
 
    public FontPainter(int width, int height, int strokeWidth)
    {
@@ -36,32 +36,14 @@ public class FontPainter extends Component {
       preferredHeight = (int)Math.round(height * DISPLAY_SCALE);
       this.strokeWidth = (int)Math.round(strokeWidth * DISPLAY_SCALE);
       letters = new ArrayList<Paths>();
-      if (displayFrame)
-      {
-         JFrame frame = new JFrame("Font");
-         frame.add(this);
-         frame.pack();
-         frame.setVisible(true);
-      }
-      img = new BufferedImage(preferredWidth, preferredHeight, BufferedImage.TYPE_INT_RGB);
-      imgGraphics = img.createGraphics();
-      //imgGraphics.setColor(Color.WHITE);
-      imgGraphics.setColor(new Color(222, 184, 135));
-      imgGraphics.fillRect(0, 0, preferredWidth, preferredHeight);
-   }
-
-   public void paint(Graphics g)
-   {
-      if (displayFrame)
-      {
-         drawLetters((Graphics2D)g);
-      }
+      painter = new Painter(preferredWidth, preferredHeight, this.strokeWidth, false);
    }
 
    public void finishDrawing()
    {
-      drawLetters(imgGraphics);
+      drawLetters();
       try {
+         RenderedImage img = painter.getImage();
          ImageIO.write(img, "jpg", new File("original.jpg"));
          System.err.println("Done writing image");
       }
@@ -71,38 +53,25 @@ public class FontPainter extends Component {
       }
    }
 
-   public Dimension getPreferredSize() {
-      return new Dimension(preferredWidth, preferredHeight);
-   }
-
    public void addLetter(Paths paths)
    {
       letters.add(paths);
    }
 
-   public void drawLetters(Graphics2D g)
+   public void drawLetters()
    {
-      g.setStroke(new BasicStroke(strokeWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
       for (Paths paths : letters)
       {
-         int prevX = (int)Math.round(paths.get(0).getX() * DISPLAY_SCALE);
-         int prevY = (int)Math.round(paths.get(0).getY() * DISPLAY_SCALE);
          for (Path p : paths)
          {
-            int px = (int)Math.round(p.getX() * DISPLAY_SCALE);
-            int py = (int)Math.round(p.getY() * DISPLAY_SCALE);
-            if (p.type == Path.MovementType.LINE)
-            {
-               g.setColor(Color.BLACK);
-               g.drawLine(prevX, prevY, px, py);
+            int x = (int)Math.round(p.getX() * DISPLAY_SCALE);
+            int y = (int)Math.round(p.getY() * DISPLAY_SCALE);
+            if (p.type == Path.MovementType.LINE) {
+               painter.lowerPen();
+            } else {
+               painter.raisePen();
             }
-            else if (showGreen && p.type == Path.MovementType.MOVE)
-            {
-               g.setColor(Color.GREEN);
-               g.drawLine(prevX, prevY, px, py);
-            }
-            prevX = px;
-            prevY = py;
+            painter.setPen(x, y);
          }
       }
    }

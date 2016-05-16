@@ -3,6 +3,8 @@ import os
 
 # for the pi
 #port = serial.Serial("/dev/ttyUSB0", baudrate=9600, timeout=2)
+# for the pi
+#port = serial.Serial("/dev/ttyS0", baudrate=9600, timeout=2)
 # for the mac
 #port = serial.Serial("/dev/tty.usbserial-A6026OUJ", baudrate=9600)
 # for testing
@@ -40,7 +42,6 @@ def toHOG(x, y, z):
    return
 
 def coordParsing(thick):
-   print(thick)
    fp = open(filename, "r")
    
 # reads from file and returns x, y, z
@@ -52,9 +53,8 @@ def coordParsing(thick):
       thick = 3
    else:
       thick = 4
-   print thick
-   #toHOG(toBinary(0), toBinary(0), toBinary(int(thick)))
-   toHOG(toBinary(0), toBinary(0), toBinary(0))
+   toHOG(toBinary(0), toBinary(0), toBinary(int(thick)))
+   #toHOG(toBinary(0), toBinary(0), toBinary(0))
    if callbackFunc != None:
       callbackFunc(0, 0, 0, "Returning home")
    print("first")
