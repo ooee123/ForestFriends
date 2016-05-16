@@ -57,9 +57,9 @@
 #define Z_CURRENT_PIN_NUM    PF5
 #define NUM_CURRENT_SENSORS  3
 
-#define SOLID_STATE_DDR      DDRA
-#define SOLID_STATE_PORT     PORTA
-#define SOLID_STATE_PIN_NUM  PA0
+#define SOLID_STATE_DDR      DDRF
+#define SOLID_STATE_PORT     PORTF
+#define SOLID_STATE_PIN_NUM  PF7
 
 #define _getBit(X, Y)   (((X) >> (Y)) & 1)
 #define _setBit(X, Y)   ((X) |= (1 << (Y)))

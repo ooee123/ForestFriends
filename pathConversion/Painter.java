@@ -109,7 +109,7 @@ public class Painter {
          (int)Math.round(strokeWidth * FontPainter.DISPLAY_SCALE), true);
 
       Scanner scanner = new Scanner(System.in);
-      while (scanner.hasNextLine()) {
+      while (scanner.hasNextInt()) {
          int x = scanner.nextInt();
          int y = scanner.nextInt();
          int z = scanner.nextInt();
