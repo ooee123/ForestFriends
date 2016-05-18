@@ -60,7 +60,7 @@ typedef enum State
 #define Z_IMIN      0
 #define Z_IMAX      100000
 
-#define X_CALIBRATE_SPEED -100
+#define X_CALIBRATE_SPEED -120
 #define Y_CALIBRATE_SPEED -155
 #define Z_CALIBRATE_SPEED -190
 

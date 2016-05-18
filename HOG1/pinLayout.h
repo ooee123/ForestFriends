@@ -61,6 +61,11 @@
 #define SOLID_STATE_PORT     PORTF
 #define SOLID_STATE_PIN_NUM  PF7
 
+#define SOFT_RESET_DDR       DDRA
+#define SOFT_RESET_PORT      PORTA
+#define SOFT_RESET_PIN       PINA
+#define SOFT_RESET_NUM       PA6
+
 #define _getBit(X, Y)   (((X) >> (Y)) & 1)
 #define _setBit(X, Y)   ((X) |= (1 << (Y)))
 #define _clearBit(X, Y) ((X) &= ~(1 << (Y)))

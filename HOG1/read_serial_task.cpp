@@ -88,6 +88,7 @@ void read_serial_task::run (void)
 	for (;;)
 	{	
 		runs++;
+      checkSoftReset();
 #if defined(DEBUG) || defined(MOTOR_DEBUG)
       while (print_ser_queue.check_for_char())
       {
@@ -165,6 +166,14 @@ void read_serial_task::run (void)
 	}
 }
 
+void read_serial_task::checkSoftReset(void) {
+   if (_getBit(SOFT_RESET_PIN, SOFT_RESET_NUM)) {
+      wdt_enable(WDTO_15MS);
+      *p_serial << "RESET";
+      for (;;);
+   }
+}
+
 void read_serial_task::getNextCoordinate(void)
 {
 #ifndef BINARY_SERIAL
@@ -226,6 +235,7 @@ void read_serial_task::shutdown(void)
    *desiredZ = zEncoder.getPosition();
    turnOffEncoders();
    _clearBit(SOLID_STATE_PORT, SOLID_STATE_PIN_NUM);
+   *p_serial << "*";
    for (;;);
 }
 

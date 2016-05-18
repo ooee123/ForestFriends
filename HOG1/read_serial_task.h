@@ -78,6 +78,7 @@ private:
    uint16_t boardOffset;
 
    void getNextCoordinate(void);
+   void checkSoftReset(void);
    bool checkForEmoOff(void);
 
 
